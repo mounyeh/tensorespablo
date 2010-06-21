@@ -1,0 +1,618 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+widget_class {\#include <itkImage.h>} FilteringGUI {open
+  xywh {857 44 417 747} type Double hide
+  code0 {\#include <FL/Fl_Browser.H>}
+  code1 {\#include <FL/Fl_Choice.H>}
+  code2 {\#include "MyfltkImageViewer/MyfltkImageViewer.h"}
+  code3 {\#include <itkImage.h>}
+} {
+  Fl_Group m_configMean {
+    label Mean
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include <FL/Fl_Counter.H>}
+    code1 {\#include <FL/Fl_Value_Output.H>}
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {21 549 384 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input mean_radio0 {
+        label Radius
+        xywh {127 573 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 1 textsize 10
+      }
+      Fl_Value_Input mean_radio1 {
+        xywh {187 573 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 1 textsize 10
+      }
+      Fl_Value_Input mean_radio2 {
+        xywh {250 573 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 1 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->MeanFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configMean->hide();
+m_op2->show();
+m_configIO->hide();
+this->MeanFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configMean->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configMedian {
+    label Median
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {21 555 384 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input radio0 {
+        label Radius
+        xywh {137 583 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 255 textsize 10
+      }
+      Fl_Value_Input radio1 {
+        xywh {197 583 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 255 textsize 10
+      }
+      Fl_Value_Input radio2 {
+        xywh {260 583 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 255 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->MedianFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configMedian->hide();
+m_op2->show();
+m_configIO->hide();
+this->MedianFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configMedian->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configGaussian {
+    label Gaussian
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {21 555 379 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input sigma {
+        label Sigma
+        xywh {75 579 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 3 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->GaussianFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGaussian->hide();
+m_op2->show();
+m_configIO->hide();
+this->GaussianFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGaussian->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configBilateral {
+    label Bilateral
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {21 555 384 73} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input BilatRangeSigma {
+        label {Range Sigma}
+        xywh {140 566 45 23} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 step 0.01 value 5 textsize 10
+      }
+      Fl_Value_Input BilatDomainSigma0 {
+        label {Domain Sigma}
+        xywh {140 598 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 step 0.01 value 6 textsize 10
+      }
+      Fl_Value_Input BilatDomainSigma1 {
+        xywh {190 598 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 step 0.01 value 6 textsize 10
+      }
+      Fl_Value_Input BilatDomainSigma2 {
+        xywh {241 598 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 step 0.01 value 6 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->BilateralFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configBilateral->hide();
+m_op2->show();
+m_configIO->hide();
+this->BilateralFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configBilateral->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configWiener {
+    label Wiener
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {20 555 384 100} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input lambda {
+        label Lambda
+        xywh {168 619 35 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 1 textsize 10
+      }
+      Fl_Value_Input iterations {
+        label Iterations
+        xywh {85 619 35 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 5 textsize 10
+      }
+      Fl_Round_Button noise {
+        label Noise
+        xywh {304 622 64 20} down_box PLASTIC_DOWN_BOX color 22 selection_color 22 labelsize 10
+      }
+      Fl_Round_Button bias {
+        label Bias
+        xywh {354 622 50 20} down_box PLASTIC_DOWN_BOX color 22 selection_color 22 labelsize 10
+      }
+      Fl_Value_Input gamma {
+        label Gamma
+        xywh {253 619 35 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 textsize 10
+      }
+      Fl_Choice m_tipo_filtroWiener {
+        label {Filter type}
+        callback {this->OnTipoFiltroWienerChange();} open
+        xywh {39 575 357 25} box PLASTIC_DOWN_BOX down_box BORDER_BOX color 22 labelsize 10 align 5 textsize 10
+      } {
+        MenuItem {} {
+          label {Choose...}
+          xywh {40 40 100 20} labelsize 12 hide
+        }
+      }
+    }
+    Fl_Button {} {
+      callback {this->WienerFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configWiener->hide();
+m_op2->show();
+m_configIO->hide();
+this->WienerFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configWiener->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configZero {
+    label {Zero crossing edge detection}
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {19 555 379 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input m_max_error {
+        label {Maximum Error}
+        xywh {112 578 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 minimum 1e-06 maximum 0.99999 value 0.5 textsize 10
+      }
+      Fl_Value_Input m_var {
+        label Variance
+        xywh {214 578 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 minimum 1 maximum 100 value 10 textsize 10
+      }
+      Fl_Check_Button z_noparam {
+        label {Default Values}
+        xywh {300 582 64 15} down_box PLASTIC_DOWN_BOX value 1 color 22 labelsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->ZeroEdgeFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configZero->hide();
+m_op2->show();
+m_configIO->hide();
+this->ZeroEdgeFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configZero->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configCanny {
+    label {Canny edge detection}
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {21 555 379 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input upper_threshold {
+        label {Upper Threshold}
+        xywh {124 580 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 10 textsize 10
+      }
+      Fl_Value_Input lower_threshold {
+        label {Lower Threshold}
+        xywh {272 580 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 0.05 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->CannyFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configCanny->hide();
+m_op2->show();
+m_configIO->hide();
+this->CannyFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configCanny->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configAnDif {
+    label {Anisotropic curvature}
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {21 555 379 100} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input AnDifConductance {
+        label Conductance
+        xywh {215 620 35 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 step 0.01 value 1 textsize 10
+      }
+      Fl_Value_Input AnDifIterations {
+        label Iterations
+        xywh {87 620 35 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 1 textsize 10
+      }
+      Fl_Value_Input AnDifTimeStep {
+        label {Time Step}
+        xywh {335 620 52 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 0.0625 textsize 10
+      }
+      Fl_Choice m_filtrado {
+        label Filtering
+        callback {this->OnTipoFiltradoChange();}
+        xywh {41 576 349 25} box PLASTIC_DOWN_BOX down_box BORDER_BOX color 22 labelsize 10 align 5 textsize 10
+      } {
+        MenuItem m_MenuTipoFiltrado {
+          label {Choose type...}
+          xywh {50 50 100 20} labelsize 10 hide
+        }
+      }
+    }
+    Fl_Button {} {
+      callback {this->CurvatureAnisotropicFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configAnDif->hide();
+m_op2->show();
+m_configIO->hide();
+this->CurvatureAnisotropicFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configAnDif->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configGradDif {
+    label {Anisotropic gradient}
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {18 555 379 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input GradDifConductance {
+        label Conductance
+        xywh {217 577 35 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 step 0.01 value 1 textsize 10
+      }
+      Fl_Value_Input GradDifIterations {
+        label Iterations
+        xywh {89 577 35 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 1 textsize 10
+      }
+      Fl_Value_Input GradDifTimeStep {
+        label {Time Step}
+        xywh {330 577 52 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 0.125 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->GradientDiffusionFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGradDif->hide();
+m_op2->show();
+m_configIO->hide();
+this->GradientDiffusionFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGradDif->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configSRAD {
+    label SRAD
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {19 555 384 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input srad_iterations {
+        label Iterations
+        xywh {71 577 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 10 textsize 10
+      }
+      Fl_Value_Input srad_tau {
+        label {Time step}
+        xywh {169 577 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 0.05 textsize 10
+      }
+      Fl_Value_Input srad_expconstant {
+        label {Exp Constant}
+        xywh {286 577 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 value 25 textsize 10
+      }
+      Fl_Value_Input srad_beta {
+        label Beta
+        xywh {368 577 30 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 value 0.02 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->SRADFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configSRAD->hide();
+m_op2->show();
+m_configIO->hide();
+this->SRADFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configSRAD->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configTAD {
+    label TAD
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {21 554 384 100} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input asr_iterations {
+        label Iterations
+        xywh {82 564 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 3 textsize 10
+      }
+      Fl_Value_Input asr_tau {
+        label {Time step}
+        xywh {201 564 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 1 textsize 10
+      }
+      Fl_Value_Input asr_sigma {
+        label Sigma
+        xywh {307 564 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 value 2 textsize 10
+      }
+      Fl_Value_Input asr_s {
+        label Difference
+        xywh {81 604 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 value 1.41 textsize 10
+      }
+      Fl_Value_Input asr_beta {
+        label Beta
+        xywh {200 604 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 value 0.01 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->ASRFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configTAD->hide();
+m_op2->show();
+m_configIO->hide();
+this->ASRFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configTAD->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configDPAD {
+    label DPAD
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {21 555 379 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input dpad_iterations {
+        label Iterations
+        xywh {80 575 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 10 textsize 10
+      }
+      Fl_Value_Input dpad_tau {
+        label {Time step}
+        xywh {205 575 45 25} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 0.05 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->DPADFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configDPAD->hide();
+m_op2->show();
+m_configIO->hide();
+this->DPADFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configDPAD->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configDiff {
+    label Difference selected
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Button {} {
+      callback {this->ABSValDifFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configDiff->hide();
+m_configIO->hide();
+this->ABSValDifFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configDiff->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 32} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Function {~FilteringGUI()} {open
+  } {}
+  Function {Show(void)} {open return_type {virtual void}
+  } {}
+  decl {Fl_Browser *m_dataBrowser;} {public
+  }
+  decl {typedef itk::Image< float, 3 >    InputImageType;} {public
+  }
+  decl {typedef fltk::MyImageViewer<float,unsigned char>     MyViewerType;} {public
+  }
+  decl {Fl_Choice *m_op1,*m_op2,*m_destino;} {public
+  }
+  decl {unsigned int m_activeinput;} {public
+  }
+  decl {MyViewerType** ImageViewer;} {public
+  }
+  decl {Fl_Group* m_configIO;} {public
+  }
+  decl {Fl_Group* ActiveGroup;} {public
+  }
+  decl {Fl_Counter* Class_value;} {public
+  }
+  decl {Fl_Value_Output* num_points;} {public
+  }
+  Function {SetActiveInput(unsigned int &a)} {return_type void
+  } {
+    code {m_activeinput = a;} {}
+  }
+  Function {SetDataBrowser(Fl_Browser* a)} {return_type void
+  } {
+    code {m_dataBrowser = a;} {}
+  }
+  Function {SetOp1(Fl_Choice* a)} {return_type void
+  } {
+    code {m_op1 = a;} {}
+  }
+  Function {SetOp2(Fl_Choice* a)} {return_type void
+  } {
+    code {m_op2 = a;} {}
+  }
+  Function {SetDestino(Fl_Choice* a)} {return_type void
+  } {
+    code {m_destino = a;} {}
+  }
+  Function {SetImageViewers(MyViewerType** a)} {return_type void
+  } {
+    code {ImageViewer = a;} {}
+  }
+  Function {SetActiveGroup(Fl_Group *a)} {return_type void
+  } {
+    code {ActiveGroup = a;} {}
+  }
+  Function {SetConfigIO(Fl_Group *a)} {return_type void
+  } {
+    code {m_configIO = a;} {}
+  }
+  Function {SetClassValue(Fl_Counter *a)} {return_type void
+  } {
+    code {Class_value = a;} {}
+  }
+  Function {SetNumPoints(Fl_Value_Output *a)} {return_type void
+  } {
+    code {num_points = a;} {}
+  }
+  Function {GaussianFilter(void)} {return_type {virtual void}
+  } {}
+  Function {MedianFilter(void)} {return_type {virtual void}
+  } {}
+  Function {CurvatureAnisotropicFilter(void)} {return_type {virtual void}
+  } {}
+  Function {GradientDiffusionFilter(void)} {return_type {virtual void}
+  } {}
+  Function {BilateralFilter(void)} {return_type {virtual void}
+  } {}
+  Function {MeanFilter(void)} {return_type {virtual void}
+  } {}
+  Function {WienerFilter(void)} {return_type {virtual void}
+  } {}
+  Function {ASRFilter(void)} {return_type {virtual void}
+  } {}
+  Function {SRADFilter(void)} {return_type {virtual void}
+  } {}
+  Function {ABSValDifFilter(void)} {return_type {virtual void}
+  } {}
+  Function {CannyFilter(void)} {return_type {virtual void}
+  } {}
+  Function {ZeroEdgeFilter(void)} {return_type {virtual void}
+  } {}
+  Function {DPADFilter(void)} {return_type {virtual void}
+  } {}
+  Function {OnTipoFiltroWienerChange(void)} {return_type {virtual void}
+  } {}
+  Function {OnTipoFiltradoChange(void)} {return_type {virtual void}
+  } {}
+} 

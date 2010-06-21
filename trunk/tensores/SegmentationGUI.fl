@@ -1,0 +1,466 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+widget_class {\#include <itkImage.h>} SegmentationGUI {open
+  xywh {344 87 417 747} type Double
+  code0 {\#include <FL/Fl_Browser.H>}
+  code1 {\#include <FL/Fl_Choice.H>}
+  code2 {\#include "MyfltkImageViewer/MyfltkImageViewer.h"}
+  code3 {\#include <itkImage.h>} visible
+} {
+  Fl_Group m_configLevelSets {
+    label {Level Sets}
+    xywh {5 388 405 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include <FL/Fl_Counter.H>}
+    code1 {\#include <FL/Fl_Value_Output.H>}
+  } {
+    Fl_Button {} {
+      callback {this->ThresholdLevelSetSegmentation();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configLevelSets->hide();
+m_op2->show();
+m_configIO->hide();
+this->ThresholdLevelSetSegmentation();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configLevelSets->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Group {} {
+      label Parameters
+      xywh {25 505 290 144} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input levelsetiterations {
+        label Iterations
+        xywh {122 505 35 22} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 1000 value 100 textsize 10
+      }
+      Fl_Value_Input RMSError {
+        label {Max RMS Change}
+        xywh {122 530 35 22} box PLASTIC_DOWN_BOX color 22 labelsize 10 textsize 10
+      }
+      Fl_Value_Input curvature {
+        label Curvature
+        xywh {273 580 35 22} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 10 textsize 10
+      }
+      Fl_Value_Input lowerThreshold {
+        label {Lower Threshold}
+        xywh {122 555 35 22} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 1000 step 1 value 1 textsize 10
+      }
+      Fl_Value_Input upperThreshold {
+        label {Upper threshold}
+        xywh {122 580 35 22} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 1000 step 1 value 100 textsize 10
+      }
+      Fl_Value_Input isovalue {
+        label IsoValue
+        xywh {273 505 35 22} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 step 0.01 value 1 textsize 10
+      }
+      Fl_Value_Input propagation {
+        label Propagation
+        xywh {273 530 35 22} box PLASTIC_DOWN_BOX color 22 labelsize 10 step 1 textsize 10
+      }
+      Fl_Value_Input edge {
+        label {Edge (Laplacian)}
+        xywh {273 555 35 22} box PLASTIC_DOWN_BOX color 22 labelsize 10 when 4 textsize 10
+      }
+      Fl_Check_Button reverseExpansionDir {
+        label {Reverse Expansion}
+        xywh {286 626 22 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 22 labelsize 10 align 4 when 1
+      }
+      Fl_Value_Input maxCurvatureTimeStep {
+        label {Curvature-Based}
+        xywh {122 605 35 18} box PLASTIC_THIN_DOWN_BOX color 89 labelsize 10 labelcolor 1 when 4 textsize 10
+      }
+      Fl_Value_Input maxPropagationTimeStep {
+        label {Propagation-Based}
+        xywh {122 626 35 18} box PLASTIC_THIN_DOWN_BOX color 89 labelsize 10 labelcolor 1 when 4 textsize 10
+      }
+    }
+    Fl_Group {} {
+      label {Laplacian Smooth}
+      xywh {25 664 290 24} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input threshIterations {
+        label Iterations
+        xywh {72 669 35 18} box PLASTIC_DOWN_BOX color 22 labelsize 10 when 4 textsize 10
+      }
+      Fl_Value_Input threshConductance {
+        label Conductance
+        xywh {178 668 35 18} box PLASTIC_DOWN_BOX color 22 labelsize 10 when 4 textsize 10
+      }
+      Fl_Value_Input threshTimeStep {
+        label {Time Step}
+        xywh {273 668 35 18} box PLASTIC_DOWN_BOX color 22 labelsize 10 when 4 textsize 10
+      }
+    }
+    Fl_Group Inicializacion {
+      label Initialization
+      xywh {321 507 84 86} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Box {} {
+        label {Case 1}
+        xywh {321 507 84 86} box PLASTIC_DOWN_BOX color 7 labeltype NO_LABEL labelsize 10 hide
+      }
+      Fl_Value_Input seedX {
+        label {Center X}
+        xywh {374 515 26 17} box PLASTIC_DOWN_BOX color 22 labelsize 10 textsize 10
+      }
+      Fl_Value_Input seedY {
+        label {Center Y}
+        xywh {374 541 26 17} box PLASTIC_DOWN_BOX color 22 labelsize 10 textsize 10
+      }
+      Fl_Value_Input distance {
+        label Radius
+        xywh {374 568 26 17} box PLASTIC_DOWN_BOX color 22 labelsize 10 value 15 textsize 10
+      }
+    }
+    Fl_Group {} {
+      label Smooth
+      xywh {321 609 84 84} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input diffusionIterations {
+        label Iterations
+        xywh {385 613 17 23} box PLASTIC_DOWN_BOX color 22 labelsize 10 textsize 10
+      }
+      Fl_Value_Input diffusionConductance {
+        label Conductance
+        xywh {385 640 17 23} box PLASTIC_DOWN_BOX color 22 labelsize 10 textsize 10
+      }
+      Fl_Value_Input diffusionTimeStep {
+        label {Time Step}
+        xywh {385 666 17 23} box PLASTIC_DOWN_BOX color 22 labelsize 10 textsize 10
+      }
+    }
+    Fl_Value_Slider updateIterations {
+      label {Display Refresh}
+      xywh {338 700 72 18} type Horizontal box PLASTIC_UP_BOX color 93 labelsize 10 align 4 minimum 1 maximum 500 step 1 value 1
+    }
+    Fl_Value_Input elapsedIterations {
+      label {Elapsed Iterations}
+      xywh {112 701 35 18} box PLASTIC_UP_BOX color 93 labelsize 10 when 4 textsize 10
+    }
+    Fl_Value_Input lastRMSChange {
+      label {RMS Change}
+      xywh {222 700 35 18} box PLASTIC_THIN_UP_BOX color 93 labelsize 10 when 4 textsize 10
+    }
+  }
+  Fl_Group m_configMRFUS {
+    label {MRF US Kidney}
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {27 529 375 168} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Input ME_FilePageBrowser {
+        label {Voluson file name:}
+        callback {this->MEFileInputChange();}
+        xywh {34 550 290 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 align 5 when 1 textsize 10
+      }
+      Fl_Button {} {
+        label {&Explore...}
+        callback {LoadME();
+this->MEFileInputChange();}
+        xywh {335 547 60 25} box PLASTIC_DOWN_BOX shortcut 0x80065 color 23 labelfont 1 labelsize 12
+      }
+      Fl_Value_Input ME_J {
+        label {Number of rays}
+        xywh {159 595 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 50 textsize 10
+      }
+      Fl_Value_Input ME_Ng {
+        label {Diam. of Gauss.smooth}
+        xywh {339 627 50 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 7 textsize 10
+      }
+      Fl_Value_Input ME_K {
+        label {Num. of deform. rad.}
+        xywh {158 626 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 15 textsize 10
+      }
+      Fl_Value_Input ME_drmax {
+        label {Size max deformation}
+        xywh {158 657 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 18.75 textsize 10
+      }
+      Fl_Value_Input ME_Carga {
+        label {File load}
+        xywh {339 658 50 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 1 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->MarcacionElipseInit();
+this->CalculoModeloVerosimilitud();
+this->CalculoOptimizacionSA();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configWatershed->hide();
+m_op2->show();
+m_configIO->hide();
+this->MarcacionElipseInit();
+this->CalculoModeloVerosimilitud();
+this->CalculoOptimizacionSA();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configMRFUS->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configThreshold {
+    label Threshold open
+    xywh {5 388 402 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:} open
+      xywh {11 544 396 151} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Slider threshold_above {
+        label Above
+        xywh {70 552 238 20} type Horizontal labelfont 1 align 4 minimum -1 maximum 255 step 1 value 255 textsize 14
+      }
+      Fl_Value_Slider threshold_below {
+        label Below
+        xywh {70 576 238 20} type Horizontal labelfont 1 align 4 minimum -1 maximum 255 step 1 textsize 14
+      }
+      Fl_Value_Slider bins {
+        label Bins
+        xywh {56 662 327 20} type Horizontal labelfont 1 align 4 minimum -1 maximum 255 step 1 value 255 textsize 14
+      }
+      Fl_Button {} {
+        label {Otsu Threshold}
+        callback {this->OtsuThresholdFilter();}
+        xywh {21 631 106 25} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+      }
+    }
+    Fl_Button {} {
+      callback {this->ThresholdFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configThreshold->hide();
+m_op2->show();
+m_configIO->hide();
+this->ThresholdFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configThreshold->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configKNN {
+    label KNN
+    xywh {5 388 405 361} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:} open
+      xywh {28 535 375 156} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Input KNN_FilePageBrowser {
+        label {Prototypes file name:}
+        callback {this->KNNFileInputChange();}
+        xywh {34 556 284 20} labelsize 10 align 5 when 1 textsize 10
+      }
+      Fl_Button {} {
+        label {&Explore...}
+        callback {LoadKNN();
+this->KNNFileInputChange();}
+        xywh {330 555 68 20} box PLASTIC_DOWN_BOX shortcut 0x80065 color 22 labelfont 1 labelsize 12
+      }
+      Fl_Value_Input KNN_K {
+        label k
+        xywh {47 646 45 20} labelsize 10 maximum 100 value 5 textsize 10
+      }
+      Fl_Choice m_InChannel1 {
+        label {Channel 1} open
+        xywh {35 601 183 20} down_box BORDER_BOX labelsize 10 align 5 textsize 10
+      } {
+        MenuItem {} {
+          label {Choose channel1...}
+          xywh {45 45 100 20} labelsize 12 hide
+        }
+      }
+      Fl_Choice m_InChannel2 {
+        label {Channel 2} open
+        xywh {226 601 173 20} down_box BORDER_BOX labelsize 10 align 5 textsize 10
+      } {
+        MenuItem {} {
+          label {Choose channel 2...}
+          xywh {55 55 100 20} labelsize 12 hide
+        }
+      }
+      Fl_Button {} {
+        label Train
+        callback {m_configKNN->hide();
+m_configKNNPointsManagement->show();
+//m_ParametersPointsManagement->show();}
+        xywh {277 641 118 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff0d color 180 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label Preview
+        xywh {135 641 120 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff0d color 180 labelfont 1 labelsize 12 deactivate
+      }
+    }
+    Fl_Button {} {
+      callback {this->KnnFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configKNN->hide();
+m_op2->show();
+m_configIO->hide();
+this->KnnFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configKNN->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Group m_configKNNPointsManagement {
+      label {KNN -- Points Management...}
+      xywh {20 426 390 323} box FLAT_BOX color 23 selection_color 7 labelfont 1 labelcolor 1 align 5 hide
+    } {
+      Fl_Button m_buttonDonePM {
+        label DONE
+        callback {ImageViewer[m_activeinput]->ChangeActiveClass(static_cast<int>(Class_value->value()));
+num_points->value(static_cast<int>(ImageViewer[m_activeinput]->numClickedPoints()));
+//m_ParametersPointsManagement->hide();
+m_configKNNPointsManagement->hide();
+m_configKNN->show();}
+        xywh {200 715 68 15} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+      }
+    }
+  }
+  Fl_Group m_configWatershed {
+    label Watershed
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {30 570 375 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input wat_level {
+        label Level
+        xywh {110 580 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 3 textsize 10
+      }
+      Fl_Value_Input wat_threshold {
+        label Threshold
+        xywh {110 610 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 3 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->WatershedFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configWatershed->hide();
+m_op2->show();
+m_configIO->hide();
+this->WatershedFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configWatershed->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Function {Show(void)} {open return_type {virtual void}
+  } {}
+  Function {~SegmentationGUI()} {open
+  } {}
+  Function {KnnFilter()} {open return_type {virtual void}
+  } {}
+  decl {Fl_Browser *m_dataBrowser;} {public
+  }
+  decl {typedef itk::Image< float, 3 >    InputImageType;} {public
+  }
+  decl {typedef fltk::MyImageViewer<float,unsigned char>     MyViewerType;} {public
+  }
+  decl {Fl_Choice *m_op1,*m_op2,*m_destino;} {public
+  }
+  decl {unsigned int m_activeinput;} {public
+  }
+  decl {MyViewerType** ImageViewer;} {public
+  }
+  decl {Fl_Group* m_configIO;} {public
+  }
+  decl {Fl_Group* ActiveGroup;} {public
+  }
+  decl {Fl_Counter* Class_value;} {public
+  }
+  decl {Fl_Value_Output* num_points;} {public
+  }
+  Function {SetActiveInput(unsigned int &a)} {return_type void
+  } {
+    code {m_activeinput = a;} {}
+  }
+  Function {SetDataBrowser(Fl_Browser* a)} {return_type void
+  } {
+    code {m_dataBrowser = a;} {}
+  }
+  Function {SetOp1(Fl_Choice* a)} {return_type void
+  } {
+    code {m_op1 = a;} {}
+  }
+  Function {SetOp2(Fl_Choice* a)} {return_type void
+  } {
+    code {m_op2 = a;} {}
+  }
+  Function {SetDestino(Fl_Choice* a)} {return_type void
+  } {
+    code {m_destino = a;} {}
+  }
+  Function {SetImageViewers(MyViewerType** a)} {return_type void
+  } {
+    code {ImageViewer = a;} {}
+  }
+  Function {SetActiveGroup(Fl_Group *a)} {return_type void
+  } {
+    code {ActiveGroup = a;} {}
+  }
+  Function {SetConfigIO(Fl_Group *a)} {return_type void
+  } {
+    code {m_configIO = a;} {}
+  }
+  Function {SetClassValue(Fl_Counter *a)} {return_type void
+  } {
+    code {Class_value = a;} {}
+  }
+  Function {SetNumPoints(Fl_Value_Output *a)} {return_type void
+  } {
+    code {num_points = a;} {}
+  }
+  Function {MarcacionElipseInit()} {open return_type {virtual void}
+  } {}
+  Function {CalculoModeloVerosimilitud()} {open return_type {virtual void}
+  } {}
+  Function {CalculoOptimizacionSA()} {open return_type {virtual void}
+  } {}
+  Function {WatershedFilter()} {open return_type {virtual void}
+  } {}
+  Function {ThresholdFilter()} {open return_type {virtual void}
+  } {}
+  Function {OtsuThresholdFilter()} {open selected return_type {virtual void}
+  } {}
+  Function {ThresholdLevelSetSegmentation()} {open return_type {virtual void}
+  } {}
+  Function {MEFileInputChange()} {open return_type {virtual void}
+  } {}
+  Function {LoadME()} {open return_type {virtual void}
+  } {}
+  Function {LoadKNN()} {open return_type {virtual void}
+  } {}
+  Function {KNNFileInputChange()} {open return_type {virtual void}
+  } {}
+} 

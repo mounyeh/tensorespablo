@@ -1,0 +1,3894 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+class UsimagToolGUI {open : {public UsimagToolBase}
+} {
+  Function {UsimagToolGUI()} {open
+  } {
+    Fl_Window panel {
+      label {--- Saturn ---} open
+      xywh {63 49 1210 720} type Double color 0 selection_color 48 labelfont 1 labelcolor 255 resizable
+      code0 {\#include "UsimagToolBase.h"} visible
+    } {
+      Fl_Group {} {
+        label {Visualization modes}
+        xywh {1126 0 154 747} labeltype NO_LABEL
+      } {
+        Fl_Box {} {
+          xywh {1244 22 36 725} box PLASTIC_DOWN_BOX color 225 labeltype SHADOW_LABEL align 65 hide
+        }
+        Fl_Button {} {
+          label 3D
+          callback {ViewMode3D();}
+          xywh {1127 0 27 25} box PLASTIC_DOWN_BOX color 4 selection_color 3 labeltype SHADOW_LABEL labelfont 14 labelsize 10
+        }
+        Fl_Button {} {
+          label 4x2D
+          callback {ViewMode4x2D();}
+          xywh {1181 0 29 25} box PLASTIC_DOWN_BOX color 4 selection_color 3 labeltype ENGRAVED_LABEL labelfont 14 labelsize 10
+        }
+        Fl_Button {} {
+          label {3+1}
+          callback {ViewMode3_1();}
+          xywh {1154 0 27 25} box PLASTIC_DOWN_BOX color 4 selection_color 3 labeltype ENGRAVED_LABEL labelfont 14 labelsize 10
+        }
+      }
+      Fl_Menu_Bar UsimagToolMainMenu {
+        label Menu open
+        xywh {-1 0 1128 25} box PLASTIC_THIN_DOWN_BOX color 225 selection_color 32
+      } {
+        Submenu UsimagToolSubmenu {
+          label Saturn open
+          xywh {5 5 66 24} labelfont 1 labelcolor 56
+        } {
+          MenuItem PreferencesMenuItem {
+            label {Preferences...}
+            callback {ActiveGroup->hide();
+m_configPreferences->show();
+ActiveGroup = m_configPreferences;
+m_configIO->hide();}
+            xywh {5 5 34 24} shortcut 0x4ff0d
+          }
+          MenuItem QuitMenuItem {
+            label {Quit Saturn}
+            callback {this->Quit();}
+            xywh {10 10 30 20} shortcut 0x40071
+          }
+        }
+        Submenu FileSubMenu {
+          label File
+          xywh {15 15 66 24} labelcolor 56
+        } {
+          MenuItem OpenMenuItem {
+            label {Open Scalar}
+            callback {panelImageInput->show();}
+            xywh {10 10 30 20} shortcut 0x4006f
+          }
+          MenuItem OpenTensorMenuItem {
+            label {Open tensor...}
+            callback {panelTensorInput->show();}
+            xywh {25 25 30 20} shortcut 0x40006f
+          }
+          MenuItem OpenDWIMenuItem {
+            label {Open DWI...}
+            callback {panelDWIInput->show();}
+            xywh {35 35 30 20} shortcut 0x400064
+          }
+          MenuItem OpenRawMenuItem {
+            label {Open raw...}
+            callback {this->Load();
+panelDim->show();
+this->LoadRaw();}
+            xywh {15 15 30 20} shortcut 0x5006f
+          }
+          MenuItem OpenModelMenuItem {
+            label {Open model...}
+            callback {this->LoadModel();}
+            xywh {25 25 30 20} shortcut 0x40006d
+          }
+          MenuItem SaveMenuItem {
+            label {Save Scalar}
+            callback {this->Save();}
+            xywh {25 25 30 20} shortcut 0x40073
+          }
+          MenuItem SaveModelMenuItem {
+            label {Save Model}
+            callback {this->SaveModel();}
+            xywh {35 35 30 20} shortcut 0x4006d
+          }
+          MenuItem SaveAsMenuItem {
+            label {Save as...} user_data_type {void*}
+            xywh {35 35 30 20} shortcut 0x50073 deactivate
+          }
+          MenuItem SaveTensorVTKMenuItem {
+            label {Save Tensor VTK}
+            callback {this->SaveTensorVTK();}
+            xywh {35 35 30 20} shortcut 0x40074
+          }
+          MenuItem SaveTensorMenuItem {
+            label {Save Tensor}
+            callback {this->SaveTensor();}
+            xywh {45 45 30 20} shortcut 0x4006d deactivate
+          }
+          MenuItem SaveOverlayMenuItem {
+            label {Save ROIs}
+            callback {this->SaveOverlay();}
+            xywh {55 55 30 20} shortcut 0x40072
+          }
+          MenuItem LoadOverlayMenuItem {
+            label {Load ROIs}
+            callback {this->LoadOverlay(m_activeinput);}
+            xywh {65 65 30 20} shortcut 0x4006c
+          }
+          MenuItem SaveDWIMenuItem {
+            label {Save DWI data}
+            callback {this->SaveDWI();}
+            xywh {65 65 30 20} shortcut 0x40077
+          }
+        }
+        Submenu ImageSubMenu {
+          label Image
+          xywh {25 25 66 24} labelcolor 56
+        } {
+          Submenu ModeMenuItem {
+            label Mode
+            xywh {5 5 66 24} deactivate
+          } {
+            MenuItem {} {
+              label {Gray scale}
+              xywh {5 5 34 24}
+            }
+            MenuItem {} {
+              label Color
+              xywh {5 5 34 24}
+            }
+          }
+          Submenu FlipMenuItem {
+            label Flip
+            xywh {5 5 66 24} deactivate
+          } {
+            MenuItem {} {
+              label {X axis}
+              xywh {5 5 34 24} shortcut 0x40078
+            }
+            MenuItem {} {
+              label {Y axis}
+              xywh {5 5 34 24} shortcut 0x40079
+            }
+            MenuItem {} {
+              label {Z axis}
+              xywh {5 5 34 24} shortcut 0x4007a
+            }
+          }
+          Submenu ShiftMenuItem {
+            label Shift
+            xywh {5 5 66 24} deactivate
+          } {
+            MenuItem {} {
+              label Up
+              xywh {5 5 34 24} shortcut 0xff52
+            }
+            MenuItem {} {
+              label Down
+              xywh {5 5 34 24} shortcut 0xff54
+            }
+            MenuItem {} {
+              label Left
+              xywh {15 15 34 24} shortcut 0xff51
+            }
+            MenuItem {} {
+              label Right
+              xywh {25 25 34 24} shortcut 0xff53
+            }
+          }
+          Submenu LowerIntensityMenuItem {
+            label {Lower intensity}
+            xywh {5 5 66 24} deactivate
+          } {
+            MenuItem {} {
+              label Increase
+              xywh {5 5 34 24}
+            }
+            MenuItem {} {
+              label Decrease
+              xywh {15 15 34 24}
+            }
+          }
+          Submenu UpperIntensityMenuItem {
+            label {Upper  intensity}
+            xywh {15 15 66 24} deactivate
+          } {
+            MenuItem {} {
+              label Increase
+              xywh {15 15 34 24}
+            }
+            MenuItem {} {
+              label Decrease
+              xywh {25 25 34 24}
+            }
+          }
+          MenuItem TrasposeMenuItem {
+            label Traspose
+            xywh {5 5 34 24} shortcut 0x40074 deactivate
+          }
+        }
+        Submenu ViewSubMenu {
+          label View
+          xywh {25 25 66 24}
+        } {
+          MenuItem {} {
+            label 4x2D
+            callback {ViewMode4x2D();}
+            xywh {25 25 34 24}
+          }
+          MenuItem {} {
+            label {3x2D and 3D}
+            callback {ViewMode3_1();}
+            xywh {35 35 34 24}
+          }
+          MenuItem {} {
+            label 3D
+            callback {ViewMode3D();}
+            xywh {45 45 34 24} deactivate
+          }
+        }
+        Submenu BasicOpSubMenu {
+          label {Basic Operations}
+          xywh {35 35 66 24} labelcolor 56
+        } {
+          MenuItem AddMenuItem {
+            label {Add...}
+            callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configAdd->show();
+ActiveGroup = MyBasicOpConsole->m_configAdd;
+this->m_configIO->show();}
+            xywh {5 5 34 24}
+          }
+          MenuItem DifferenceMenuItem {
+            label {Difference...}
+            callback {//ActiveGroup->hide();
+//this->m_configDiff->show();
+//ActiveGroup = m_configDiff;
+//this->m_configIO->show();}
+            xywh {5 5 30 20}
+          }
+          MenuItem MultiplyMenuItem {
+            label {Multiply...}
+            callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configMultiply->show();
+ActiveGroup = MyBasicOpConsole->m_configMultiply;
+m_configIO->show();}
+            xywh {5 5 34 24}
+          }
+          MenuItem DameroMenuItem {
+            label {Damero...}
+            xywh {25 25 34 24} deactivate
+          }
+          MenuItem ErosionMenuItem {
+            label {Erosion...}
+            callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configErode->show();
+ActiveGroup = MyBasicOpConsole->m_configErode;
+m_configIO->show();}
+            xywh {35 35 34 24}
+          }
+          MenuItem DilationMenuItem {
+            label {Dilate...}
+            callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configDilate->show();
+ActiveGroup = MyBasicOpConsole->m_configDilate;
+m_configIO->show();}
+            xywh {45 45 34 24}
+          }
+          MenuItem GradientMenuItem {
+            label {Gradient...}
+            callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configGradient->show();
+ActiveGroup = MyBasicOpConsole->m_configGradient;
+m_configIO->show();
+m_op2->hide();}
+            xywh {55 55 34 24}
+          }
+          MenuItem RescaleMenuItem {
+            label {Rescale...}
+            callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configRescale->show();
+ActiveGroup = MyBasicOpConsole->m_configRescale;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {5 5 34 24}
+          }
+          Submenu RelabelSubSubMenu {
+            label Relabel
+            xywh {5 5 66 24}
+          } {
+            MenuItem RelabelImageMenuItem {
+              label {Image...}
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configRelabelImage->show();
+ActiveGroup = MyBasicOpConsole->m_configRelabelImage;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {5 5 34 24}
+            }
+            MenuItem RelabelComponentMenuItem {
+              label Component
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configRelabelComponent->show();
+ActiveGroup = MyBasicOpConsole->m_configRelabelComponent;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {5 5 34 24}
+            }
+          }
+          MenuItem InverseMenuItem {
+            label Inverse
+            callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configInverse->show();
+ActiveGroup = MyBasicOpConsole->m_configInverse;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {20 20 30 20}
+          }
+          MenuItem PointManagementMenuItem {
+            label {Point management}
+            callback {ActiveGroup->hide();
+this->m_configPointsManagement2->show();
+ActiveGroup = m_configPointsManagement2;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {20 20 34 24}
+          }
+        }
+        Submenu FilteringSubMenu {
+          label Filtering
+          xywh {45 45 66 24} labelcolor 56
+        } {
+          MenuItem MeanMenuItem {
+            label Mean
+            callback {ActiveGroup->hide();
+MyFilteringConsole->m_configMean->show();
+ActiveGroup = MyFilteringConsole->m_configMean;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {5 5 34 24}
+          }
+          MenuItem MedianMenuItem {
+            label Median
+            callback {ActiveGroup->hide();
+MyFilteringConsole->m_configMedian->show();
+ActiveGroup = MyFilteringConsole->m_configMedian;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {15 15 34 24}
+          }
+          MenuItem GaussianMenuItem {
+            label Gaussian
+            callback {ActiveGroup->hide();
+MyFilteringConsole->m_configGaussian->show();
+ActiveGroup = MyFilteringConsole->m_configGaussian;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {25 25 34 24}
+          }
+          MenuItem BilateralMenuItem {
+            label Bilateral
+            callback {ActiveGroup->hide();
+MyFilteringConsole->m_configBilateral->show();
+ActiveGroup = MyFilteringConsole->m_configBilateral;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {35 35 34 24}
+          }
+          MenuItem WienerMenuItem {
+            label Wiener
+            callback {ActiveGroup->hide();
+MyFilteringConsole->m_configWiener->show();
+ActiveGroup = MyFilteringConsole->m_configWiener;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {85 85 34 24}
+          }
+          Submenu EdgeSubSubMenu {
+            label {Edge detection}
+            xywh {30 30 63 20}
+          } {
+            MenuItem ZeroCrossMenuItem {
+              label {Zero Crossing edge detector}
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configZero->show();
+ActiveGroup = MyFilteringConsole->m_configZero;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {40 40 30 20}
+            }
+            MenuItem CannyMenuItem {
+              label Canny
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configCanny->show();
+ActiveGroup = MyFilteringConsole->m_configCanny;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {100 100 34 24}
+            }
+          }
+          Submenu AnisotropicSubSubMenu {
+            label Anisotropic
+            xywh {15 15 63 20}
+          } {
+            MenuItem AnCurvatureMenuItem {
+              label {Anisotropic curvature}
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configAnDif->show();
+ActiveGroup = MyFilteringConsole->m_configAnDif;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {65 65 34 24}
+            }
+            MenuItem AnGradientMenuItem {
+              label {Anisotropic gradient}
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configGradDif->show();
+ActiveGroup = MyFilteringConsole->m_configGradDif;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {75 75 34 24}
+            }
+            MenuItem SRADMenuItem {
+              label SRAD
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configSRAD->show();
+ActiveGroup = MyFilteringConsole->m_configSRAD;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {85 85 34 24}
+            }
+            MenuItem DPADMenuItem {
+              label DPAD
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configDPAD->show();
+ActiveGroup = MyFilteringConsole->m_configDPAD;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {95 95 34 24}
+            }
+            MenuItem TADMenuItem {
+              label TAD
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configTAD->show();
+ActiveGroup = MyFilteringConsole->m_configTAD;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {95 95 34 24}
+            }
+          }
+          MenuItem DWIFilterMenuItem {
+            label {DWI Filter}
+            callback {std::cout << "m_VectorDWIData.size: " << m_VectorDWIData.size() << std::endl;
+if (m_VectorDWIData.size() > 0) {
+  MyTensorConsole->FilterDWI(m_VectorDWIData[0].image);
+}}
+            xywh {95 95 34 24}
+          }
+          MenuItem EstimateTensorMenuItem {
+            label {Estimate Tensor}
+            callback {std::cout << "m_VectorDWIData.size: " << m_VectorDWIData.size() << std::endl;
+if (m_VectorDWIData.size() > 0) {
+  // Creamos espacio para el tensor
+  TensorImageType::Pointer tensor;
+  // Creamos espacio para la imagen t2
+  InputImageType::Pointer  t2image;
+  MyTensorConsole->EstimateTensor(m_VectorDWIData[0].image,tensor,t2image,false);
+  DataTensorElementType tensor_data;
+  std::string nombre = "Tensor";
+  tensor_data.Id     = m_VectorTensorData.size();
+  tensor_data.nombre = nombre.c_str();
+  tensor_data.image  = tensor;	
+  m_VectorTensorData.push_back(tensor_data);
+
+}}
+            xywh {105 105 34 24}
+          }
+        }
+        Submenu SegmentationSubMenu {
+          label Segmentation
+          xywh {55 55 66 24} labelcolor 56
+        } {
+          MenuItem LevelSetsMenuItem {
+            label {Level Sets...}
+            callback {ActiveGroup->hide();
+MySegmentationConsole->m_configLevelSets->show();
+ActiveGroup = MySegmentationConsole->m_configLevelSets;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {95 95 34 24}
+          }
+          MenuItem ThresholdMenutem {
+            label {Threshold...}
+            callback {ActiveGroup->hide();
+MySegmentationConsole->m_configThreshold->show();
+ActiveGroup = MySegmentationConsole->m_configThreshold;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {105 105 34 24}
+          }
+          MenuItem KNNMenuItem {
+            label {KNN...}
+            callback {ActiveGroup->hide();
+MySegmentationConsole->m_configKNN->show();
+ActiveGroup = MySegmentationConsole->m_configKNN;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {40 40 30 20}
+          }
+          MenuItem MRFUSMenuItem {
+            label {MRF US}
+            callback {ActiveGroup->hide();
+MySegmentationConsole->m_configMRFUS->show();
+ActiveGroup = MySegmentationConsole->m_configMRFUS;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {50 50 30 20}
+          }
+          MenuItem WatershedMenuItem {
+            label {Watershed...}
+            callback {ActiveGroup->hide();
+MySegmentationConsole->m_configWatershed->show();
+ActiveGroup = MySegmentationConsole->m_configWatershed;
+this->m_configIO->show();
+m_op2->hide();}
+            xywh {105 105 34 24}
+          }
+        }
+        Submenu RegistrationSubMenu {
+          label Registration
+          xywh {65 65 66 24} labelcolor 56
+        } {
+          MenuItem DemonsMenuItem {
+            label Demons
+            callback {ActiveGroup->hide();
+this->m_configDemons->show();
+ActiveGroup = m_configDemons;
+this->m_configIO->show();}
+            xywh {125 125 34 24}
+          }
+          MenuItem TPSMenuItem {
+            label TPS
+            xywh {135 135 34 24} deactivate
+          }
+        }
+        Submenu DTISubMenu {
+          label DTI open
+          xywh {75 75 66 24} labelcolor 56
+        } {
+          MenuItem DTIDisplayMenuItem {
+            label {Scalar magnitudes}
+            callback {ActiveGroup->hide();
+MyTensorConsole->configDTI->show();
+ActiveGroup = MyTensorConsole->configDTI;}
+            xywh {135 135 34 24}
+          }
+          MenuItem DTITractographyMenuItem {
+            label Tractography
+            callback {ActiveGroup->hide();
+MyTensorConsole->m_configGeodesicPath->show();
+ActiveGroup = MyTensorConsole->m_configGeodesicPath;
+this->m_configIO->hide();}
+            xywh {145 145 34 24}
+          }
+          MenuItem DTITractographyAutoMenuItem {
+            label {Tractography Auto}
+            callback {ActiveGroup->hide();
+MyTensorConsole->m_configTractographyAuto->show();
+ActiveGroup = MyTensorConsole->m_configTractographyAuto;
+this->m_configIO->hide();}
+            xywh {155 155 34 24}
+          }
+          MenuItem DTIBackTraceMenuItem {
+            label BackTrace
+            callback {ActiveGroup->hide();
+MyTensorConsole->m_configBackTrace->show();
+ActiveGroup = MyTensorConsole->m_configBackTrace;
+this->m_configIO->hide();}
+            xywh {155 155 34 24} hide
+          }
+          MenuItem DTIFilterDWIMenuItem {
+            label {Filter DWI}
+            callback {//ActiveGroup->hide();
+//MyTensorConsole->configFilterDWI->show();
+//ActiveGroup = MyTensorConsole->configFilterDWI;
+//this->m_configIO->show();
+std::cout << "m_VectorDWIData.size: " << m_VectorDWIData.size() << std::endl;
+if (m_VectorDWIData.size() > 0) {
+  MyTensorConsole->FilterDWI(m_VectorDWIData[0].image);
+}}
+            xywh {145 145 34 24}
+          }
+          MenuItem DTIEstimateTensorMenuItem {
+            label {Estimate tensor}
+            callback {std::cout << "m_VectorDWIData.size: " << m_VectorDWIData.size() << std::endl;
+if (m_VectorDWIData.size() > 0) {
+  // Creamos espacio para el tensor
+  TensorImageType::Pointer tensor;
+  // Creamos espacio para la imagen t2
+  InputImageType::Pointer  t2image;
+  MyTensorConsole->EstimateTensor(m_VectorDWIData[0].image,tensor,t2image,false);
+  DataTensorElementType tensor_data;
+  std::string nombre = "Tensor";
+  tensor_data.Id     = m_VectorTensorData.size();
+  tensor_data.nombre = nombre.c_str();
+  tensor_data.image  = tensor;	
+  m_VectorTensorData.push_back(tensor_data);
+
+}}
+            xywh {155 155 34 24}
+          }
+          MenuItem DTIApplyMask {
+            label {Apply tensor mask}
+            callback {int dataId = m_tensordataBrowser->value()-1;
+if (dataId < 0) return;
+MyTensorConsole->ApplyMask(m_VectorTensorData[dataId].image);}
+            xywh {165 165 34 24}
+          }
+          MenuItem DTIFiberEdition {
+            label {Fibers Edit}
+            callback {ActiveGroup->hide();
+m_configModelProp->show();
+ActiveGroup = m_configModelProp;
+m_op2->hide();
+this->m_configIO->hide();}
+            xywh {175 175 34 24}
+          }
+          MenuItem DTIMeasures {
+            label Measures
+            callback {ActiveGroup->hide();
+MyTensorConsole->configDTIMeasures->show();
+ActiveGroup = MyTensorConsole->configDTIMeasures;
+m_op2->hide();
+this->m_configIO->hide();}
+            xywh {185 185 34 24}
+          }
+          MenuItem DTIProject {
+            label Project
+            callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->ProjectROIsFromFibers(m_VectorModelData[dataId].data);
+}}
+            xywh {195 195 34 24}
+          }
+          MenuItem DTIGlyphsMenuItem {
+            label {Glifos DTI}
+            callback {ActiveGroup->hide();
+MyTensorConsole->DTIGlyphsGroup->show();
+ActiveGroup = MyTensorConsole->DTIGlyphsGroup;} selected
+            xywh {0 0 30 20}
+          }
+          MenuItem STMenuItem {
+            label {Tensor de esfuerzo}
+            callback {ActiveGroup->hide();
+MyTensorConsole->STGroup->show();
+ActiveGroup = MyTensorConsole->STGroup;}
+            xywh {0 0 100 20}
+          }
+        }
+        Submenu HelpSubMenu {
+          label Help
+          xywh {75 75 66 24} labelcolor 56
+        } {
+          MenuItem HelpMenuItem {
+            label {Saturn help}
+            xywh {5 5 34 24}
+          }
+          MenuItem AboutMenuItem {
+            label About
+            callback {panelAbout->show();}
+            xywh {25 25 34 24}
+          }
+        }
+      }
+      Fl_Group {} {
+        label Views open
+        xywh {410 24 809 717} color 0 labeltype NO_LABEL
+      } {
+        Fl_Group m_view3D {
+          label {View 3D} open
+          xywh {410 25 800 682} box PLASTIC_UP_BOX color 136 labeltype NO_LABEL align 0 hide
+        } {
+          Fl_Box ImageViewer3D {
+            label ImageViewer3D
+            xywh {413 75 795 632} box EMBOSSED_BOX color 0 selection_color 80 when 8
+            code0 {\#include "Viewer3D.h"}
+            class Viewer3D
+          }
+          Fl_Button {} {
+            label {Load Model}
+            callback {ImageViewer3D->Load();}
+            xywh {420 32 85 19} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12 hide deactivate
+          }
+          Fl_Button {} {
+            label Center
+            callback {ImageViewer3D->ResetView();
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {416 32 48 19} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            label Color
+            callback {ImageViewer3D->SetSliceColor();
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {951 32 45 19} box PLASTIC_THIN_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            label Gray
+            callback {ImageViewer3D->SetSliceColorDefault();
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {951 53 45 19} box PLASTIC_THIN_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1 labelsize 12
+          }
+          Fl_Value_Slider {} {
+            label opacity
+            callback {ImageViewer3D->SetSliceOpacity(o->value());
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {1100 32 100 17} type Horizontal box BORDER_BOX color 8 selection_color 4 labelfont 1 labelsize 12 align 4 step 0.1 value 1 textcolor 4
+          }
+          Fl_Value_Slider {} {
+            label zoom
+            callback {ImageViewer3D->SetZoom(o->value());
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {1100 52 100 17} type Horizontal box BORDER_BOX color 8 selection_color 4 labelfont 1 labelsize 12 align 4 minimum 0.2 maximum 10 step 0.1 value 1 textcolor 4 hide
+          }
+          Fl_Button {} {
+            label {+}
+            callback {ImageViewer3D->SetZoom(1.2);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {1106 52 20 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label {-}
+            callback {ImageViewer3D->SetZoom(0.8);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {1130 52 20 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Text_Display {} {
+            label zoom
+            xywh {1100 51 56 23} box NO_BOX labelfont 1 align 4
+          }
+          Fl_Value_Slider sliceCoronal3D {
+            callback {ImageViewer3D->SelectSlice(1,(unsigned int)o->value());
+MyTensorConsole->borrarGlifos(1);
+MyTensorConsole->verGlifos(1);}
+            xywh {469 54 121 17} type Horizontal box ENGRAVED_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 0 step 1 value 1
+          }
+          Fl_Button {} {
+            label {@<}
+            callback {int t = sliceCoronal3D->value();
+if (t>1) {
+ sliceCoronal3D->value(t-1);
+ ImageViewer3D->SelectSlice(1,t-1);
+ MyTensorConsole->borrarGlifos(1);
+ MyTensorConsole->verGlifos(1);
+}}
+            xywh {590 54 18 17} box ENGRAVED_BOX color 16
+          }
+          Fl_Button {} {
+            label {@>}
+            callback {int t = sliceCoronal3D->value();
+
+sliceCoronal3D->value(t+1);
+ImageViewer3D->SelectSlice(1,t+1);
+MyTensorConsole->borrarGlifos(1);
+MyTensorConsole->verGlifos(1);}
+            xywh {608 54 18 17} box ENGRAVED_BOX color 16
+          }
+          Fl_Value_Slider sliceSagital3D {
+            callback {ImageViewer3D->SelectSlice(0,(unsigned int)o->value());
+MyTensorConsole->borrarGlifos(0);
+MyTensorConsole->verGlifos(0);}
+            xywh {631 54 121 17} type Horizontal box ENGRAVED_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 0 step 1 value 1
+          }
+          Fl_Button {} {
+            label {@>}
+            callback {int t = sliceSagital3D->value();
+
+sliceSagital3D->value(t+1);
+ImageViewer3D->SelectSlice(0,t+1);
+MyTensorConsole->borrarGlifos(0);
+MyTensorConsole->verGlifos(0);}
+            xywh {770 54 18 17} box ENGRAVED_BOX color 16
+          }
+          Fl_Button {} {
+            label {@<}
+            callback {int t = sliceSagital3D->value();
+if (t>1) {
+ sliceSagital3D->value(t-1);
+ ImageViewer3D->SelectSlice(0,t-1);
+ MyTensorConsole->borrarGlifos(0);
+ MyTensorConsole->verGlifos(0);
+}}
+            xywh {752 54 18 17} box ENGRAVED_BOX color 16
+          }
+          Fl_Value_Slider sliceAxial3D {
+            callback {ImageViewer3D->SelectSlice(2,(unsigned int)o->value());
+MyTensorConsole->borrarGlifos(2);
+MyTensorConsole->verGlifos(2);}
+            xywh {793 54 121 17} type Horizontal box ENGRAVED_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 0 step 1 value 1
+          }
+          Fl_Button {} {
+            label {@>}
+            callback {int t = sliceAxial3D->value();
+
+sliceAxial3D->value(t+1);
+ImageViewer3D->SelectSlice(2,t+1);
+MyTensorConsole->borrarGlifos(2);
+MyTensorConsole->verGlifos(2);}
+            xywh {931 54 18 17} box ENGRAVED_BOX color 16
+          }
+          Fl_Button {} {
+            label {@<}
+            callback {int t = sliceAxial3D->value();
+if (t>1) {
+ sliceAxial3D->value(t-1);
+ ImageViewer3D->SelectSlice(2,t-1);
+ MyTensorConsole->borrarGlifos(2);
+ MyTensorConsole->verGlifos(2);
+}}
+            xywh {914 54 18 17} box ENGRAVED_BOX color 16
+          }
+          Fl_Round_Button {} {
+            label {   Coronal}
+            callback {int dataId = m_dataBrowser->value()-1;
+if (o->value() == true) {
+  this->ViewSliceIn3DWindow(m_VectorData[dataId].image,1);
+sliceCoronal3D->range( 0.0f, m_VectorData[dataId].image->GetLargestPossibleRegion().GetSize()[1]-1 );
+sliceCoronal3D->redraw();
+MyTensorConsole->borrarGlifos(1);
+MyTensorConsole->verGlifos(1);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();
+}  else {
+ImageViewer3D->HideSlice(1);
+MyTensorConsole->borrarGlifos(1);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();
+}}
+            xywh {469 32 158 18} box ENGRAVED_BOX down_box ROUND_DOWN_BOX labelfont 1
+          }
+          Fl_Round_Button {} {
+            label {     Sagital}
+            callback {int dataId = m_dataBrowser->value()-1;
+if (o->value() == true) {
+  this->ViewSliceIn3DWindow(m_VectorData[dataId].image,0);
+sliceSagital3D->range( 0.0f, m_VectorData[dataId].image->GetLargestPossibleRegion().GetSize()[0]-1 );
+sliceSagital3D->redraw();
+MyTensorConsole->borrarGlifos(0);
+MyTensorConsole->verGlifos(0);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();
+}  else {
+ImageViewer3D->HideSlice(0);
+MyTensorConsole->borrarGlifos(0);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();
+}}
+            xywh {631 32 157 18} box ENGRAVED_BOX down_box ROUND_DOWN_BOX labelfont 1
+          }
+          Fl_Round_Button {} {
+            label {       Axial}
+            callback {int dataId = m_dataBrowser->value()-1;
+if (o->value() == true) {
+  this->ViewSliceIn3DWindow(m_VectorData[dataId].image,2);
+sliceAxial3D->range( 0.0f, m_VectorData[dataId].image->GetLargestPossibleRegion().GetSize()[2]-1 );
+sliceAxial3D->redraw();
+MyTensorConsole->borrarGlifos(2);
+MyTensorConsole->verGlifos(2);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();
+}  else {
+ImageViewer3D->HideSlice(2);
+MyTensorConsole->borrarGlifos(2);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();
+}}
+            xywh {793 32 156 18} box ENGRAVED_BOX down_box ROUND_DOWN_BOX labelfont 1
+          }
+          Fl_Button {} {
+            label A
+            callback {ImageViewer3D->SetView(0);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {997 32 20 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label P
+            callback {ImageViewer3D->SetView(1);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {1016 32 20 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label L
+            callback {ImageViewer3D->SetView(2);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {1035 32 20 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label R
+            callback {ImageViewer3D->SetView(3);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {997 52 20 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label I
+            callback {ImageViewer3D->SetView(4);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {1016 52 20 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label S
+            callback {ImageViewer3D->SetView(5);
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {1035 52 20 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+        }
+        Fl_Group m_viewSplit {
+          label {View-Split}
+          xywh {410 25 800 682} box FLAT_BOX color 23 selection_color 0 labeltype NO_LABEL labelsize 15 labelcolor 7 align 0
+        } {
+          Fl_Group {glWindowGroup[0]} {open
+            xywh {410 26 400 340}
+          } {
+            Fl_Box {} {
+              label label
+              xywh {412 26 398 340} box PLASTIC_UP_BOX color 23 labeltype NO_LABEL
+            }
+            Fl_Box {ImageViewer[0]} {
+              label ImageViewer1
+              xywh {412 46 398 300} box FLAT_BOX color 0 selection_color 80
+              code0 {\#include "MyfltkImageViewer.h"}
+              class MyViewerType
+            }
+            Fl_Value_Slider {sliceNumberSlider[0]} {
+              callback {this->OnSliceChange((unsigned int)o->value(),0);}
+              xywh {410 347 317 17} type Horizontal box ENGRAVED_BOX color 28 selection_color 184 labelfont 5 labelsize 11 align 132 maximum 100 step 1 textfont 5 textsize 11
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {int t = ImageViewer[0]->sliceNum();
+this->OnSliceChange(t+1,0);
+sliceNumberSlider[0]->value(t+1);}
+              xywh {743 347 18 17} box ENGRAVED_BOX color 16
+            }
+            Fl_Button {} {
+              label {@<}
+              callback {int t = ImageViewer[0]->sliceNum();
+this->OnSliceChange(t-1,0);
+sliceNumberSlider[0]->value(t-1);}
+              xywh {726 347 19 17} box ENGRAVED_BOX color 16
+            }
+            Fl_Check_Button {m_checkbutton[0]} {
+              callback {this->OnCheckButtonChange(o->value(),0);
+if (o->value()) {
+  sliderIW[0]->show();
+  sliderIL[0]->show();
+  m_minintensity_output[0]->show();
+  m_maxintensity_output[0]->show();
+  sliderCMin[0]->show();
+  sliderCMax[0]->show();
+  m_max_color[0]->show();
+  m_min_color[0]->show();
+  for (int i=1;i<=3;i++) {
+    sliderIW[i]->hide();
+    sliderIL[i]->hide();
+    m_minintensity_output[i]->hide();
+    m_maxintensity_output[i]->hide(); 
+  }
+  for (int i=1;i<=2;i++) {
+    sliderCMin[i]->hide();
+    sliderCMax[i]->hide();
+    m_max_color[i]->hide();
+    m_min_color[i]->hide(); 
+  }
+  
+}}
+              xywh {760 346 18 18} down_box PLASTIC_DOWN_BOX align 0
+            }
+            Fl_Choice {m_Orientation[0]} {
+              callback {OnOrientationChange(0);} open
+              xywh {780 347 30 18} box NO_BOX down_box BORDER_BOX color 23 selection_color 7 labeltype NO_LABEL labelfont 1 labelsize 10 align 5 textfont 5 textsize 12
+            } {}
+          }
+          Fl_Group {glWindowGroup[1]} {
+            xywh {810 26 400 340} color 29
+          } {
+            Fl_Box {} {
+              label label
+              xywh {811 26 399 340} box PLASTIC_UP_BOX color 23 labeltype NO_LABEL
+            }
+            Fl_Box {ImageViewer[1]} {
+              label ImageViewer2
+              xywh {811 46 399 300} box FLAT_BOX color 0
+              code0 {\#include "MyfltkImageViewer.h"}
+              class MyViewerType
+            }
+            Fl_Value_Slider {sliceNumberSlider[1]} {
+              callback {this->OnSliceChange((unsigned int)o->value(),1);}
+              xywh {813 347 317 17} type Horizontal box ENGRAVED_BOX color 28 selection_color 184 labelfont 5 labelsize 11 align 132 maximum 100 step 1 textfont 5 textsize 11
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {int t = ImageViewer[1]->sliceNum();
+this->OnSliceChange(t+1,1);
+sliceNumberSlider[1]->value(t+1);}
+              xywh {1141 347 18 17} box ENGRAVED_BOX color 16
+            }
+            Fl_Button {} {
+              label {@<}
+              callback {int t = ImageViewer[1]->sliceNum();
+this->OnSliceChange(t-1,1);
+sliceNumberSlider[1]->value(t-1);}
+              xywh {1124 347 19 17} box ENGRAVED_BOX color 16
+            }
+            Fl_Choice {m_Orientation[1]} {
+              callback {OnOrientationChange(1);}
+              xywh {1180 347 30 18} box NO_BOX down_box BORDER_BOX color 23 selection_color 7 labeltype NO_LABEL labelfont 1 labelsize 10 align 5 when 1 textfont 5 textsize 12
+            } {}
+            Fl_Check_Button {m_checkbutton[1]} {
+              callback {this->OnCheckButtonChange(o->value(),1);
+if (o->value()) {
+  sliderIW[1]->show();
+  sliderIL[1]->show();
+  m_minintensity_output[1]->show();
+  m_maxintensity_output[1]->show();
+  sliderCMin[1]->show();
+  sliderCMax[1]->show();
+  m_max_color[1]->show();
+  m_min_color[1]->show();
+  for (int i=0;i<=3;i++) {
+    if (i != 1) {
+      sliderIW[i]->hide();
+      sliderIL[i]->hide();
+      m_minintensity_output[i]->hide();
+      m_maxintensity_output[i]->hide();
+    } 
+  }
+  for (int i=0;i<=2;i++) {
+    if (i!=1) {
+      sliderCMin[i]->hide();
+      sliderCMax[i]->hide();
+      m_max_color[i]->hide();
+      m_min_color[i]->hide();
+    } 
+  }
+  
+}}
+              xywh {1160 346 18 18} down_box PLASTIC_DOWN_BOX align 0
+            }
+          }
+          Fl_Group {glWindowGroup[2]} {
+            xywh {410 367 401 340}
+          } {
+            Fl_Box {} {
+              label label
+              xywh {412 367 399 340} box PLASTIC_UP_BOX color 23 labeltype NO_LABEL
+            }
+            Fl_Box {ImageViewer[2]} {
+              label ImageViewer3
+              xywh {412 387 399 300} box FLAT_BOX color 0 selection_color 32
+              code0 {\#include "MyfltkImageViewer.h"}
+              class MyViewerType
+            }
+            Fl_Value_Slider {sliceNumberSlider[2]} {
+              callback {this->OnSliceChange((unsigned int)o->value(),2);}
+              xywh {412 688 317 17} type Horizontal box ENGRAVED_BOX color 28 selection_color 184 labelfont 5 labelsize 11 align 132 maximum 100 step 1 textfont 5 textsize 11
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {int t = ImageViewer[2]->sliceNum();
+this->OnSliceChange(t+1,2);
+sliceNumberSlider[2]->value(t+1);}
+              xywh {743 688 18 17} box ENGRAVED_BOX color 16
+            }
+            Fl_Button {} {
+              label {@<}
+              callback {int t = ImageViewer[2]->sliceNum();
+this->OnSliceChange(t-1,2);
+sliceNumberSlider[2]->value(t-1);}
+              xywh {726 688 19 17} box ENGRAVED_BOX color 16
+            }
+            Fl_Choice {m_Orientation[2]} {
+              callback {OnOrientationChange(2);}
+              xywh {780 687 30 18} box NO_BOX down_box BORDER_BOX color 23 selection_color 7 labeltype NO_LABEL labelfont 1 labelsize 10 align 5 textfont 5 textsize 12
+            } {}
+            Fl_Check_Button {m_checkbutton[2]} {
+              callback {this->OnCheckButtonChange(o->value(),2);
+if (o->value()) {
+  sliderIW[2]->show();
+  sliderIL[2]->show();
+  m_minintensity_output[2]->show();
+  m_maxintensity_output[2]->show();
+  sliderCMin[2]->show();
+  sliderCMax[2]->show();
+  m_max_color[2]->show();
+  m_min_color[2]->show();
+  for (int i=0;i<=3;i++) {
+    if (i != 2) {
+      sliderIW[i]->hide();
+      sliderIL[i]->hide();
+      m_minintensity_output[i]->hide();
+      m_maxintensity_output[i]->hide();
+    } 
+  }
+  for (int i=0;i<=2;i++) {
+    if (i != 2) {
+      sliderCMin[i]->hide();
+      sliderCMax[i]->hide();
+      m_max_color[i]->hide();
+      m_min_color[i]->hide();
+    } 
+  }
+  
+}}
+              xywh {760 687 18 18} down_box PLASTIC_DOWN_BOX
+            }
+          }
+          Fl_Group {glWindowGroup[3]} {
+            xywh {810 367 400 340} resizable
+          } {
+            Fl_Box {} {
+              label label
+              xywh {812 367 398 340} box PLASTIC_UP_BOX color 23 labeltype NO_LABEL
+            }
+            Fl_Box ImageColorViewer {
+              label ImageViewer3
+              xywh {812 387 398 300} box FLAT_BOX color 0 selection_color 80 resizable
+              code0 {\#include "MyfltkColorImageViewer.h"}
+              class MyColorViewerType
+            }
+            Fl_Value_Slider {sliceNumberSlider[3]} {
+              callback {this->OnSliceChange((unsigned int)o->value(),3);}
+              xywh {813 688 317 17} type Horizontal box ENGRAVED_BOX color 28 selection_color 184 labelfont 5 labelsize 11 align 132 maximum 100 step 1 textfont 5 textsize 11
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {int t = ImageColorViewer->sliceNum();
+this->OnSliceChange(t+1,3);
+sliceNumberSlider[3]->value(t+1);}
+              xywh {1141 688 18 17} box ENGRAVED_BOX color 16
+            }
+            Fl_Button {} {
+              label {@<}
+              callback {int t = ImageColorViewer->sliceNum();
+this->OnSliceChange(t-1,3);
+sliceNumberSlider[3]->value(t-1);}
+              xywh {1124 688 19 17} box ENGRAVED_BOX color 16
+            }
+            Fl_Choice {m_Orientation[3]} {
+              callback {OnOrientationChange(3);}
+              xywh {1180 687 30 18} box NO_BOX down_box BORDER_BOX color 23 selection_color 7 labeltype NO_LABEL labelfont 1 labelsize 10 align 5 textfont 5 textsize 12
+            } {}
+            Fl_Check_Button {m_checkbutton[3]} {
+              callback {this->OnCheckButtonChange(o->value(),3);
+if (o->value()) {
+  sliderIW[0]->hide();
+  sliderIW[1]->hide();
+  sliderIW[2]->hide();
+  sliderIW[3]->show();
+  sliderIL[0]->hide();
+  sliderIL[1]->hide();
+  sliderIL[2]->hide();
+  sliderIL[3]->show();
+  m_minintensity_output[0]->hide();
+  m_minintensity_output[1]->hide();
+  m_minintensity_output[2]->hide();
+  m_minintensity_output[3]->show();
+  m_maxintensity_output[0]->hide();
+  m_maxintensity_output[1]->hide();
+  m_maxintensity_output[2]->hide();
+  m_maxintensity_output[3]->show();
+}}
+              xywh {1160 687 18 18} down_box PLASTIC_DOWN_BOX
+            }
+          }
+          Fl_Group {Botones[0]} {
+            xywh {410 25 400 21}
+          } {
+            Fl_Button {} {
+              callback {bool a = ImageViewer[0]->viewDetails();
+ImageViewer[0]->ViewDetails(!a);
+ImageViewer[0]->Update();}
+              image {Images/Prop.png} xywh {411 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 10
+            }
+            Fl_Button {} {
+              label v
+              callback {bool a = ImageViewer[0]->viewValue();
+ImageViewer[0]->ViewValue(!a);
+ImageViewer[0]->Update();}
+              xywh {436 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {bool flip = ImageViewer[0]->flipY();
+ImageViewer[0]->flipY(!flip);
+ImageViewer[0]->Update();}
+              image {Images/FlipY.png} xywh {461 26 25 20} box PLASTIC_UP_BOX color 4 labelsize 10
+            }
+            Fl_Button {} {
+              callback {bool flip = ImageViewer[0]->flipX();
+ImageViewer[0]->flipX(!flip);
+ImageViewer[0]->Update();}
+              image {Images/FlipX.png} xywh {486 26 25 20} box PLASTIC_UP_BOX color 4 labelsize 10
+            }
+            Fl_Button {} {
+              label P
+              callback {ActiveGroup->hide();
+m_configPreferences->show();
+ActiveGroup = m_configPreferences;
+m_configIO->hide();
+this->OnCheckButtonChange(m_checkbutton[0]->value(),0);
+if (o->value()) {
+  sliderIW[0]->show();
+  sliderIW[1]->hide();
+  sliderIW[2]->hide();
+  sliderIW[3]->hide();
+  sliderIL[0]->show();
+  sliderIL[1]->hide();
+  sliderIL[2]->hide();
+  sliderIL[3]->hide();
+  m_minintensity_output[0]->show();
+  m_minintensity_output[1]->hide();
+  m_minintensity_output[2]->hide();
+  m_minintensity_output[3]->hide();
+  m_maxintensity_output[0]->show();
+  m_maxintensity_output[1]->hide();
+  m_maxintensity_output[2]->hide();
+  m_maxintensity_output[3]->hide();
+}}
+              xywh {511 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label T
+              callback {bool t = ImageViewer[0]->Transpose();
+ImageViewer[0]->Transpose(!t);
+ImageViewer[0]->Update();}
+              xywh {536 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1
+            }
+            Fl_Button {} {
+              label {@+}
+              callback {ImageViewer[0]->ZoomIn();}
+              xywh {561 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {-}
+              callback {ImageViewer[0]->ZoomOut();}
+              xywh {586 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 15
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {ImageViewer[0]->ShiftRight();}
+              xywh {611 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@<}
+              callback {ImageViewer[0]->ShiftLeft();}
+              xywh {636 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {ImageViewer[0]->ShiftUp();}
+              xywh {661 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {ImageViewer[0]->ShiftDown();}
+              xywh {686 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label c
+              callback {ImageViewer[0]->ViewColorMode(true);
+ImageViewer[0]->Update();}
+              xywh {710 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label g
+              callback {ImageViewer[0]->ViewColorMode(false);
+ImageViewer[0]->Update();}
+              xywh {735 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label RAS
+              callback {bool t= ImageViewer[0]->viewRAStags();
+ImageViewer[0]->viewRAStags(!t);
+ImageViewer[0]->Update();}
+              xywh {760 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {m_Ampl[0]} {
+              label {@+}
+              callback {OnAmplify(m_viewSplit,0);}
+              xywh {785 26 25 20} box PLASTIC_UP_BOX color 1 labelfont 1 labelsize 12
+            }
+            Fl_Button {m_Dism[0]} {
+              label {-}
+              callback {OnMinimize(0,410,25);}
+              xywh {785 26 25 20} box PLASTIC_UP_BOX color 1 labelfont 1 hide
+            }
+          }
+          Fl_Group {Botones[1]} {
+            xywh {810 25 400 21}
+          } {
+            Fl_Button {} {
+              callback {bool a = ImageViewer[1]->viewDetails();
+ImageViewer[1]->ViewDetails(!a);
+ImageViewer[1]->Update();}
+              image {Images/Prop.png} xywh {812 26 25 20} box PLASTIC_UP_BOX color 3 labelfont 1 labelsize 10
+            }
+            Fl_Button {} {
+              label v
+              callback {bool a = ImageViewer[1]->viewValue();
+ImageViewer[1]->ViewValue(!a);
+ImageViewer[1]->Update();}
+              xywh {837 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {bool flip = ImageViewer[1]->flipY();
+ImageViewer[1]->flipY(!flip);
+ImageViewer[1]->Update();}
+              image {Images/FlipY.png} xywh {862 26 25 20} box PLASTIC_UP_BOX color 4 labelsize 10
+            }
+            Fl_Button {} {
+              callback {bool flip = ImageViewer[1]->flipX();
+ImageViewer[1]->flipX(!flip);
+ImageViewer[1]->Update();}
+              image {Images/FlipX.png} xywh {887 26 25 20} box PLASTIC_UP_BOX color 4 labelsize 10
+            }
+            Fl_Button {} {
+              label P
+              callback {ActiveGroup->hide();
+m_configPreferences->show();
+ActiveGroup = m_configPreferences;
+m_configIO->hide();}
+              xywh {912 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label T
+              callback {bool t = ImageViewer[1]->Transpose();
+ImageViewer[1]->Transpose(!t);
+ImageViewer[1]->Update();}
+              xywh {937 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1
+            }
+            Fl_Button {} {
+              label {@+}
+              callback {ImageViewer[1]->ZoomIn();}
+              xywh {962 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {-}
+              callback {ImageViewer[1]->ZoomOut();}
+              xywh {987 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 15
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {ImageViewer[1]->ShiftRight();}
+              xywh {1012 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@<}
+              callback {ImageViewer[1]->ShiftLeft();}
+              xywh {1037 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {ImageViewer[1]->ShiftUp();}
+              xywh {1062 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {ImageViewer[1]->ShiftDown();}
+              xywh {1087 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label c
+              callback {ImageViewer[1]->ViewColorMode(true);
+ImageViewer[1]->Update();}
+              xywh {1112 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label g
+              callback {ImageViewer[1]->ViewColorMode(false);
+ImageViewer[1]->Update();}
+              xywh {1135 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label RAS
+              callback {bool t= ImageViewer[1]->viewRAStags();
+ImageViewer[1]->viewRAStags(!t);
+ImageViewer[1]->Update();}
+              xywh {1160 26 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {m_Ampl[1]} {
+              label {@+}
+              callback {OnAmplify(m_viewSplit,1);}
+              xywh {1185 26 25 20} box PLASTIC_UP_BOX color 1 labelfont 1 labelsize 12
+            }
+            Fl_Button {m_Dism[1]} {
+              label {-}
+              callback {OnMinimize(1,810,25);}
+              xywh {1185 26 25 20} box PLASTIC_UP_BOX color 1 labelfont 1 hide
+            }
+          }
+          Fl_Group {Botones[2]} {
+            xywh {410 366 400 21}
+          } {
+            Fl_Button {} {
+              callback {bool a = ImageViewer[2]->viewDetails();
+ImageViewer[2]->ViewDetails(!a);
+ImageViewer[2]->Update();}
+              image {Images/Prop.png} xywh {411 367 25 20} box PLASTIC_UP_BOX color 3 labelfont 1 labelsize 10
+            }
+            Fl_Button {} {
+              label v
+              callback {bool a = ImageViewer[2]->viewValue();
+ImageViewer[2]->ViewValue(!a);
+ImageViewer[2]->Update();}
+              xywh {436 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {bool flip = ImageViewer[2]->flipY();
+ImageViewer[2]->flipY(!flip);
+ImageViewer[2]->Update();}
+              image {Images/FlipY.png} xywh {461 367 25 20} box PLASTIC_UP_BOX color 4 labelsize 10
+            }
+            Fl_Button {} {
+              callback {bool flip = ImageViewer[2]->flipX();
+ImageViewer[2]->flipX(!flip);
+ImageViewer[2]->Update();}
+              image {Images/FlipX.png} xywh {486 367 25 20} box PLASTIC_UP_BOX color 4 labelsize 10
+            }
+            Fl_Button {} {
+              label P
+              callback {ActiveGroup->hide();
+m_configPreferences->show();
+ActiveGroup = m_configPreferences;
+m_configIO->hide();}
+              xywh {511 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label T
+              callback {bool t = ImageViewer[2]->Transpose();
+ImageViewer[2]->Transpose(!t);
+ImageViewer[2]->Update();}
+              xywh {536 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1
+            }
+            Fl_Button {} {
+              label {@+}
+              callback {ImageViewer[2]->ZoomIn();}
+              xywh {561 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {-}
+              callback {ImageViewer[2]->ZoomOut();}
+              xywh {586 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 15
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {ImageViewer[2]->ShiftRight();}
+              xywh {611 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@<}
+              callback {ImageViewer[2]->ShiftLeft();}
+              xywh {636 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {ImageViewer[2]->ShiftUp();}
+              xywh {661 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {ImageViewer[2]->ShiftDown();}
+              xywh {686 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label c
+              callback {ImageViewer[2]->ViewColorMode(true);
+ImageViewer[2]->Update();}
+              xywh {711 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label g
+              callback {ImageViewer[2]->ViewColorMode(false);
+ImageViewer[2]->Update();}
+              xywh {735 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label RAS
+              callback {bool t= ImageViewer[2]->viewRAStags();
+ImageViewer[2]->viewRAStags(!t);
+ImageViewer[2]->Update();}
+              xywh {760 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {m_Ampl[2]} {
+              label {@+}
+              callback {OnAmplify(m_viewSplit,2);}
+              xywh {785 367 25 20} box PLASTIC_UP_BOX color 1 labelfont 1 labelsize 12
+            }
+            Fl_Button {m_Dism[2]} {
+              label {-}
+              callback {OnMinimize(2,410,366);}
+              xywh {785 367 25 20} box PLASTIC_UP_BOX color 1 labelfont 1 hide
+            }
+          }
+          Fl_Group {Botones[3]} {
+            xywh {810 366 400 21}
+          } {
+            Fl_Button {} {
+              callback {bool a = ImageColorViewer->viewDetails();
+ImageColorViewer->ViewDetails(!a);
+ImageColorViewer->Update();
+//bool a = ImageViewer[3]->viewDetails();
+//ImageViewer[3]->ViewDetails(!a);
+//ImageViewer[3]->Update();}
+              image {Images/Prop.png} xywh {813 367 25 20} box PLASTIC_UP_BOX color 3 labelfont 1 labelsize 10
+            }
+            Fl_Button {} {
+              label v
+              callback {bool a = ImageColorViewer->viewValue();
+ImageColorViewer->ViewValue(!a);
+ImageColorViewer->Update();
+//bool a = ImageViewer[3]->viewValue();
+//ImageViewer[3]->ViewValue(!a);
+//ImageViewer[3]->Update();}
+              xywh {838 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {bool flip = ImageColorViewer->flipY();
+ImageColorViewer->flipY(!flip);
+ImageColorViewer->Update();
+//bool flip = ImageViewer[3]->flipY();
+//ImageViewer[3]->flipY(!flip);
+//ImageViewer[3]->Update();}
+              image {Images/FlipY.png} xywh {863 367 25 20} box PLASTIC_UP_BOX color 4 labelsize 10
+            }
+            Fl_Button {} {
+              callback {bool flip = ImageColorViewer->flipX();
+ImageColorViewer->flipX(!flip);
+ImageColorViewer->Update();
+//bool flip = ImageViewer[3]->flipX();
+//ImageViewer[3]->flipX(!flip);
+//ImageViewer[3]->Update();}
+              image {Images/FlipX.png} xywh {888 367 25 20} box PLASTIC_UP_BOX color 4 labelsize 10
+            }
+            Fl_Button {} {
+              label P
+              callback {ActiveGroup->hide();
+m_configPreferences->show();
+ActiveGroup = m_configPreferences;
+m_configIO->hide();}
+              xywh {913 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label T
+              callback {bool t = ImageColorViewer->Transpose();
+ImageColorViewer->Transpose(!t);
+ImageColorViewer->Update();}
+              xywh {938 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1
+            }
+            Fl_Button {} {
+              label {@+}
+              callback {ImageColorViewer->ZoomIn();
+//ImageViewer[3]->ZoomIn();}
+              xywh {963 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {-}
+              callback {ImageColorViewer->ZoomOut();
+//ImageViewer[3]->ZoomOut();}
+              xywh {988 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 15
+            }
+            Fl_Button {} {
+              label {@>}
+              callback {//ImageViewer[3]->ShiftRight();}
+              xywh {1013 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@<}
+              callback {//ImageViewer[3]->ShiftLeft();}
+              xywh {1038 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {//ImageViewer[3]->ShiftUp();}
+              xywh {1063 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {//ImageViewer[3]->ShiftDown();}
+              xywh {1088 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label c
+              callback {//ImageViewer[3]->ViewColorMode(true);}
+              xywh {1111 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label g
+              callback {//ImageViewer[3]->ViewColorMode(false);}
+              xywh {1135 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label RAS
+              xywh {1160 367 25 20} box PLASTIC_UP_BOX color 4 labelfont 1 labelsize 12
+            }
+            Fl_Button {m_Ampl[3]} {
+              label {@+}
+              callback {OnAmplify(m_viewSplit,3);}
+              xywh {1185 367 25 20} box PLASTIC_UP_BOX color 1 labelfont 1 labelsize 12 deactivate
+            }
+            Fl_Button {m_Dism[3]} {
+              label {-}
+              callback {OnMinimize(3,810,366);}
+              xywh {1185 367 25 20} box PLASTIC_UP_BOX color 1 labelfont 1 hide
+            }
+          }
+        }
+      }
+      Fl_Group {} {
+        label Progress
+        xywh {411 709 797 28} box FLAT_BOX color 28 labeltype NO_LABEL align 0
+      } {
+        Fl_Slider progressSlider {
+          xywh {419 714 662 20} type {Horz Fill} box FLAT_BOX color 8 selection_color 4 labelcolor 8 align 0 maximum 100 step 0.5 slider_size 1
+          code0 {\#include <fltkProgressBar.h>}
+          class {fltk::ProgressBar}
+        }
+        Fl_Value_Output m_ProgressCounter {
+          label {%}
+          xywh {1086 714 40 20} box PLASTIC_THIN_DOWN_BOX color 23 labelfont 5 labelsize 12 align 8 maximum 100 step 0.1 textfont 5 textsize 12 textcolor 32
+        }
+      }
+      Fl_Box {} {
+        image {logoLPIred30.jpg} xywh {1143 712 67 24}
+      }
+      Fl_Group {} {
+        label {Type of data} open
+        xywh {2 27 407 63} box EMBOSSED_BOX color 7 labeltype NO_LABEL align 0
+      } {
+        Fl_Box {} {
+          label {Type of Data}
+          xywh {10 36 200 16} color 31 labelfont 1 align 20
+        }
+        Fl_Choice m_tipoProcesado {
+          callback {this->OnTipoProcesadoChange();} open
+          xywh {12 58 198 23} box NO_BOX down_box BORDER_BOX color 23 selection_color 7 labeltype NO_LABEL labelfont 1 align 5 textfont 5 textsize 12
+        } {}
+        Fl_Button {} {
+          label {Tract.}
+          callback {ActiveGroup->hide();
+MyTensorConsole->m_configGeodesicPath->show();
+ActiveGroup = MyTensorConsole->m_configGeodesicPath;
+this->m_configIO->hide();}
+          xywh {232 31 51 25} box PLASTIC_DOWN_BOX color 57 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Scalar
+          callback {ActiveGroup->hide();
+MyTensorConsole->configDTI->show();
+ActiveGroup = MyTensorConsole->configDTI;
+this->m_configIO->hide();}
+          xywh {287 31 51 25} box PLASTIC_DOWN_BOX color 57 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Auto
+          callback {ActiveGroup->hide();
+MyTensorConsole->m_configTractographyAuto->show();
+ActiveGroup = MyTensorConsole->m_configTractographyAuto;
+this->m_configIO->hide();}
+          xywh {232 59 51 25} box PLASTIC_DOWN_BOX color 57 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Stats
+          callback {ActiveGroup->hide();
+MyTensorConsole->configDTIMeasures->show();
+ActiveGroup = MyTensorConsole->configDTIMeasures;
+this->m_configIO->hide();}
+          xywh {287 59 51 25} box PLASTIC_DOWN_BOX color 57 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Prop
+          callback {ActiveGroup->hide();
+m_configModelProp->show();
+ActiveGroup = m_configModelProp;
+m_op2->hide();
+this->m_configIO->hide();}
+          xywh {342 31 51 25} box PLASTIC_DOWN_BOX color 57 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Prefs
+          callback {ActiveGroup->hide();
+m_configPreferences->show();
+ActiveGroup = m_configPreferences;
+m_configIO->hide();}
+          xywh {342 59 51 25} box PLASTIC_DOWN_BOX color 57 labelfont 1 labelsize 12
+        }
+      }
+      Fl_Group {} {
+        label Data
+        xywh {2 92 407 276} box EMBOSSED_BOX color 7 labeltype NO_LABEL align 0
+      } {
+        Fl_Group {} {
+          label Data open
+          xywh {2 93 407 275} labeltype NO_LABEL align 0
+        } {
+          Fl_Group m_DataGroup {
+            label {Scalar Data}
+            xywh {10 119 394 242} box FLAT_BOX color 7 labelfont 1 align 5
+          } {
+            Fl_Browser m_dataBrowser {
+              callback {std::cout << "valor " << o->value() << std::endl;
+int t = m_dataBrowser->value();
+m_dataBrowser->select(t);}
+              xywh {15 125 380 195} type Select labelfont 1 align 0 when 1
+            }
+            Fl_Button {} {
+              label View
+              callback {int dataId = m_dataBrowser->value()-1;
+if (dataId >=0) {
+this->ViewData(m_activeinput,dataId);
+}}
+              xywh {11 325 60 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
+            }
+            Fl_Button {} {
+              label Delete
+              callback {int dataId = m_dataBrowser->value()-1;
+if ( dataId>=0 ){
+	this->DeleteScalar(dataId);
+}}
+              xywh {133 325 60 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {int t = m_dataBrowser->value();
+m_dataBrowser->select(t-1);}
+              xywh {194 325 30 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {int t = m_dataBrowser->value();
+m_dataBrowser->select(t+1);}
+              xywh {225 325 30 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label {View Out}
+              callback {int dataId = m_dataBrowser->value()-1;
+if (dataId >=0) {
+this->ShowImageOut(m_NAuxWindows,m_VectorData[dataId].image);
+}}
+              xywh {256 325 70 25} box PLASTIC_DOWN_BOX color 3 labelfont 1
+            }
+            Fl_Button {} {
+              label {Do model}
+              callback {ActiveGroup->hide();
+this->m_configDomodel->show();
+ActiveGroup = m_configDomodel;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {327 325 70 25} box PLASTIC_DOWN_BOX color 3 labelfont 1
+            }
+            Fl_Button {} {
+              label Origen
+              callback {int t = m_dataBrowser->value()-1;
+if (t >=0) {
+std::cout << "Origen:" << m_VectorData[t].image->GetOrigin() << "\\n";
+}}
+              xywh {200 325 50 25} box PLASTIC_DOWN_BOX color 0 labelfont 1 hide deactivate
+            }
+            Fl_Button {} {
+              label Rename
+              callback {int dataId = m_dataBrowser->value()-1;
+if ( dataId>=0 ){
+	RenamePosition->value( (double)dataId );
+	RenameWhich->value("S");
+	panelRenameVolumes->show();
+	NewNameEdit->value( m_dataBrowser->text(dataId+1) );
+	NewNameEdit->redraw();
+}}
+              xywh {72 325 60 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
+            }
+          }
+          Fl_Group m_TensorDataGroup {
+            label {Tensor Data}
+            xywh {10 119 394 241} box FLAT_BOX color 7 labelfont 1 align 5 hide
+          } {
+            Fl_Browser m_tensordataBrowser {
+              callback {m_dataBrowser->select(o->value());}
+              xywh {15 125 380 195} type Select color 46
+            }
+            Fl_Button {} {
+              label Delete
+              callback {int dataId = m_tensordataBrowser->value()-1;
+if ( dataId>=0 ){
+	this->DeleteTensor(dataId);
+}}
+              xywh {148 325 55 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {int t = m_tensordataBrowser->value();
+m_tensordataBrowser->select(t-1);}
+              xywh {209 325 55 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {int t = m_tensordataBrowser->value();
+m_tensordataBrowser->select(t+1);}
+              xywh {270 325 55 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label Rename
+              callback {int dataId = m_tensordataBrowser->value()-1;
+if ( dataId>=0 ){
+	RenamePosition->value( (double)dataId );
+	RenameWhich->value("T");
+	panelRenameVolumes->show();
+	NewNameEdit->value( m_tensordataBrowser->text(dataId+1) );
+	NewNameEdit->redraw();
+}}
+              xywh {82 325 60 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
+            }
+            Fl_Button {} {
+              label Info
+              callback {MyTensorConsole->InfoImagen();}
+              xywh {330 325 55 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
+            }
+          }
+          Fl_Group m_ModelDataGroup {
+            label {Model Data}
+            xywh {4 119 401 241} box FLAT_BOX color 7 labelfont 1 align 5 hide
+          } {
+            Fl_Browser m_modeldataBrowser {
+              callback {m_modeldataBrowser->select(o->value());}
+              xywh {15 125 380 195} type Select color 46
+            }
+            Fl_Button {} {
+              label Rename
+              callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+	RenamePosition->value( (double)dataId );
+	RenameWhich->value("M");
+	panelRenameVolumes->show();
+	NewNameEdit->value( m_modeldataBrowser->text(dataId+1) );
+	NewNameEdit->redraw();
+}}
+              xywh {13 325 52 25} box PLASTIC_DOWN_BOX color 0 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Del
+              callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+	this->DeleteModel(dataId);
+}
+ImageViewer3D->redraw();}
+              xywh {66 325 33 25} box PLASTIC_DOWN_BOX color 0 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {int t = m_modeldataBrowser->value();
+m_modeldataBrowser->select(t-1);}
+              xywh {99 325 30 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {int t = m_modeldataBrowser->value();
+m_modeldataBrowser->select(t+1);}
+              xywh {130 325 30 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label View
+              callback {int dataId = m_modeldataBrowser->value()-1;
+if ( dataId >=0 && dataId<m_VectorModelData.size() ) {
+ImageViewer3D->ShowModel( m_VectorModelData[dataId].actor );
+ImageViewer3D->Update();
+}}
+              xywh {160 325 36 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Button {} {
+              label Hide
+              callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+ImageViewer3D->HideModel(m_VectorModelData[dataId].actor);
+ImageViewer3D->Update();
+}}
+              xywh {196 325 36 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Button {} {
+              label {Hide all}
+              callback {for (unsigned int i=0;i<m_VectorModelData.size();i++){
+ImageViewer3D->HideModel(m_VectorModelData[i].actor);
+}
+ImageViewer3D->Update();}
+              xywh {232 325 50 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Button {} {
+              label Prop
+              callback {ActiveGroup->hide();
+m_configModelProp->show();
+ActiveGroup = m_configModelProp;
+m_op2->hide();}
+              xywh {282 325 34 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Button {} {
+              label Stats
+              callback {ActiveGroup->hide();
+MyTensorConsole->configDTIMeasures->show();
+ActiveGroup = MyTensorConsole->configDTIMeasures;
+m_op2->hide();
+this->m_configIO->hide();
+//int dataId = m_modeldataBrowser->value()-1;
+//if (dataId >=0) {
+//MyTensorConsole->ComputeFibersFA(m_VectorModelData[dataId].data, false,false);
+//MyTensorConsole->ComputeFibersSize(m_VectorModelData[dataId].data,false);
+//MyTensorConsole->ComputeFibersAngle(m_VectorModelData[dataId].data,false);
+//}}
+              xywh {316 325 38 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Button {} {
+              label Tract
+              callback {ActiveGroup->hide();
+MyTensorConsole->m_configGeodesicPath->show();
+ActiveGroup = MyTensorConsole->m_configGeodesicPath;
+m_op2->hide();
+this->m_configIO->hide();}
+              xywh {354 325 38 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+          }
+          Fl_Group m_DWIDataGroup {
+            label {DWI Data}
+            xywh {4 119 401 241} box FLAT_BOX color 7 labelfont 1 align 5 hide
+          } {
+            Fl_Browser m_DWIdataBrowser {
+              callback {m_DWIdataBrowser->select(o->value());}
+              xywh {15 125 380 195} type Select color 46
+            }
+            Fl_Button {} {
+              label Rename
+              callback {int dataId = m_DWIdataBrowser->value()-1;
+if (dataId >=0) {
+	RenamePosition->value( (double)dataId );
+	RenameWhich->value("M");
+	panelRenameVolumes->show();
+	NewNameEdit->value( m_DWIdataBrowser->text(dataId+1) );
+	NewNameEdit->redraw();
+}}
+              xywh {13 325 52 25} box PLASTIC_DOWN_BOX color 0 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Del
+              callback {int dataId = m_DWIdataBrowser->value()-1;
+if (dataId >=0) {
+	//this->DeleteDWI(dataId);
+}}
+              xywh {66 325 33 25} box PLASTIC_DOWN_BOX color 0 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {int t = m_DWIdataBrowser->value();
+m_DWIdataBrowser->select(t-1);}
+              xywh {99 325 30 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {int t = m_DWIdataBrowser->value();
+m_DWIdataBrowser->select(t+1);}
+              xywh {130 325 30 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label {Get T2}
+              callback {int dataId = m_DWIdataBrowser->value()-1;
+if ( dataId >=0 && dataId<m_VectorDWIData.size() ) {
+  MyTensorConsole->GetComponentFromDWI(m_VectorDWIData[dataId].image,0);
+}}
+              xywh {160 325 52 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Button {} {
+              label Estim
+              callback {int dataId = m_DWIdataBrowser->value()-1;
+if (dataId >=0) {
+// Creamos espacio para el tensor
+  TensorImageType::Pointer tensor;
+  // Creamos espacio para la imagen t2
+  InputImageType::Pointer  t2image;
+  MyTensorConsole->EstimateTensor(m_VectorDWIData[dataId].image,tensor,t2image,false);
+  DataTensorElementType tensor_data;
+  std::string nombre = "Tensor";
+  tensor_data.Id     = m_VectorTensorData.size();
+  tensor_data.nombre = nombre.c_str();
+  tensor_data.image  = tensor;	
+  m_VectorTensorData.push_back(tensor_data);
+}}
+              xywh {212 325 36 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Button {} {
+              label Filter
+              callback {int dataId = m_DWIdataBrowser->value()-1;
+if (dataId >=0) {
+  MyTensorConsole->FilterDWI(m_VectorDWIData[dataId].image);
+}}
+              xywh {249 325 34 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Button {} {
+              label {Get Comp}
+              callback {int dataId = m_DWIdataBrowser->value()-1;
+if (dataId >=0 && (unsigned int)m_comp->value() <= m_VectorDWIData[dataId].image->GetNumImages()) {
+  MyTensorConsole->GetComponentFromDWI(m_VectorDWIData[dataId].image,(unsigned int)m_comp->value());
+}}
+              xywh {283 325 62 25} box PLASTIC_DOWN_BOX color 0 labelsize 12
+            }
+            Fl_Counter m_comp {
+              xywh {348 325 53 24} type Simple box ENGRAVED_BOX labelfont 1 align 0 maximum 55 step 1 value 1
+            }
+          }
+          Fl_Group m_BasicOperations {
+            label {Basic Operations}
+            xywh {11 129 394 200} box FLAT_BOX color 23 labeltype NO_LABEL hide
+          } {
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configGradient->show();
+ActiveGroup = MyBasicOpConsole->m_configGradient;
+m_configIO->show();
+m_op2->hide();}
+              image {Images/Grad_3.png} xywh {118 141 128 34} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configRelabelComponent->show();
+ActiveGroup = MyBasicOpConsole->m_configRelabelComponent;
+this->m_configIO->show();
+m_op2->hide();}
+              image {Images/RelabComp_3.png} xywh {19 261 160 34} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12 align 16
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configRescale->show();
+ActiveGroup = MyBasicOpConsole->m_configRescale;
+this->m_configIO->show();
+m_op2->hide();}
+              image {Images/Rescale_3.png} xywh {118 181 127 34} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configRelabelImage->show();
+ActiveGroup = MyBasicOpConsole->m_configRelabelImage;
+this->m_configIO->show();
+m_op2->hide();}
+              image {Images/Relabel_3.png} xywh {266 221 107 34} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configErode->show();
+ActiveGroup = MyBasicOpConsole->m_configErode;
+this->m_configIO->show();
+m_op2->hide();}
+              image {Images/Erode_3.png} xywh {266 141 107 34} box PLASTIC_DOWN_BOX down_box ROUND_UP_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configDilate->show();
+ActiveGroup = MyBasicOpConsole->m_configDilate;
+this->m_configIO->show();
+m_op2->hide();}
+              image {Images/Dilate_3.png} xywh {266 181 107 34} box PLASTIC_DOWN_BOX down_box ROUND_UP_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configMultiply->show();
+ActiveGroup = MyBasicOpConsole->m_configMultiply;
+m_configIO->show();}
+              image {Images/Mult_3.png} xywh {20 221 78 34} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configAdd->show();
+ActiveGroup = MyBasicOpConsole->m_configAdd;
+this->m_configIO->show();}
+              image {Images/Add_3.png} xywh {20 141 78 34} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {//ActiveGroup->hide();
+//this->m_configDiff->show();
+//ActiveGroup = m_configDiff;
+//this->m_configIO->show();}
+              image {Images/Dif_3.png} xywh {20 181 78 34} box PLASTIC_DOWN_BOX down_box PLASTIC_UP_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+MyBasicOpConsole->m_configInverse->show();
+ActiveGroup = MyBasicOpConsole->m_configInverse;
+this->m_configIO->show();
+m_op2->hide();}
+              image {Images/Inv_3.png} xywh {118 221 127 34} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12 align 16
+            }
+            Fl_Button {} {
+              callback {ActiveGroup->hide();
+this->m_configPointsManagement->show();
+ActiveGroup = this->m_configPointsManagement;
+this->m_configIO->show();
+m_op2->hide();}
+              image {Images/Points_3.png} xywh {186 261 188 34} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12 align 16
+            }
+          }
+          Fl_Group m_Filtering {
+            label Filtering
+            xywh {11 129 394 200} box FLAT_BOX color 23 labeltype NO_LABEL hide
+          } {
+            Fl_Button {} {
+              label SRAD
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configSRAD->show();
+ActiveGroup = MyFilteringConsole->m_configSRAD;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {22 240 120 29} box PLASTIC_DOWN_BOX color 23 selection_color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label TAD
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configTAD->show();
+ActiveGroup = MyFilteringConsole->m_configTAD;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {154 240 120 29} box PLASTIC_DOWN_BOX color 23 selection_color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Anis. Gradient}
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configGradDif->show();
+ActiveGroup = MyFilteringConsole->m_configGradDif;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {284 189 113 29} box PLASTIC_DOWN_BOX color 23 selection_color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Anis. Curvature}
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configAnDif->show();
+ActiveGroup = MyFilteringConsole->m_configAnDif;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {154 189 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Gaussian
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configGaussian->show();
+ActiveGroup = MyFilteringConsole->m_configGaussian;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {284 138 113 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Mean
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configMean->show();
+ActiveGroup = MyFilteringConsole->m_configMean;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {22 138 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Median
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configMedian->show();
+ActiveGroup = MyFilteringConsole->m_configMedian;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {154 138 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Bilateral
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configBilateral->show();
+ActiveGroup = MyFilteringConsole->m_configBilateral;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {22 189 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Wiener
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configWiener->show();
+ActiveGroup = MyFilteringConsole->m_configWiener;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {284 285 113 29} box PLASTIC_DOWN_BOX color 23 selection_color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Zero crossing}
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configZero->show();
+ActiveGroup = MyFilteringConsole->m_configZero;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {22 285 120 29} box PLASTIC_DOWN_BOX color 23 selection_color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Canny
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configCanny->show();
+ActiveGroup = MyFilteringConsole->m_configCanny;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {154 285 120 29} box PLASTIC_DOWN_BOX color 23 selection_color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label DPAD
+              callback {ActiveGroup->hide();
+MyFilteringConsole->m_configDPAD->show();
+ActiveGroup = MyFilteringConsole->m_configDPAD;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {284 240 113 29} box PLASTIC_DOWN_BOX color 23 selection_color 23 labelfont 1 labelsize 12
+            }
+          }
+          Fl_Group m_Segmentation {
+            label Segmentation
+            xywh {11 129 394 200} box FLAT_BOX color 23 labeltype NO_LABEL hide
+          } {
+            Fl_Button {} {
+              label {MRF US}
+              callback {ActiveGroup->hide();
+MySegmentationConsole->m_configMRFUS->show();
+ActiveGroup = MySegmentationConsole->m_configMRFUS;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {86 215 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Level Sets}
+              callback {ActiveGroup->hide();
+MySegmentationConsole->m_configLevelSets->show();
+ActiveGroup = MySegmentationConsole->m_configLevelSets;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {21 151 120 29} box PLASTIC_DOWN_BOX color 23 selection_color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Threshold
+              callback {ActiveGroup->hide();
+MySegmentationConsole->m_configThreshold->show();
+ActiveGroup = MySegmentationConsole->m_configThreshold;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {155 151 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Watershed
+              callback {ActiveGroup->hide();
+MySegmentationConsole->m_configWatershed->show();
+ActiveGroup = MySegmentationConsole->m_configWatershed;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {223 215 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label KNN
+              callback {ActiveGroup->hide();
+MySegmentationConsole->m_configKNN->show();
+ActiveGroup = MySegmentationConsole->m_configKNN;
+this->m_configIO->show();
+m_op2->hide();}
+              xywh {290 151 105 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+          }
+          Fl_Group m_Registration {
+            label Registration
+            xywh {11 129 394 200} box FLAT_BOX color 23 labeltype NO_LABEL hide
+          } {
+            Fl_Button {} {
+              label {Demons 3D}
+              callback {ActiveGroup->hide();
+this->m_configDemons->show();
+ActiveGroup = m_configDemons;
+this->m_configIO->show();}
+              xywh {66 184 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label TPS
+              xywh {239 184 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 deactivate
+            }
+          }
+        }
+      }
+      Fl_Group {} {
+        label Config
+        xywh {2 369 406 370} box EMBOSSED_BOX color 7 labeltype NO_LABEL align 0
+      } {
+        Fl_Group m_configPreferences {
+          label Preferences
+          xywh {5 388 403 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5
+        } {
+          Fl_Value_Input Threads {
+            label Threads
+            xywh {61 392 30 21} selection_color 7 labelfont 1 labelsize 12 maximum 100 value 1 textfont 1 textsize 10 textcolor 32
+          }
+          Fl_Group {} {
+            label Viewer
+            xywh {8 427 396 273} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 5
+          } {
+            Fl_Check_Button {} {
+              label {Display image properties}
+              callback {ImageViewer[m_activeinput]->ViewDetails(o->value());
+ImageViewer[m_activeinput]->Update();}
+              xywh {16 442 200 25} box PLASTIC_DOWN_BOX down_box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+            }
+            Fl_Check_Button {} {
+              label {Display values}
+              callback {ImageViewer[m_activeinput]->ViewValue(o->value());
+ImageViewer[m_activeinput]->Update();}
+              xywh {16 466 200 25} box PLASTIC_DOWN_BOX down_box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+            }
+            Fl_Check_Button {} {
+              label {Display cross}
+              callback {ImageViewer[m_activeinput]->ViewCrosshairs(o->value());
+ImageViewer[m_activeinput]->Update();}
+              xywh {16 489 200 25} box PLASTIC_DOWN_BOX down_box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+            }
+            Fl_Check_Button {} {
+              label {Display Discrete Color }
+              callback {ImageViewer[m_activeinput]->ViewColorMode(o->value());
+ImageViewer[m_activeinput]->Update();}
+              xywh {16 512 200 25} box PLASTIC_DOWN_BOX down_box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Center
+              callback {ImageViewer[m_activeinput]->CenterWindow();}
+              xywh {266 502 50 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Zoom +}
+              callback {this->ZoomIn();}
+              xywh {266 444 50 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Zoom -}
+              callback {this->ZoomOut();}
+              xywh {266 474 50 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Up
+              callback {ImageViewer[m_activeinput]->ShiftUp();}
+              xywh {340 449 35 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Down
+              callback {ImageViewer[m_activeinput]->ShiftDown();}
+              xywh {338 499 35 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Right
+              callback {ImageViewer[m_activeinput]->ShiftRight();}
+              xywh {358 474 35 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Left
+              callback {ImageViewer[m_activeinput]->ShiftLeft();}
+              xywh {320 474 35 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Choice m_ImageMode {
+              label {Image Mode}
+              callback {this->OnImageModeChange();}
+              xywh {100 539 125 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+            } {}
+            Fl_Choice m_colorMode {
+              label {Color Mode}
+              callback {this->ChangeViewerColorMode();}
+              xywh {301 539 95 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+            } {}
+            Fl_Button {} {
+              label Transpose
+              callback {bool t = ImageViewer[m_activeinput]->Transpose();
+ImageViewer[m_activeinput]->Transpose(!t);
+ImageViewer[m_activeinput]->Update();}
+              xywh {18 564 80 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Flip X}
+              callback {bool flip = ImageViewer[m_activeinput]->flipX();
+ImageViewer[m_activeinput]->flipX(!flip);
+ImageViewer[m_activeinput]->Update();}
+              xywh {103 564 50 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Flip Y}
+              callback {bool flip = ImageViewer[m_activeinput]->flipY();
+ImageViewer[m_activeinput]->flipY(!flip);
+ImageViewer[m_activeinput]->Update();}
+              xywh {157 564 50 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Flip Z}
+              callback {bool flip = ImageViewer[m_activeinput]->flipZ();
+ImageViewer[m_activeinput]->flipZ(!flip);
+ImageViewer[m_activeinput]->Update();}
+              xywh {212 564 50 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label DTI
+              callback {ActiveGroup->hide();
+m_configIO->show();
+//m_configDTI->show();
+MyTensorConsole->configDTI->show();
+//ActiveGroup = m_configDTI;
+ActiveGroup = MyTensorConsole->configDTI;}
+              xywh {285 564 50 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Info
+              callback {this->InfoImagen();}
+              xywh {342 564 50 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12
+            }
+          }
+          Fl_Button {} {
+            callback {m_configPreferences->hide();}
+            image {Images/Close.png} xywh {168 704 85 32} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 11 labelcolor 23
+          }
+          Fl_Value_Output {m_minintensity_output[0]} {
+            xywh {332 598 60 17} box ENGRAVED_BOX labelfont 1 align 0
+          }
+          Fl_Value_Output {m_minintensity_output[1]} {
+            xywh {332 598 60 17} box ENGRAVED_BOX labelfont 1 align 0 hide
+          }
+          Fl_Value_Output {m_minintensity_output[2]} {
+            xywh {332 598 60 17} box ENGRAVED_BOX labelfont 1 align 0 hide
+          }
+          Fl_Value_Output {m_minintensity_output[3]} {
+            xywh {332 598 60 17} box ENGRAVED_BOX labelfont 1 align 0
+          }
+          Fl_Value_Output {m_maxintensity_output[0]} {
+            xywh {332 618 60 17} box ENGRAVED_BOX labelfont 1 align 0
+          }
+          Fl_Value_Output {m_maxintensity_output[1]} {
+            xywh {332 618 60 17} box ENGRAVED_BOX labelfont 1 align 0 hide
+          }
+          Fl_Value_Output {m_maxintensity_output[2]} {
+            xywh {332 618 60 17} box ENGRAVED_BOX labelfont 1 align 0 hide
+          }
+          Fl_Value_Output {m_maxintensity_output[3]} {
+            xywh {332 618 60 17} box ENGRAVED_BOX labelfont 1 align 0 hide
+          }
+          Fl_Slider {sliderIW[0]} {
+            label {min  1}
+            callback {this->UpdateIntensityW(0,(float)o->value());}
+            xywh {77 598 250 17} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 4
+          }
+          Fl_Slider {sliderIW[1]} {
+            label {min  2}
+            callback {this->UpdateIntensityW(1,(float)o->value());}
+            xywh {77 598 250 17} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 4 hide
+          }
+          Fl_Slider {sliderIW[2]} {
+            label {min  3}
+            callback {this->UpdateIntensityW(2,(float)o->value());}
+            xywh {77 598 250 17} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 4 hide
+          }
+          Fl_Slider {sliderIW[3]} {
+            label {min  4}
+            callback {this->UpdateIntensityW(3,(float)o->value());}
+            xywh {77 598 250 17} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 4 hide
+          }
+          Fl_Slider {sliderIL[0]} {
+            label {max 1}
+            callback {this->UpdateIntensityL(0,(float)o->value());}
+            xywh {77 618 250 17} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 4
+          }
+          Fl_Slider {sliderIL[1]} {
+            label {max 2}
+            callback {this->UpdateIntensityL(1,(float)o->value());}
+            xywh {77 618 250 17} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 4 hide
+          }
+          Fl_Slider {sliderIL[2]} {
+            label {max 3}
+            callback {this->UpdateIntensityL(2,(float)o->value());}
+            xywh {77 618 250 17} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 4 hide
+          }
+          Fl_Slider {sliderIL[3]} {
+            label {max 4}
+            callback {this->UpdateIntensityL(3,(float)o->value());}
+            xywh {77 618 250 17} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 4 hide
+          }
+          Fl_Value_Output {m_min_color[0]} {
+            xywh {332 645 60 17} box ENGRAVED_BOX labelfont 1 align 0
+          }
+          Fl_Value_Output {m_min_color[1]} {
+            xywh {332 645 60 17} box ENGRAVED_BOX labelfont 1 align 0 hide
+          }
+          Fl_Value_Output {m_min_color[2]} {
+            xywh {332 645 60 17} box ENGRAVED_BOX labelfont 1 align 0 hide
+          }
+          Fl_Slider {sliderCMin[0]} {
+            label {min  1}
+            callback {ImageViewer[0]->SetColorMin(o->value());
+m_min_color[0]->value(o->value());}
+            xywh {77 645 250 17} type Horizontal box ENGRAVED_BOX color 25 selection_color 15 labelfont 1 labelsize 12 align 4 step 0.01
+          }
+          Fl_Slider {sliderCMin[1]} {
+            label {min  2}
+            callback {ImageViewer[1]->SetColorMin(o->value());
+m_min_color[1]->value(o->value());}
+            xywh {77 645 250 17} type Horizontal box ENGRAVED_BOX color 25 selection_color 15 labelfont 1 labelsize 12 align 4 step 0.01 hide
+          }
+          Fl_Slider {sliderCMin[2]} {
+            label {min  3}
+            callback {ImageViewer[2]->SetColorMin(o->value());
+m_min_color[2]->value(o->value());}
+            xywh {77 645 250 17} type Horizontal box ENGRAVED_BOX color 25 selection_color 15 labelfont 1 labelsize 12 align 4 step 0.01 hide
+          }
+          Fl_Value_Output {m_max_color[0]} {
+            xywh {332 665 60 17} box ENGRAVED_BOX labelfont 1 align 0
+          }
+          Fl_Value_Output {m_max_color[1]} {
+            xywh {332 665 60 17} box ENGRAVED_BOX labelfont 1 align 0 step 0.1 hide
+          }
+          Fl_Value_Output {m_max_color[2]} {
+            xywh {332 665 60 17} box ENGRAVED_BOX labelfont 1 align 0 step 0.1 hide
+          }
+          Fl_Slider {sliderCMax[0]} {
+            label {max  1}
+            callback {ImageViewer[0]->SetColorMax(o->value());
+m_max_color[0]->value(o->value());}
+            xywh {77 665 250 17} type Horizontal box ENGRAVED_BOX color 25 selection_color 15 labelfont 1 labelsize 12 align 4 step 0.01
+          }
+          Fl_Slider {sliderCMax[1]} {
+            label {max  2}
+            callback {ImageViewer[1]->SetColorMax(o->value());
+m_max_color[1]->value(o->value());}
+            xywh {77 665 250 17} type Horizontal box ENGRAVED_BOX color 25 selection_color 15 labelfont 1 labelsize 12 align 4 step 0.01 hide
+          }
+          Fl_Slider {sliderCMax[2]} {
+            label {max  3}
+            callback {ImageViewer[2]->SetColorMax(o->value());
+m_max_color[2]->value(o->value());}
+            xywh {77 665 250 17} type Horizontal box ENGRAVED_BOX color 25 selection_color 15 labelfont 1 labelsize 12 align 4 step 0.01 hide
+          }
+        }
+        Fl_Group m_configPointsManagement {
+          label {Points Management}
+          xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+        } {
+          Fl_Group m_ParametersPointsManagement {
+            label {Parameters:}
+            xywh {13 499 390 181} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+          } {
+            Fl_Value_Output num_points {
+              label {Number of points}
+              xywh {102 636 55 24} box PLASTIC_DOWN_BOX color 15 selection_color 23 labelsize 10 textsize 10
+            }
+            Fl_Counter Class_value_old {
+              label {Class value}
+              callback {ImageViewer[m_activeinput]->ChangeActiveClass(static_cast<int>(Class_value->value()));}
+              xywh {220 623 173 19} box PLASTIC_DOWN_BOX color 22 selection_color 15 labelsize 10 align 4 step 1 value 4 textsize 10
+            }
+            Fl_Counter clickedRadius_old {
+              label Radius
+              callback {ImageViewer[m_activeinput]->SetClickedRadius(static_cast<unsigned int>(clickedRadius->value()));}
+              xywh {220 648 173 19} box PLASTIC_DOWN_BOX color 22 selection_color 15 labelsize 10 align 4 minimum 0 maximum 500 step 1 textsize 10
+            }
+            Fl_Button {} {
+              label {Delete Last}
+              callback {ImageViewer[m_activeinput]->deleteLastClickedPointsStored();}
+              xywh {88 551 96 26} box PLASTIC_UP_BOX color 15 selection_color 3 labelsize 12
+            }
+            Fl_Button {} {
+              label {Clear all}
+              callback {ImageViewer[m_activeinput]->clearClickedPointsStored();}
+              xywh {187 551 96 26} box PLASTIC_UP_BOX color 15 selection_color 3 labelsize 12
+            }
+            Fl_Button {} {
+              label Hide
+              callback {ImageViewer[m_activeinput]->hideClickedPoints();}
+              xywh {86 587 98 26} box PLASTIC_UP_BOX color 15 selection_color 3 labelsize 12
+            }
+            Fl_Button {} {
+              label Show
+              callback {ImageViewer[m_activeinput]->showClickedPoints();}
+              xywh {187 587 96 26} box PLASTIC_UP_BOX color 15 selection_color 3 labelsize 12
+            }
+            Fl_Button {} {
+              label {Load Points}
+              callback {ImageViewer[m_activeinput]->loadClickedPoints();}
+              xywh {84 509 96 26} box PLASTIC_UP_BOX color 6 selection_color 3 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Save Points}
+              callback {ImageViewer[m_activeinput]->saveClickedPointsStored();}
+              xywh {194 509 96 26} box PLASTIC_UP_BOX color 6 selection_color 3 labelfont 1 labelsize 12
+            }
+          }
+          Fl_Button {} {
+            callback {ImageViewer[m_activeinput]->ChangeActiveClass(static_cast<int>(Class_value->value()));
+num_points->value(static_cast<int>(ImageViewer[m_activeinput]->numClickedPoints()));}
+            image {Images/apply.png} xywh {13 702 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configPointsManagement->hide();
+m_op2->show();
+m_configIO->hide();
+ImageViewer[m_activeinput]->ChangeActiveClass(static_cast<int>(Class_value->value()));
+num_points->value(static_cast<int>(ImageViewer[m_activeinput]->numClickedPoints()));}
+            image {Images/apply_close.png} xywh {121 702 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configPointsManagement->hide();
+m_op2->show();
+m_configIO->hide();}
+            image {Images/Close.png} xywh {313 702 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+        }
+        Fl_Group m_configPointsManagement2 {
+          label {Points Management}
+          xywh {5 388 403 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+        } {
+          Fl_Group m_ParametersPointsManagement2 {
+            label {Parameters:}
+            xywh {13 499 390 181} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+          } {
+            Fl_Counter m_OverlayOpacity {
+              label Opacity
+              callback {ImageViewer[m_activeinput]->SetOverlayOpacity(o->value());}
+              xywh {85 606 173 19} box PLASTIC_DOWN_BOX color 22 selection_color 15 labelfont 1 labelsize 12 align 4 minimum 0 maximum 1 step 0.1 value 0.8 textsize 10
+            }
+            Fl_Counter Class_value {
+              label {Class value}
+              callback {ImageViewer[m_activeinput]->ChangeActiveClass(static_cast<int>(Class_value->value()));}
+              xywh {85 633 173 19} box PLASTIC_DOWN_BOX color 22 selection_color 15 labelfont 1 labelsize 12 align 4 step 1 value 1 textsize 10
+            }
+            Fl_Counter clickedRadius {
+              label Radius
+              callback {ImageViewer[m_activeinput]->SetClickedRadius(static_cast<unsigned int>(clickedRadius->value()));}
+              xywh {85 658 173 19} box PLASTIC_DOWN_BOX color 22 selection_color 15 labelfont 1 labelsize 12 align 4 minimum 0 maximum 50 step 1 value 2 textsize 10
+            }
+            Fl_Button {} {
+              label {Delete Last}
+              xywh {21 537 80 26} box PLASTIC_UP_BOX color 8 selection_color 8 labelsize 12 deactivate
+            }
+            Fl_Button {} {
+              label {Clear all}
+              callback {this->ClearOverlay();}
+              xywh {106 537 80 26} box PLASTIC_UP_BOX color 8 selection_color 8 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Hide
+              callback {ImageViewer[m_activeinput]->ViewOverlayData(false);}
+              xywh {21 568 80 26} box PLASTIC_THIN_DOWN_BOX color 8 selection_color 8 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label Show
+              callback {ImageViewer[m_activeinput]->ViewOverlayData(true);}
+              xywh {106 568 80 26} box PLASTIC_UP_BOX color 8 selection_color 8 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Load Points}
+              callback {this->LoadOverlay(m_activeinput);}
+              xywh {21 505 80 26} box PLASTIC_UP_BOX color 8 selection_color 8 labelfont 1 labelsize 12
+            }
+            Fl_Button {} {
+              label {Save Points}
+              xywh {106 505 80 26} box PLASTIC_UP_BOX color 8 selection_color 8 labelfont 1 labelsize 12 deactivate
+            }
+            Fl_Button {} {
+              label Set
+              callback {this->SetOverlay(m_activeinput);}
+              xywh {195 568 61 26} box PLASTIC_UP_BOX color 10 selection_color 3 labelfont 1 labelsize 12
+            }
+          }
+          Fl_Button {} {
+            callback {ImageViewer[m_activeinput]->ChangeActiveClass(static_cast<int>(Class_value->value()));
+num_points->value(static_cast<int>(ImageViewer[m_activeinput]->numClickedPoints()));}
+            image {Images/apply.png} xywh {13 702 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configPointsManagement2->hide();
+m_op2->show();
+m_configIO->hide();
+ImageViewer[m_activeinput]->ChangeActiveClass(static_cast<int>(Class_value->value()));}
+            image {Images/apply_close.png} xywh {131 702 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configPointsManagement2->hide();
+m_op2->show();
+m_configIO->hide();}
+            image {Images/Close.png} xywh {323 702 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+        }
+        Fl_Group m_configDomodel {
+          label {Do model}
+          xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+        } {
+          Fl_Group {} {
+            label {Parameters:}
+            xywh {25 567 374 91} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+          } {
+            Fl_Counter m_modelvalue1 {
+              label {Value 1}
+              xywh {78 582 80 20} labelfont 1 labelsize 12 align 4 step 1
+            }
+            Fl_Counter m_modelvalue2 {
+              label {Value 2}
+              xywh {78 612 80 20} labelfont 1 labelsize 12 align 4 step 1 value 1
+            }
+            Fl_Value_Slider m_modeliter {
+              label {Smooth Iter.}
+              xywh {239 592 150 16} type Horizontal labelfont 1 labelsize 12 align 4 maximum 60 step 1 value 3 textsize 14
+            }
+            Fl_Value_Slider m_relaxfactor {
+              label {Relax. factor}
+              xywh {239 616 150 16} type Horizontal labelfont 1 labelsize 12 align 4 maximum 2 step 0.1 value 0.3 textsize 14
+            }
+            Fl_Value_Slider m_targetreduction {
+              label {Target reduction}
+              xywh {238 638 150 16} type Horizontal labelfont 1 labelsize 12 align 4 step 0.1 value 0.5 textsize 14
+            }
+          }
+          Fl_Button {} {
+            callback {int dataId = m_dataBrowser->value()-1;
+this->DoModel(m_modelvalue1->value(),m_modelvalue2->value(),m_modeliter->value(),m_VectorData[dataId].image);}
+            image {Images/apply.png} xywh {13 702 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configDomodel->hide();
+m_op2->show();
+m_configIO->hide();
+int dataId = m_dataBrowser->value()-1;
+this->DoModel(m_modelvalue1->value(),m_modelvalue2->value(),m_modeliter->value(),m_VectorData[dataId].image);}
+            image {Images/apply_close.png} xywh {111 702 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configDomodel->hide();
+m_op2->show();
+m_configIO->hide();}
+            image {Images/Close.png} xywh {313 702 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+        }
+        Fl_Group m_configModelProp {
+          label {Model Prop}
+          xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+        } {
+          Fl_Group {} {
+            label {Parameters:} open
+            xywh {10 405 392 292} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+          } {
+            Fl_Group {} {
+              xywh {14 407 385 120} box PLASTIC_DOWN_BOX
+            } {
+              Fl_Button {} {
+                label {Resize from seeds}
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->RetainNearbyFibers(m_VectorModelData[dataId].data,m_resize_factor->value(),(int)label_ROI->value());
+}
+ImageViewer3D->Update();}
+                xywh {19 442 111 24} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+              }
+              Fl_Counter label_ROI {
+                xywh {142 444 48 20} type Simple labelfont 1 labelsize 12 align 4 minimum 0 maximum 40 step 1
+              }
+              Fl_Button {} {
+                label {Save Profile}
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->ComputeFibersFA(m_VectorModelData[dataId].data,true,false);
+}}
+                xywh {184 410 69 24} box PLASTIC_DOWN_BOX color 33 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                label {Order Fib. Ax.}
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->OrderFibersCoronal(m_VectorModelData[dataId].data,(int)sliceAxial3D->value());
+}
+ImageViewer3D->Update();}
+                xywh {19 410 79 24} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                label {Order Fib. Sg.}
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->OrderFibersCoronal2(m_VectorModelData[dataId].data,(int)sliceSagital3D->value());
+}
+ImageViewer3D->Update();}
+                xywh {102 410 79 24} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                label {Remove Fibers}
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->RemoveLargeFibers(m_VectorModelData[dataId].data,m_resize_factor->value());
+}
+ImageViewer3D->Update();}
+                xywh {130 474 91 24} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                label {Resize Fibers}
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->ResizeLargeFibers(m_VectorModelData[dataId].data,m_resize_factor->value());
+}
+ImageViewer3D->Update();}
+                xywh {19 474 102 24} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+              }
+              Fl_Group {} {
+                label Cut open
+                xywh {254 409 141 115} box PLASTIC_DOWN_BOX color 16 labelfont 1 labelsize 12 align 26
+              } {
+                Fl_Button {} {
+                  label {Sag R}
+                  callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->CutFibers(m_VectorModelData[dataId].data,0,(int)sliceSagital3D->value(),0);
+}
+ImageViewer3D->Update();}
+                  image {Images/cc_cut_sag_L.jpg} xywh {258 410 41 54} box PLASTIC_DOWN_BOX labelfont 1 labelsize 11 align 17
+                }
+                Fl_Button {} {
+                  label {Sag L}
+                  callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->CutFibers(m_VectorModelData[dataId].data,0,(int)sliceSagital3D->value(),1);
+}
+ImageViewer3D->Update();}
+                  image {Images/cc_cut_sag_R.jpg} xywh {259 467 41 54} box PLASTIC_DOWN_BOX labelfont 1 labelsize 11 align 17
+                }
+                Fl_Button {} {
+                  label {Cor P}
+                  callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->CutFibers(m_VectorModelData[dataId].data,1,(int)sliceCoronal3D->value(),1);
+}
+ImageViewer3D->Update();}
+                  image {Images/cing_cut_P.jpg} xywh {303 411 43 54} box PLASTIC_DOWN_BOX labelfont 1 labelsize 11 align 17
+                }
+                Fl_Button {} {
+                  label {Cor A}
+                  callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->CutFibers(m_VectorModelData[dataId].data,1,(int)sliceCoronal3D->value(),0);
+}
+ImageViewer3D->Update();}
+                  image {Images/cing_cut_A.jpg} xywh {304 467 41 52} box PLASTIC_DOWN_BOX labelfont 1 labelsize 11
+                }
+                Fl_Button {} {
+                  label {Axial I}
+                  callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->CutFibers(m_VectorModelData[dataId].data,2,(int)sliceAxial3D->value(),0);
+}
+ImageViewer3D->Update();}
+                  image {Images/pyd_cut_axial_I.jpg} xywh {350 411 43 47} box PLASTIC_DOWN_BOX labelfont 1 labelsize 11 align 18
+                }
+                Fl_Button {} {
+                  label {Axial S}
+                  callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId >=0) {
+MyTensorConsole->CutFibers(m_VectorModelData[dataId].data,2,(int)sliceAxial3D->value(),1);
+}
+ImageViewer3D->Update();}
+                  image {Images/pyd_cut_axial_S.jpg} xywh {351 461 41 48} box PLASTIC_DOWN_BOX labelfont 1 labelsize 11 align 18
+                }
+              }
+              Fl_Value_Slider m_resize_factor {
+                label factor
+                xywh {62 503 189 18} type Horizontal color 16 labelfont 1 labelsize 12 align 4 minimum 0.5 maximum 2 step 0.1 value 1.2 textsize 14
+              }
+              Fl_Counter m_z_cut {
+                label z
+                xywh {323 487 56 20} type Simple labelfont 1 labelsize 12 align 4 minimum 0 maximum 250 step 1 hide
+              }
+            }
+            Fl_Group {} {
+              label Color
+              xywh {14 528 385 103} box PLASTIC_THIN_DOWN_BOX color 11 labelfont 1 labelsize 12 align 21
+            } {
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,1,0.8,0.2);
+ImageViewer3D->Update();}
+                image {Images/pyd_skin.jpg} xywh {128 528 36 36} box ENGRAVED_BOX color 11 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.8,0.8,0.8);
+ImageViewer3D->Update();}
+                image {Images/Pyd_bone.jpg} xywh {165 528 36 36} box ENGRAVED_BOX color 17 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.3,0.3,0.3);
+ImageViewer3D->Update();}
+                image {Images/pyd_gray.jpg} xywh {203 528 36 36} box ENGRAVED_BOX color 24 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.9,0.1,0.1);
+ImageViewer3D->Update();}
+                image {Images/pyd_red.jpg} xywh {243 528 36 36} box ENGRAVED_BOX color 1 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.1,0.8,0.1);
+ImageViewer3D->Update();}
+                image {Images/pyd_green.jpg} xywh {283 528 36 36} box ENGRAVED_BOX color 10 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0,0,1);
+ImageViewer3D->Update();}
+                image {Images/pyd_blue.jpg} xywh {323 528 36 36} box ENGRAVED_BOX color 4 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.1,0.1,0.7);
+ImageViewer3D->Update();}
+                image {Images/pyd_sea.jpg} xywh {360 528 36 36} box ENGRAVED_BOX color 96 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,1,1,0);
+ImageViewer3D->Update();}
+                image {Images/pyd_yellow.jpg} xywh {128 568 36 36} box ENGRAVED_BOX color 3 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,1,1,1);
+ImageViewer3D->Update();}
+                image {Images/pyd_white.jpg} xywh {165 568 36 36} box ENGRAVED_BOX color 7 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.7,0.5,0.9);
+ImageViewer3D->Update();}
+                image {Images/pyd_violet.jpg} xywh {203 568 36 36} box ENGRAVED_BOX color 202 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.3,0.9,0.3);
+ImageViewer3D->Update();}
+                image {Images/pyd_green2.jpg} xywh {243 568 36 36} box ENGRAVED_BOX color 2 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,1,0.5,0);
+ImageViewer3D->Update();}
+                image {Images/pyd_orange.jpg} xywh {283 568 36 36} box ENGRAVED_BOX color 91 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.4,0.4,0.9);
+ImageViewer3D->Update();}
+                image {Images/pyd_dark_blue.jpg} xywh {323 568 36 36} box ENGRAVED_BOX color 239 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeColor(m_VectorModelData[dataId].actor,0.6,0.2,0.2);
+ImageViewer3D->Update();}
+                image {Images/pyd_brown.jpg} xywh {360 568 36 36} box ENGRAVED_BOX color 114 labelfont 1 labelsize 12
+              }
+              Fl_Button {} {
+                label FA
+                callback {MyTensorConsole->SetFibersColor(0);
+ImageViewer3D->Update();}
+                image {Images/pyd_FA.jpg} xywh {19 531 39 47} box ENGRAVED_BOX color 7 labelfont 1 labelsize 12 align 17
+              }
+              Fl_Button {} {
+                label Size
+                callback {MyTensorConsole->SetFibersColor(1);
+ImageViewer3D->Update();}
+                image {Images/pyd_size.jpg} xywh {61 531 39 47} box ENGRAVED_BOX color 7 labelfont 1 labelsize 12 align 145
+              }
+              Fl_Button {} {
+                label MD
+                callback {MyTensorConsole->SetFibersColor(3);
+ImageViewer3D->Update();}
+                image {Images/pyd_FA.jpg} xywh {19 580 39 47} box ENGRAVED_BOX color 7 labelfont 1 labelsize 12 align 17
+              }
+              Fl_Button {} {
+                label E1
+                callback {MyTensorConsole->SetFibersColor(5);
+ImageViewer3D->Update();}
+                image {Images/pyd_FA.jpg} xywh {61 580 39 47} box ENGRAVED_BOX color 7 labelfont 1 labelsize 12 align 17
+              }
+              Fl_Value_Slider min_scalar_range {
+                xywh {121 607 104 17} type Horizontal color 16 labelfont 1 labelsize 12 align 4 step 0.01 textsize 14
+              }
+              Fl_Value_Slider max_scalar_range {
+                xywh {227 607 104 17} type Horizontal color 16 labelfont 1 labelsize 12 align 4 step 0.01 value 1 textsize 14
+              }
+              Fl_Button {} {
+                label {set range}
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->SetScalarRange(m_VectorModelData[dataId].actor,min_scalar_range->value(),max_scalar_range->value());
+ImageViewer3D->Update();}
+                xywh {333 607 63 17} box PLASTIC_DOWN_BOX color 8 labelfont 1 labelsize 12
+              }
+            }
+            Fl_Group {} {
+              xywh {14 630 385 63} box PLASTIC_DOWN_BOX
+            } {
+              Fl_Value_Slider m_opacity {
+                label Opacity
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeOpacity(m_VectorModelData[dataId].actor,m_opacity->value());
+ImageViewer3D->Update();}
+                xywh {68 635 145 18} type Horizontal color 16 labelfont 1 labelsize 12 align 4 step 0.1 value 1 textsize 14
+              }
+              Fl_Value_Slider m_diffuse {
+                label Diffuse
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeDiffuse(m_VectorModelData[dataId].actor,m_diffuse->value());
+ImageViewer3D->Update();}
+                xywh {266 634 125 18} type Horizontal color 16 labelfont 1 labelsize 12 align 4 step 0.1 textsize 14
+              }
+              Fl_Value_Slider m_specular {
+                label Specular
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeSpecular(m_VectorModelData[dataId].actor,m_specular->value());
+ImageViewer3D->Update();}
+                xywh {266 653 125 18} type Horizontal color 16 labelfont 1 labelsize 12 align 4 step 0.1 value 0.3 textsize 14
+              }
+              Fl_Value_Slider m_ambient {
+                label Ambient
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeAmbient(m_VectorModelData[dataId].actor,m_ambient->value());
+ImageViewer3D->Update();}
+                xywh {68 654 143 18} type Horizontal color 16 labelfont 1 labelsize 12 align 4 step 0.1 textsize 14
+              }
+              Fl_Value_Slider m_specular_power {
+                label {Specular Power}
+                callback {int dataId = m_modeldataBrowser->value()-1;
+if (dataId < 0) return;
+ImageViewer3D->ChangeSpecularPower(m_VectorModelData[dataId].actor,m_specular_power->value());
+ImageViewer3D->Update();}
+                xywh {113 673 143 18} type Horizontal color 16 labelfont 1 labelsize 12 align 4 minimum 1 maximum 30 step 1 textsize 14
+              }
+            }
+          }
+          Fl_Button {} {
+            image {Images/apply.png} xywh {18 701 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configModelProp->hide();
+m_op2->show();
+m_configIO->hide();}
+            image {Images/apply_close.png} xywh {121 702 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configModelProp->hide();
+m_op2->show();
+m_configIO->hide();}
+            image {Images/Close.png} xywh {313 702 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+        }
+        Fl_Group m_configDemons {
+          label Demons
+          xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+        } {
+          Fl_Group {} {
+            label {Parameters:}
+            xywh {21 518 376 178} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+          } {
+            Fl_Value_Input reg_nlevels {
+              label {Number of levels}
+              xywh {156 532 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 5 textsize 10
+            }
+            Fl_Value_Input reg_steps {
+              label Iterations
+              xywh {156 564 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 20 textsize 10
+            }
+            Fl_Value_Input reg_sigmastats {
+              label {Sigma Stats}
+              xywh {307 531 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 value 4.141 textsize 10
+            }
+            Fl_Value_Input reg_sigmagradient {
+              label {Sigma Gradient}
+              xywh {307 565 45 20} box PLASTIC_DOWN_BOX color 22 labelsize 10 value 0.577 textsize 10
+            }
+            Fl_Group {} {
+              label {Registration Type}
+              xywh {68 615 305 69} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+            } {
+              Fl_Round_Button reg_elasticreg {
+                label Elastic
+                xywh {90 629 100 22} down_box ROUND_DOWN_BOX value 1 labelsize 10
+              }
+              Fl_Round_Button reg_fluidreg {
+                label Fluid
+                xywh {90 660 75 20} down_box ROUND_DOWN_BOX labelsize 10
+              }
+              Fl_Value_Input reg_sigmafluid {
+                label {Sigma Fluid}
+                xywh {300 656 45 20} labelsize 10 value 9 textsize 10
+              }
+              Fl_Value_Input reg_sigmaelastic {
+                label {Sigma Elastic}
+                xywh {299 626 45 20} labelsize 10 value 2 textsize 10
+              }
+            }
+          }
+          Fl_Button {} {
+            callback {this->RegisterMLDFilter();}
+            image {Images/apply.png} xywh {18 702 94 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configDemons->hide();
+m_configIO->hide();
+this->RegisterMLDFilter();}
+            image {Images/apply_close.png} xywh {121 702 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            callback {m_configDemons->hide();
+m_configIO->hide();}
+            image {Images/Close.png} xywh {313 702 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+          }
+        }
+        Fl_Box MyTensorConsole {
+          xywh {5 388 400 347}
+          code0 {\#include "TensorConsole.h"}
+          class TensorConsoleType
+        }
+        Fl_Box MySegmentationConsole {
+          xywh {5 388 400 347}
+          code0 {\#include "SegmentationConsole.h"}
+          class SegmentationConsoleType
+        }
+        Fl_Box MyFilteringConsole {
+          xywh {5 388 400 347}
+          code0 {\#include "FilteringConsole.h"}
+          class FilteringConsoleType
+        }
+        Fl_Box MyBasicOpConsole {
+          xywh {5 388 400 347}
+          code0 {\#include "BasicOpConsole.h"}
+          class BasicOpConsoleType
+        }
+      }
+      Fl_Group m_configIO {
+        label {Select input-output:}
+        xywh {19 436 366 46} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5 hide
+      } {
+        Fl_Choice m_destino {
+          label Output open
+          xywh {310 449 72 25} box PLASTIC_DOWN_BOX down_box BORDER_BOX color 23 selection_color 7 labelsize 10 align 5 textsize 10
+        } {}
+        Fl_Choice m_op1 {
+          label {Input 1} open
+          xywh {32 449 97 25} down_box BORDER_BOX color 23 selection_color 7 labelsize 10 align 5 textsize 10
+        } {}
+        Fl_Choice m_op2 {
+          label {Input 2} open
+          xywh {168 449 97 25} down_box BORDER_BOX color 23 selection_color 7 labelsize 10 align 5 textsize 10
+        } {}
+      }
+    }
+    Fl_Window panelImageInput {
+      label {Image Information}
+      xywh {462 200 590 310} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
+    } {
+      Fl_Group {} {
+        label {Input image}
+        xywh {5 20 570 285} box PLASTIC_DOWN_BOX color 225 labeltype EMBOSSED_LABEL labelsize 16 labelcolor 15 align 5
+      } {
+        Fl_Group {} {
+          label Input
+          xywh {16 142 179 99} box ENGRAVED_BOX color 23 labelfont 1 labelsize 12 align 5
+        } {
+          Fl_Round_Button {} {
+            label {Image 1}
+            callback {if (o->value() == 1) {
+m_activeinput = 0;
+}}
+            xywh {78 155 23 25} type Radio box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX value 1 color 4 labelfont 1 labelsize 12 align 4
+          }
+          Fl_Round_Button {} {
+            label {Image 2}
+            callback {if (o->value() == 1) {
+m_activeinput = 1;
+}}
+            xywh {160 155 23 25} type Radio box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 labelfont 1 labelsize 12 align 4
+          }
+          Fl_Round_Button {} {
+            label {Image 3}
+            callback {if (o->value() == 1) {
+m_activeinput = 2;
+}}
+            xywh {77 202 23 23} type Radio box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 labelfont 1 labelsize 12 align 4
+          }
+          Fl_Round_Button {} {
+            label {Image 4}
+            callback {if (o->value() == 1) {
+m_activeinput = 3;
+}}
+            xywh {159 201 23 23} type Radio box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 labelfont 1 labelsize 12 align 4
+          }
+        }
+        Fl_Input m_InFilePageBrowser {
+          label {Image file name:}
+          callback {this->OnFileInputChange(0);}
+          xywh {16 44 455 25} labelfont 1 labelsize 12 align 5 when 1 textsize 12
+        }
+        Fl_Choice m_InFilePageFormat {
+          label {File Format:}
+          callback {this->OnFileFormatChange(0);}
+          xywh {16 93 210 25} down_box BORDER_BOX labelfont 1 labelsize 12 align 5 textsize 12
+        } {
+          MenuItem {} {
+            label {Choose format...}
+            xywh {15 15 100 20} labelsize 12 hide
+          }
+        }
+        Fl_Button {} {
+          label Ok
+          callback {panelImageInput->hide();
+this->Abrir(m_FileType);}
+          xywh {212 269 89 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff0d color 23 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Cancel
+          callback {panelImageInput->hide();}
+          xywh {312 269 96 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label {&Explore...}
+          callback {Load();
+this->OnFileInputChange(0);}
+          xywh {485 42 78 25} box PLASTIC_UP_BOX shortcut 0x80065 labelsize 12
+        }
+        Fl_Value_Input m_PixelComponents {
+          label {Pixel components}
+          xywh {421 94 45 24} labelfont 1 labelsize 12 maximum 100 value 1 deactivate
+        }
+      }
+    }
+    Fl_Window panelTensorInput {
+      label {Image Information}
+      xywh {523 222 581 181} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
+    } {
+      Fl_Group {} {
+        label {Input DTI} open
+        xywh {5 20 570 155} box PLASTIC_DOWN_BOX color 58 labeltype EMBOSSED_LABEL labelsize 16 labelcolor 4 align 5
+      } {
+        Fl_Input m_InFilePageTensorBrowser {
+          label {Image file name:}
+          callback {this->OnFileInputChange(1);}
+          xywh {16 44 455 25} labelfont 1 labelsize 12 align 5 when 1 textsize 12
+        }
+        Fl_Choice m_InFilePageTensorFormat {
+          label {File Format:}
+          callback {this->OnFileFormatChange(1);}
+          xywh {16 93 210 25} down_box BORDER_BOX labelfont 1 labelsize 12 align 5 textsize 12
+        } {
+          MenuItem {} {
+            label {Choose format...}
+            xywh {15 15 100 20} labelsize 12 hide
+          }
+        }
+        Fl_Button {} {
+          label Ok
+          callback {panelTensorInput->hide();
+this->AbrirTensor(m_FileType);
+ActiveGroup->hide();
+MyTensorConsole->m_configGeodesicPath->show();
+ActiveGroup = MyTensorConsole->m_configGeodesicPath;
+ImageViewer[m_activeinput]->showClickedPoints();}
+          xywh {212 135 89 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff0d color 23 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Cancel
+          callback {panelTensorInput->hide();}
+          xywh {312 135 96 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff1b color 23 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label {&Explore...}
+          callback {this->LoadTensor();
+this->OnFileInputChange(1);}
+          xywh {485 42 78 25} box PLASTIC_UP_BOX shortcut 0x80065 labelsize 12
+        }
+      }
+    }
+    Fl_Window panelDWIInput {
+      label {Input DWI Image}
+      xywh {577 240 581 181} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
+    } {
+      Fl_Group {} {
+        label {Input DWI} open
+        xywh {5 20 570 155} box PLASTIC_DOWN_BOX color 15 labeltype EMBOSSED_LABEL labelsize 16 labelcolor 4 align 5
+      } {
+        Fl_Input m_InFilePageDWIBrowser {
+          label {Image file name:}
+          callback {//this->OnFileInputChange(2);}
+          xywh {16 44 455 25} labelfont 1 labelsize 12 align 5 when 1 textsize 12
+        }
+        Fl_Choice m_InFilePageDWIFormat {
+          label {File Format:}
+          callback {//this->OnFileFormatChange(2);} open
+          xywh {16 93 210 25} down_box BORDER_BOX labelfont 1 labelsize 12 align 5 textsize 12 hide
+        } {
+          MenuItem {} {
+            label {Choose format...}
+            xywh {15 15 100 20} labelsize 12 hide
+          }
+        }
+        Fl_Button {} {
+          label {Open and process}
+          callback {panelDWIInput->hide();
+this->LoadGenericDWIandProcess();
+ActiveGroup->hide();
+MyTensorConsole->m_configGeodesicPath->show();
+ActiveGroup = MyTensorConsole->m_configGeodesicPath;
+ImageViewer[m_activeinput]->showClickedPoints();}
+          xywh {212 116 125 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff0d color 23 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Cancel
+          callback {panelDWIInput->hide();}
+          xywh {351 116 96 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff1b color 23 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label {&Explore...}
+          callback {this->LoadDWI();}
+          xywh {485 42 78 25} box PLASTIC_UP_BOX shortcut 0x80065 labelsize 12
+        }
+        Fl_Button {} {
+          label Open
+          callback {panelDWIInput->hide();
+this->LoadGenericDWI();
+ActiveGroup->hide();
+MyTensorConsole->m_configGeodesicPath->show();
+ActiveGroup = MyTensorConsole->m_configGeodesicPath;
+ImageViewer[m_activeinput]->showClickedPoints();}
+          xywh {111 116 89 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff0d color 23 labelfont 1 labelsize 12
+        }
+      }
+    }
+    Fl_Window panelDim {
+      label {Input Image parameters}
+      xywh {847 565 500 195} type Double box PLASTIC_DOWN_BOX color 40 hide non_modal
+    } {
+      Fl_Group {} {
+        label Image
+        xywh {5 20 490 170} box PLASTIC_DOWN_BOX color 10 labeltype EMBOSSED_LABEL labelsize 16 labelcolor 15 align 5
+      } {
+        Fl_Value_Input m_NumberOfPixelsInX {
+          label {Image dimensions  x:}
+          xywh {200 35 65 24} value 256
+        }
+        Fl_Value_Input m_NumberOfPixelsInY {
+          label {y:}
+          xywh {285 35 65 25} value 256
+        }
+        Fl_Value_Input m_NumberOfPixelsInZ {
+          label {z:}
+          xywh {370 35 65 25} value 1
+        }
+        Fl_Choice m_InPixelType {
+          label {Pixel Type:}
+          callback {this->OnPixelTypeChange();} open
+          xywh {63 113 210 25} down_box BORDER_BOX labelsize 12 align 5 textsize 12
+        } {
+          MenuItem {} {
+            label {Choose pixel type...}
+            xywh {30 30 100 20} labelsize 12 hide
+          }
+        }
+        Fl_Choice m_InByteOrder {
+          label {Byte order}
+          callback {this->OnByteOrderChange();} open
+          xywh {307 113 123 25} down_box BORDER_BOX labelsize 12 align 5 textsize 12
+        } {
+          MenuItem {} {
+            label {Choose...}
+            xywh {40 40 100 20} labelsize 12 hide
+          }
+        }
+        Fl_Value_Input {} {
+          label {Voxel size x:}
+          xywh {200 65 65 25} value 1
+        }
+        Fl_Value_Input {} {
+          label {y:}
+          xywh {285 65 65 25} value 1
+        }
+        Fl_Value_Input {} {
+          label {z:}
+          xywh {370 65 65 25} value 1
+        }
+        Fl_Button {} {
+          label Ok
+          callback {panelDim->hide();
+this->LoadRaw(m_filename);}
+          xywh {150 154 89 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff0d color 180 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Cancel
+          callback {panelDim->hide();}
+          xywh {275 154 96 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 180 labelfont 1 labelsize 12
+        }
+      }
+    }
+    Fl_Window panelImageInfo {
+      label {Image Information}
+      xywh {99 119 515 320} type Double box PLASTIC_DOWN_BOX color 40 hide non_modal
+    } {
+      Fl_Group {} {
+        label {Image Information:}
+        xywh {10 35 495 275} box PLASTIC_DOWN_BOX labeltype EMBOSSED_LABEL labelsize 16 labelcolor 15 align 5
+      } {
+        Fl_Value_Output DimensionX {
+          label {Image dimensions  x:}
+          callback {SetDimensionX((unsigned int)(DimensionX->value()));}
+          xywh {245 50 65 25}
+        }
+        Fl_Value_Output DimensionY {
+          label {y:}
+          callback {SetDimensionY((unsigned int)(DimensionY->value()));}
+          xywh {330 50 65 25}
+        }
+        Fl_Value_Output DimensionZ {
+          label {z:}
+          callback {SetDimensionZ((unsigned int)(DimensionZ->value()));}
+          xywh {415 50 65 25}
+        }
+        Fl_Value_Output m_SpacingX {
+          label {Voxel spacing  x:}
+          xywh {245 80 65 25}
+        }
+        Fl_Value_Output m_SpacingY {
+          label {y:}
+          xywh {330 80 65 25}
+        }
+        Fl_Value_Output m_SpacingZ {
+          label {z:}
+          xywh {415 80 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoOrigin[0]} {
+          label {Image origin  x:}
+          xywh {245 110 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoOrigin[1]} {
+          label {y:}
+          xywh {330 110 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoOrigin[2]} {
+          label {z:}
+          xywh {415 110 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoRange[0]} {
+          label {Intensity range  min:}
+          xywh {245 150 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoRange[1]} {
+          label {max:}
+          xywh {350 150 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoCursorIndex[0]} {
+          label {Cursor voxel index  x:}
+          xywh {245 190 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoCursorIndex[1]} {
+          label {y:}
+          xywh {330 190 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoCursorIndex[2]} {
+          label {z:}
+          xywh {415 190 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoCursorPosition[0]} {
+          label {Cursor spatial position  x:}
+          xywh {245 220 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoCursorPosition[1]} {
+          label {y:}
+          xywh {330 220 65 25}
+        }
+        Fl_Value_Output {m_OutImageInfoCursorPosition[2]} {
+          label {z:}
+          xywh {415 220 65 25}
+        }
+        Fl_Button {} {
+          label Close
+          callback {panelImageInfo->hide();}
+          xywh {200 265 85 30} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 180 labelfont 1 labelsize 12
+        }
+      }
+    }
+    Fl_Window panelMessage {
+      label Message
+      xywh {726 566 467 332} type Double hide
+    } {
+      Fl_Group {} {
+        label Text open
+        xywh {5 20 460 305} box PLASTIC_DOWN_BOX color 10 align 5
+      } {
+        Fl_Button {} {
+          label Close
+          callback {panelMessage->hide();}
+          xywh {200 285 100 30} box PLASTIC_UP_BOX color 14
+        }
+        Fl_Text_Display m_OrientationText {
+          xywh {65 40 360 85}
+        }
+        Fl_Text_Display m_OriginText {
+          xywh {65 140 360 40}
+        }
+        Fl_Text_Display m_MaxMinText {
+          xywh {65 190 360 40}
+        }
+      }
+    }
+    Fl_Window panelRenameVolumes {
+      label {Volumes Management}
+      xywh {591 106 484 128} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
+    } {
+      Fl_Group SelectNewName {
+        label {Select a New Name} open
+        xywh {5 20 475 90} box PLASTIC_DOWN_BOX color 225 labeltype EMBOSSED_LABEL labelsize 16 labelcolor 15 align 5
+      } {
+        Fl_Input NewNameEdit {
+          label {New name}
+          callback {this->OnFileInputChange(0);}
+          xywh {16 44 455 25} labelfont 1 labelsize 12 align 5 when 1 textsize 12
+        }
+        Fl_Button {} {
+          label Ok
+          callback {panelRenameVolumes->hide();
+char which = RenameWhich->value()[0];
+unsigned int pos = (unsigned int)( RenamePosition->value() );
+switch( which ){
+case 'S':
+	this->RenameScalar( pos, NewNameEdit->value() );
+	break;
+case 'T':
+	this->RenameTensor( pos, NewNameEdit->value() );
+	break;
+case 'M':
+	this->RenameModel( pos, NewNameEdit->value() );
+	break;
+default:
+	break;
+}}
+          xywh {145 75 89 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX shortcut 0xff0d color 23 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Cancel
+          callback {panelRenameVolumes->hide();}
+          xywh {250 75 96 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+        }
+      }
+      Fl_Output RenameWhich {
+        xywh {81 26 15 17} hide deactivate
+      }
+      Fl_Value_Input RenamePosition {
+        xywh {105 25 15 18} hide deactivate
+      }
+    }
+    Fl_Window panelAbout {
+      label {About Saturn}
+      xywh {300 229 511 391} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
+    } {
+      Fl_Group {} {
+        label {About Saturn} open
+        xywh {5 20 500 366} box PLASTIC_DOWN_BOX color 16 labeltype EMBOSSED_LABEL labelsize 16 labelcolor 15 align 5
+      } {
+        Fl_Text_Display m_about_textdisplay {
+          xywh {15 29 484 322} align 4
+        }
+        Fl_Button {} {
+          label Close
+          callback {panelAbout->hide();}
+          xywh {210 355 96 25} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1 labelsize 12
+        }
+      }
+    }
+    Fl_Window panelMeasures {
+      label {Fiber Measures}
+      xywh {254 122 787 391} type Double hide
+    } {
+      Fl_Text_Display {Mdisplay[0]} {
+        label FA
+        xywh {10 44 120 95} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[1]} {
+        label RA
+        xywh {140 49 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[2]} {
+        label MD
+        xywh {270 49 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[3]} {
+        label Length
+        xywh {400 49 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[7]} {
+        label Eig1
+        xywh {10 155 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[8]} {
+        label Eig1
+        xywh {140 155 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[9]} {
+        label Eig3
+        xywh {270 155 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[10]} {
+        label Cl
+        xywh {400 155 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[11]} {
+        label Cp
+        xywh {530 155 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[12]} {
+        label Cs
+        xywh {660 155 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[13]} {
+        label Dxx
+        xywh {10 262 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[14]} {
+        label Dxy
+        xywh {140 262 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[15]} {
+        label Dxz
+        xywh {270 262 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[16]} {
+        label Dyy
+        xywh {400 262 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[17]} {
+        label Dyz
+        xywh {530 262 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display {Mdisplay[18]} {
+        label Dzz
+        xywh {660 262 120 85} box ENGRAVED_BOX labelfont 1 align 5
+      }
+      Fl_Text_Display m_fibersText {
+        label {Number of Fibers}
+        xywh {132 5 50 25} box ENGRAVED_BOX labelfont 1 align 4
+      }
+      Fl_Button {} {
+        callback {panelMeasures->hide();}
+        image {Images/Close.png} xywh {355 355 85 27} box PLASTIC_DOWN_BOX labelfont 1 align 16
+      }
+      Fl_Text_Display {Mdisplay[4]} {
+        label Int
+        xywh {533 49 120 100} labelfont 1 align 5 hide
+      }
+      Fl_Text_Display {Mdisplay[5]} {
+        label Disc
+        xywh {662 49 120 100} labelfont 1 align 5 hide
+      }
+      Fl_Text_Display {Mdisplay[6]} {
+        label Conn
+        xywh {662 49 120 100} labelfont 1 align 5 hide
+      }
+    }
+    Fl_Window panelROIsMeasures {
+      label {ROIs Measures}
+      xywh {185 430 780 317} type Double hide
+    } {
+      Fl_Scroll {} {open
+        xywh {25 25 15 15}
+      } {}
+      Fl_Button {} {
+        callback {panelROIsMeasures->hide();}
+        image {Images/Close.png} xywh {345 279 85 27} box PLASTIC_DOWN_BOX labelfont 1 align 16
+      }
+      Fl_Text_Display m_ROIsText {
+        xywh {5 25 770 250}
+      }
+    }
+  }
+  Function {~UsimagToolGUI()} {return_type virtual
+  } {}
+  Function {Show(void)} {return_type {virtual void}
+  } {
+    code {panel->show();} {}
+  }
+  Function {OnTipoProcesadoChange()} {return_type {virtual void}
+  } {}
+  Function {Quit(void)} {return_type {virtual void}
+  } {}
+  Function {Load(void)} {return_type void
+  } {}
+  Function {LoadTensor(void)} {return_type {virtual void}
+  } {}
+  Function {LoadDicomDWI(void)} {return_type {virtual void}
+  } {}
+  Function {LoadME(void)} {return_type void
+  } {}
+  Function {LoadRaw()} {return_type {virtual void}
+  } {}
+  Function {LoadRaw(const char* filename)} {return_type {virtual void}
+  } {}
+  Function {LoadMeta(void)} {return_type void
+  } {}
+  Function {ShowImageSrc(int)} {return_type void
+  } {}
+  Function {Distribuir(InputImageType::Pointer, int, const char*)} {return_type void
+  } {}
+  Function {OnFileInputChange(int)} {return_type {virtual void}
+  } {}
+  Function {OnFileFormatChange(int)} {return_type {virtual void}
+  } {}
+  Function {OnPixelTypeChange()} {return_type {virtual void}
+  } {}
+  Function {OnByteOrderChange()} {return_type {virtual void}
+  } {}
+  Function {OnTipoFiltradoChange()} {return_type {virtual void}
+  } {}
+  Function {OnTipoFiltroWienerChange()} {return_type {virtual void}
+  } {}
+  Function {Abrir(int)} {return_type {virtual void}
+  } {}
+  Function {AbrirTensor(int)} {return_type {virtual void}
+  } {}
+  Function {OnImageModeChange()} {return_type {virtual void}
+  } {}
+  Function {GradientFilter(void)} {return_type {virtual void}
+  } {}
+  Function {RelabelFilter(void)} {return_type {virtual void}
+  } {}
+  Function {RescaleFilter(void)} {return_type {virtual void}
+  } {}
+  Function {ErodeFilter(void)} {return_type {virtual void}
+  } {}
+  Function {DilateFilter(void)} {return_type {virtual void}
+  } {}
+  Function {RelabelCompFilter(void)} {return_type {virtual void}
+  } {}
+  Function {AddFilter(void)} {return_type {virtual void}
+  } {}
+  Function {MultiplyFilter(void)} {return_type {virtual void}
+  } {}
+  Function {RegisterMLDFilter(void)} {return_type {virtual void}
+  } {}
+  decl {Fl_Group *ActiveGroup;} {public
+  }
+  decl {Fl_Group *ActiveOptionGroup;} {public
+  }
+  Function {GenericFilter()} {return_type {virtual void}
+  } {}
+  Function {MEFileInputChange()} {return_type {virtual void}
+  } {}
+  Function {InvertFilter(void)} {return_type {virtual void}
+  } {}
+  Function {InfoImagen()} {return_type {virtual void}
+  } {}
+  Function {ViewData(int,int)} {return_type {virtual void}
+  } {}
+  Function {OnSliceChange(unsigned int,unsigned int)} {return_type {virtual void}
+  } {}
+  Function {OnOrientationChange(unsigned int)} {return_type {virtual void}
+  } {}
+  Function {OnCheckButtonChange(bool, int)} {return_type {virtual void}
+  } {}
+  Function {OnAmplify(Fl_Group*,int)} {return_type {virtual void}
+  } {}
+  Function {OnMinimize(int, int, int)} {return_type {virtual void}
+  } {}
+  Function {LoadModel(void)} {return_type {virtual void}
+  } {}
+  Function {ViewMode3D(void)} {return_type {virtual void}
+  } {}
+  Function {ViewMode4x2D(void)} {return_type {virtual void}
+  } {}
+  Function {ViewMode3_1(void)} {return_type {virtual void}
+  } {}
+  Function {DoModel(int,int,int,InputImageType::Pointer)} {return_type {virtual void}
+  } {}
+  Function {UpdateIntensityW(int,float)} {return_type {virtual void}
+  } {}
+  Function {UpdateIntensityL(int,float)} {return_type {virtual void}
+  } {}
+  Function {LoadFibers()} {return_type {virtual void}
+  } {}
+  Function {WriteFibers(vtkPolyData*)} {return_type {virtual void}
+  } {}
+  Function {ViewSliceIn3DWindow(InputImageType::Pointer,int)} {return_type {virtual void}
+  } {}
+  Function {Save()} {return_type {virtual void}
+  } {}
+  Function {ShowImageColor(int)} {return_type {virtual void}
+  } {}
+  Function {DeleteScalar(int)} {return_type {virtual void}
+  } {}
+  Function {DeleteModel(int)} {return_type {virtual void}
+  } {}
+  Function {SaveTensor()} {return_type {virtual void}
+  } {}
+  Function {SaveTensorVTK()} {return_type {virtual void}
+  } {}
+  Function {LoadDWI(void)} {return_type {virtual void}
+  } {}
+  Function {SaveModel()} {return_type {virtual void}
+  } {}
+  Function {LoadGenericDWI(void)} {open return_type {virtual void}
+  } {}
+  Function {LoadGenericDWIandProcess(void)} {open return_type {virtual void}
+  } {}
+  Function {DeleteTensor(int)} {open return_type {virtual void}
+  } {}
+  Function {ZoomIn(void)} {open return_type {virtual void}
+  } {}
+  Function {ZoomOut(void)} {open return_type {virtual void}
+  } {}
+  Function {RenameScalar(int,const char*)} {open return_type {virtual void}
+  } {}
+  Function {RenameTensor(int,const char*)} {open return_type {virtual void}
+  } {}
+  Function {RenameModel(int,const char*)} {open return_type {virtual void}
+  } {}
+  Function {SetOverlay(int)} {open return_type {virtual void}
+  } {}
+  Function {ClearOverlay()} {open return_type {virtual void}
+  } {}
+  Function {SaveOverlay()} {return_type {virtual void}
+  } {}
+  Function {LoadOverlay(int)} {return_type {virtual void}
+  } {}
+  Function {SaveDWI()} {return_type {virtual void}
+  } {}
+  Function {ChangeViewerColorMode()} {return_type {virtual void}
+  } {}
+} 

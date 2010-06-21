@@ -1,0 +1,189 @@
+/*=========================================================================
+
+  Program:   VolumesContainer.h
+  Language:  C++
+  Date:      7-05-2008
+  Version:   1.0
+
+  Copyright (c) 2008 Laboratoy of Image Processing, UVA. All rights reserved.
+  See http://www.lpi.tel.uva.es/UsimagTool for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even 
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+     PURPOSE. 
+
+=========================================================================*/
+#ifndef _VolumesContainer_h
+#define _VolumesContainer_h
+
+#include <vector>
+#include <string>
+#include "itkImage.h"
+#include "vtkPolyData.h"
+#include "vtkActor.h"
+#include "tensor/itkDTITensor.h"
+#include "tensor/itkDWImages.h"
+#include <FL/Fl.H>
+#include <FL/Fl_Choice.H>
+#include <FL/Fl_Browser.H>
+
+#include "tensor/itkStrainTensor.h"
+
+typedef itk::Image< float, 3 >           InputImageType;
+typedef itk::DTITensor< float >          TensorPixelType;
+typedef itk::Image< TensorPixelType, 3 > TensorImageType;
+typedef itk::DWImages< float, 3 >    DWImagesType;
+typedef itk::StrainTensor<float> STPixelType;
+typedef itk::Image<STPixelType, 3> STImageType;
+
+
+class DataElementType
+{
+public:
+	DataElementType(){};
+	~DataElementType(){};
+	void DestroyData(){
+		image = NULL;
+	}
+	bool generateNewData( InputImageType::Pointer aux, unsigned int ident, const char* string ){
+		image  = aux;
+		Id     = ident;
+		nombre = std::string(string);
+		return true;
+	}
+	bool copyData( InputImageType::Pointer aux ){
+		image = aux;
+		return true;
+	}
+	unsigned int             Id;
+	std::string              nombre;
+	InputImageType::Pointer  image;
+};
+	
+class DataTensorElementType
+{
+public:
+	DataTensorElementType(){};
+	~DataTensorElementType(){};
+	void DestroyData(){
+		image = NULL;
+	}
+	bool generateNewData( InputImageType::Pointer aux, unsigned int ident, const char* string ){
+		return false;
+	}
+	bool copyData( InputImageType::Pointer aux ){
+		return false;
+	}
+	unsigned int             Id;
+	std::string              nombre;
+	TensorImageType::Pointer image;
+};
+	
+class DataDWIElementType
+	{
+	public:
+		DataDWIElementType(){};
+		~DataDWIElementType(){};
+		void DestroyData(){
+			image = NULL;
+		}
+		bool generateNewData( InputImageType::Pointer aux, unsigned int ident, const char* string ){
+			return false;
+		}
+		bool copyData( InputImageType::Pointer aux ){
+			return false;
+		}
+		unsigned int             Id;
+		std::string              nombre;
+		DWImagesType::Pointer    image;
+};
+
+class DataModelElementType
+{
+public:
+	DataModelElementType(){};
+	~DataModelElementType(){};
+	void DestroyData(){
+		if( data==NULL )
+			std::cerr << "data es distinto de NULL" << std::endl;
+		if( actor != NULL ){
+			actor->VisibilityOff();
+			actor->Delete();
+		}
+		if( data != NULL )
+			data->Delete();
+	}
+	bool generateNewData( InputImageType::Pointer aux, unsigned int ident, const char* string ){
+		return false;
+	}
+	bool copyData( InputImageType::Pointer aux ){
+		return false;
+	}
+	unsigned int             Id;
+
+	std::string              nombre;
+	vtkPolyData*             data;
+	vtkActor*                actor;
+};
+
+class DataSTElementType
+{
+public:
+	DataSTElementType(){};
+	~DataSTElementType(){};
+	void DestroyData(){
+		image = NULL;
+	}
+	bool generateNewData( InputImageType::Pointer aux, unsigned int ident, const char* string ){
+		return false;
+	}
+	bool copyData( InputImageType::Pointer aux ){
+		return false;
+	}
+	unsigned int             Id;
+	std::string              nombre;
+	STImageType::Pointer image;
+};
+
+template < class DataType >
+class VolumesContainer : public std::vector< DataType >
+{
+public:
+	typedef std::vector<DataType> Superclass;
+	VolumesContainer();
+	~VolumesContainer();
+	void push_back( const DataType& datum );
+	void add( const DataType& datum );
+	void erase( unsigned int i );
+	unsigned int set( unsigned int i, const DataType& datum );
+	DataType& get( unsigned int i );
+	void addChoice( Fl_Choice* viewer );
+	void removeChoice( unsigned int );
+	void addBrowser( Fl_Browser* viewer );
+	void removeBrowser( unsigned int );
+	void generateNewData( InputImageType::Pointer aux );
+	void generateNewData( InputImageType::Pointer aux, const char* name );
+	void copyData( unsigned int j, InputImageType::Pointer aux );
+	void consolidateNames();
+	int  uniqueString( int allowed, char* unique );
+	void rename( unsigned int pos, const char* newname );
+private:
+	Fl_Choice**    allChoices;
+	unsigned int   numChoices;
+	unsigned int*  baseChoices;
+	Fl_Browser**   allBrowsers;
+	unsigned int   numBrowsers;
+	unsigned int*  baseBrowsers;
+};
+
+
+
+#ifndef ITK_MANUAL_INSTANTIATION
+#include "VolumesContainer.txx"
+#endif
+
+#endif
+
+
+
+

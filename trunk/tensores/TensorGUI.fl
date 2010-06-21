@@ -1,0 +1,1559 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+widget_class {\#include <itkImage.h>} TensorGUI {open
+  xywh {561 49 410 685} type Double
+  code0 {\#include <FL/Fl_Browser.H>}
+  code1 {\#include <FL/Fl_Choice.H>}
+  code2 {\#include "tensor/itkDTITensor.h"}
+  code3 {\#include <itkImage.h>} visible
+} {
+  Fl_Group m_configGeodesicPath {
+    label Tractography
+    xywh {5 382 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include "tensor/itkDWImages.h"}
+    code1 {\#include "Viewer3D.h"}
+  } {
+    Fl_Group {} {
+      label {Options:} open
+      xywh {8 398 396 300} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Group {} {
+        label Color open
+        xywh {12 401 388 66} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Value_Slider m_color_r {
+          label R
+          xywh {39 443 110 17} type Horizontal labelfont 1 align 4 step 0.01 value 1 textsize 14 hide
+        }
+        Fl_Value_Slider m_color_g {
+          label G
+          xywh {165 443 110 17} type Horizontal labelfont 1 align 4 step 0.01 textsize 14 hide
+        }
+        Fl_Value_Slider m_color_b {
+          label B
+          xywh {290 443 110 17} type Horizontal labelfont 1 align 4 step 0.01 textsize 14 hide
+        }
+        Fl_Check_Button {colortype[0]} {
+          label FA
+          callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[0]->value(true);
+m_colorvalue = 0;}
+          xywh {22 419 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+        }
+        Fl_Check_Button {colortype[1]} {
+          label Size
+          callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[1]->value(true);
+m_colorvalue = 1;}
+          xywh {61 419 50 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Check_Button {colortype[2]} {
+          label RGB
+          callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[2]->value(true);
+m_colorvalue = 2;}
+          xywh {113 419 48 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Check_Button {colortype[3]} {
+          label Curvature
+          callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[3]->value(true);
+m_colorvalue = 3;}
+          xywh {118 422 78 15} down_box DOWN_BOX labelfont 1 labelsize 11 hide
+        }
+        Fl_Check_Button {colortype[4]} {
+          label Distance
+          callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[4]->value(true);
+m_colorvalue = 4;}
+          xywh {160 419 72 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Check_Button {colortype[5]} {
+          label {Major Eig}
+          callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[5]->value(true);
+m_colorvalue = 5;}
+          xywh {230 419 78 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label {Set fiber color}
+          callback {this->SetFibersColor(m_colorvalue);
+ImageViewer3D->Update();}
+          xywh {304 414 90 22} box PLASTIC_DOWN_BOX color 11 labelfont 1 labelsize 12
+        }
+        Fl_Group {} {open
+          xywh {16 440 380 24} box PLASTIC_THIN_DOWN_BOX color 11 labelfont 1 labelsize 12 align 0
+        } {
+          Fl_Check_Button {colortype[6]} {
+            label skin
+            callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[6]->value(true);
+m_colorvalue = 6;
+ImageViewer[m_activeinput]->ChangeActiveClass(4);}
+            xywh {20 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 3 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {colortype[7]} {
+            label bone
+            callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[7]->value(true);
+m_colorvalue = 7;
+ImageViewer[m_activeinput]->ChangeActiveClass(7);}
+            xywh {72 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 16 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {colortype[8]} {
+            label gray
+            callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[8]->value(true);
+m_colorvalue = 8;
+ImageViewer[m_activeinput]->ChangeActiveClass(8);}
+            xywh {125 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 32 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {colortype[9]} {
+            label red
+            callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[9]->value(true);
+m_colorvalue = 9;
+ImageViewer[m_activeinput]->ChangeActiveClass(1);}
+            xywh {179 444 46 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 1 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {colortype[10]} {
+            label green
+            callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[10]->value(true);
+m_colorvalue = 10;
+ImageViewer[m_activeinput]->ChangeActiveClass(5);}
+            xywh {227 444 55 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 2 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {colortype[11]} {
+            label blue
+            callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[11]->value(true);
+m_colorvalue = 11;
+ImageViewer[m_activeinput]->ChangeActiveClass(3);}
+            xywh {285 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 6 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {colortype[12]} {
+            label sea
+            callback {for (unsigned int i=0;i<13;i++) {
+colortype[i]->value(false);
+}
+colortype[12]->value(true);
+m_colorvalue = 12;
+ImageViewer[m_activeinput]->ChangeActiveClass(6);}
+            xywh {339 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 15 labelfont 1 labelsize 12
+          }
+        }
+      }
+      Fl_Group {} {
+        label Parameters
+        xywh {12 470 388 92} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Value_Slider m_int_step {
+          label {Integration Step }
+          xywh {149 481 245 17} type Horizontal box PLASTIC_DOWN_BOX labelfont 1 align 0 step 0.1 value 0.5 textsize 14 hide
+        }
+        Fl_Value_Slider m_prop_time {
+          label {Propag. time}
+          xywh {118 482 275 17} type Horizontal labelfont 1 align 4 maximum 1000 step 10 value 100 textsize 14 hide
+        }
+        Fl_Value_Slider m_radius {
+          label Radius
+          xywh {16 485 300 17} type Horizontal labelfont 1 labelsize 12 align 8 minimum 0.01 step 0.01 value 0.3 textsize 14
+        }
+        Fl_Value_Slider m_step_length {
+          label {Step Length}
+          xywh {16 504 301 17} type Horizontal labelfont 1 labelsize 12 align 8 maximum 2 step 0.01 value 0.98 textsize 14
+        }
+        Fl_Value_Slider m_fa_threshold {
+          label {FA threshold}
+          xywh {16 523 300 17} type Horizontal labelfont 1 labelsize 12 align 8 step 0.01 value 0.15 textsize 14
+        }
+        Fl_Value_Slider m_curvature_threshold {
+          label {Curv Thresh}
+          xywh {16 542 300 17} type Horizontal labelfont 1 labelsize 12 align 8 maximum 180 step 1 value 90 textsize 14
+        }
+      }
+      Fl_Group {} {
+        label ROIs
+        xywh {12 566 388 44} box PLASTIC_DOWN_BOX color 44 labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Button {} {
+          label load
+          callback {ImageViewer[m_activeinput]->Update();}
+          xywh {74 569 48 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
+        }
+        Fl_Button {} {
+          label show
+          callback {//ImageViewer[m_activeinput]->showClickedPoints();
+ImageViewer[m_activeinput]->ViewOverlayData();
+ImageViewer[m_activeinput]->Update();}
+          xywh {21 589 48 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
+        }
+        Fl_Button {} {
+          label clear
+          callback {//ImageViewer[m_activeinput]->clearClickedPointsStored();
+ImageViewer[m_activeinput]->ClearOverlay();
+ImageViewer[m_activeinput]->Update();}
+          xywh {75 589 45 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
+        }
+        Fl_Value_Slider clickedRadius_ {
+          label {clicked radius}
+          callback {ImageViewer[m_activeinput]->SetClickedRadius(static_cast<unsigned int>(o->value()));}
+          xywh {125 592 105 14} type Horizontal labelfont 1 labelsize 12 align 5 maximum 10 step 1 value 2 textsize 14 hide
+        }
+        Fl_Counter clickedRadius {
+          label radius
+          callback {ImageViewer[m_activeinput]->SetClickedRadius(static_cast<unsigned int>(o->value()));}
+          xywh {127 589 46 17} type Simple labelfont 1 labelsize 12 align 1 minimum 0 maximum 10 step 1 value 2
+        }
+        Fl_Check_Button {} {
+          label erase
+          callback {if (o->value() == true) {
+ImageViewer[m_activeinput]->ChangeActiveClass(0);
+} else {
+ImageViewer[m_activeinput]->ChangeActiveClass(int(class_value->value()));
+}}
+          xywh {179 591 53 15} down_box DOWN_BOX labelfont 1 labelsize 12 align 0
+        }
+        Fl_Counter class_value {
+          label class
+          callback {ImageViewer[m_activeinput]->ChangeActiveClass(int(o->value()));}
+          xywh {235 589 46 17} type Simple labelfont 1 labelsize 12 align 1 minimum 0 maximum 50 step 1 value 1
+        }
+        Fl_Value_Slider {} {
+          label opacity
+          callback {ImageViewer[m_activeinput]->SetOverlayOpacity(o->value());}
+          xywh {286 590 109 16} type Horizontal labelfont 1 labelsize 12 align 5 step 0.01 value 1 textsize 14
+        }
+      }
+      Fl_Group {} {
+        label Execution
+        xywh {12 613 388 72} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Button TrachtographyVTKButton {
+          label {tract vtk}
+          callback {this->CreateStreamLineNew();}
+          xywh {18 632 97 25} box PLASTIC_DOWN_BOX color 4 labelfont 1 hide
+        }
+        Fl_Button RungeKuttaButton {
+          label Tractography
+          callback {this->RungeKuttaTractography();}
+          xywh {19 631 103 21} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label {Tractog. Logic}
+          callback {//this->RungeKuttaTractographyWithConnection();
+int label1 = (int)m_roi1->value();
+int label2 = (int)m_roi2->value();
+std::vector<int> aux;
+aux.push_back(m_roi3->value());
+if (m_exc_all->value() == 1) {
+  for (int i=1;i<33;i++) {
+    if (i != label1 && i!= label2) {
+     aux.push_back(i);
+    }
+  }
+}
+this->SelectFiberTractsConnection(label1,label2, aux);}
+          xywh {218 631 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+        }
+        Fl_Check_Button m_connect {
+          label connect
+          xywh {120 650 67 15} down_box DOWN_BOX labelfont 1 labelsize 12 hide
+        }
+        Fl_Button RungeKuttaButtonAll {
+          label {Brute force}
+          callback {this->BruteForceTractography();}
+          xywh {131 631 80 21} box PLASTIC_DOWN_BOX color 9 labelfont 1 labelsize 12
+        }
+        Fl_Button SelectFibers {
+          label {Select Fibers}
+          callback {this->SelectFiberTracts(-1);}
+          xywh {131 656 80 21} box PLASTIC_DOWN_BOX color 9 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label {Tractog. Auto}
+          callback {m_configGeodesicPath->hide();
+m_configIO->hide();
+m_configTractographyAuto->show();
+ActiveGroup = this->m_configTractographyAuto;}
+          xywh {19 656 103 21} box PLASTIC_DOWN_BOX color 14 labelfont 1 labelsize 12
+        }
+        Fl_Spinner m_roi1 {
+          label {ROI 1}
+          xywh {246 655 32 20} labelfont 1 labelsize 11
+        }
+        Fl_Spinner m_roi2 {
+          label {ROI 2}
+          xywh {312 655 32 20} labelfont 1 labelsize 11
+        }
+        Fl_Spinner m_roi3 {
+          label {Ex.}
+          xywh {364 655 32 20} labelfont 1 labelsize 11
+        }
+        Fl_Check_Button m_exc_all {
+          label {Excl. all}
+          xywh {324 633 71 17} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+      }
+    }
+    Fl_Button {} {
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configTractographyAuto {
+    label {Tractography Auto}
+    xywh {5 388 400 350} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {9 407 394 298} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Group {} {
+        label Tracts open
+        xywh {13 426 379 173} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 5
+      } {
+        Fl_Group {} {
+          label Left
+          xywh {21 441 176 129} box PLASTIC_DOWN_BOX color 16 labelfont 1 labelsize 12 align 5
+        } {
+          Fl_Check_Button {chk[0]} {
+            label {1 cst}
+            callback {m_roi_auto[m_active_roi]->value(1);}
+            tooltip {corticospinal tract} xywh {36 446 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 1 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[1]} {
+            label {2. ml}
+            callback {m_roi_auto[m_active_roi]->value(2);}
+            tooltip {medial lemniscus} xywh {36 463 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 3 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[2]} {
+            label {3. scp}
+            callback {m_roi_auto[m_active_roi]->value(3);}
+            tooltip {superior cerebellar peduncle} xywh {36 481 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 152 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[3]} {
+            label {4. icp}
+            callback {m_roi_auto[m_active_roi]->value(4);}
+            tooltip {middle cerebellar peduncle} xywh {36 498 64 15} box EMBOSSED_BOX down_box DOWN_BOX color 12 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[4]} {
+            label {5. tap}
+            callback {m_roi_auto[m_active_roi]->value(5);}
+            tooltip {inferior cerebellar peduncle} xywh {36 516 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 58 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[5]} {
+            label {6. atr}
+            callback {m_roi_auto[m_active_roi]->value(6);}
+            tooltip {anterior thalamic radiation} xywh {36 533 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 2 labelfont 1 labelsize 12 deactivate
+          }
+          Fl_Check_Button {chk[6]} {
+            label {7.ptr/str}
+            callback {m_roi_auto[m_active_roi]->value(7);}
+            tooltip {thalamic radiation} xywh {36 550 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 134 labelfont 1 labelsize 12 deactivate
+          }
+          Fl_Check_Button {chk[7]} {
+            label {8. sfo}
+            callback {m_roi_auto[m_active_roi]->value(8);}
+            tooltip {superior fronto-occipital tract} xywh {115 446 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 5 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[8]} {
+            label {9. ifo}
+            callback {m_roi_auto[m_active_roi]->value(9);}
+            tooltip {inferior fronto-occipital tract} xywh {115 463 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 73 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[9]} {
+            label {10. slf}
+            callback {m_roi_auto[m_active_roi]->value(10);}
+            tooltip {superior longitudinal} xywh {115 481 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 16 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[10]} {
+            label {11. ilf}
+            callback {m_roi_auto[m_active_roi]->value(11);}
+            tooltip {inferior longitudinal fasciculus} xywh {115 498 65 15} box ENGRAVED_BOX down_box DOWN_BOX color 10 labelfont 1 labelsize 12 deactivate
+          }
+          Fl_Check_Button {chk[11]} {
+            label {12. unc}
+            callback {m_roi_auto[m_active_roi]->value(12);}
+            tooltip {uncinate fasciculus} xywh {115 516 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 68 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[12]} {
+            label {13. st}
+            callback {m_roi_auto[m_active_roi]->value(13);}
+            tooltip {fornix/stria terminalis} xywh {115 533 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 11 labelfont 1 labelsize 12 deactivate
+          }
+          Fl_Check_Button {chk[13]} {
+            label {14. cg}
+            callback {m_roi_auto[m_active_roi]->value(14);}
+            tooltip cingulum xywh {115 550 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 4 labelfont 1 labelsize 12
+          }
+        }
+        Fl_Group {} {
+          label Right
+          xywh {207 441 176 129} box PLASTIC_DOWN_BOX color 17 labelfont 1 labelsize 12 align 5
+        } {
+          Fl_Check_Button {chk[14]} {
+            label {15. cst}
+            callback {m_roi_auto[m_active_roi]->value(15);}
+            tooltip {corticospinal tract} xywh {221 446 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 12 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[15]} {
+            label {16. ml}
+            callback {m_roi_auto[m_active_roi]->value(16);}
+            tooltip {medial lemniscus} xywh {221 463 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 72 labelfont 1 labelsize 12 labelcolor 7
+          }
+          Fl_Check_Button {chk[16]} {
+            label {17. scp}
+            callback {m_roi_auto[m_active_roi]->value(17);}
+            tooltip {superior cerebellar peduncle} xywh {221 480 65 15} box ENGRAVED_BOX down_box DOWN_BOX color 64 labelfont 1 labelsize 12 labelcolor 7
+          }
+          Fl_Check_Button {chk[17]} {
+            label {18. icp}
+            callback {m_roi_auto[m_active_roi]->value(18);}
+            tooltip {middle cerebellar peduncle} xywh {221 497 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 76 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[18]} {
+            label {19. tap}
+            callback {m_roi_auto[m_active_roi]->value(19);}
+            tooltip {inferior cerebellar peduncle} xywh {221 515 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 6 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[19]} {
+            label {20. atr}
+            callback {m_roi_auto[m_active_roi]->value(20);}
+            tooltip {anterior thalamic radiation} xywh {221 533 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 7 labelfont 1 labelsize 12 deactivate
+          }
+          Fl_Check_Button {chk[20]} {
+            label {21.ptr/str}
+            callback {m_roi_auto[m_active_roi]->value(21);}
+            tooltip {posterior/superior thalamic radiation} xywh {221 550 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 168 labelfont 1 labelsize 12 deactivate
+          }
+          Fl_Check_Button {chk[21]} {
+            label {22. sfo}
+            callback {m_roi_auto[m_active_roi]->value(22);}
+            tooltip {superior fronto-occipital tract} xywh {300 446 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 74 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[22]} {
+            label {23. ifo}
+            callback {m_roi_auto[m_active_roi]->value(23);}
+            tooltip {inferior fronto-occipital tract} xywh {300 463 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 141 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[23]} {
+            label {24. slf}
+            callback {m_roi_auto[m_active_roi]->value(24);}
+            tooltip {superior longitudinal fasciculus} xywh {300 480 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 179 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[24]} {
+            label {25. ilf}
+            callback {m_roi_auto[m_active_roi]->value(25);}
+            tooltip {inferior longitudinal fasciculus} xywh {300 497 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 170 labelfont 1 labelsize 12 labelcolor 7 deactivate
+          }
+          Fl_Check_Button {chk[25]} {
+            label {26. unc}
+            callback {m_roi_auto[m_active_roi]->value(26);}
+            tooltip {uncinate fasciculus} xywh {300 515 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 152 labelfont 1 labelsize 12 labelcolor 7
+          }
+          Fl_Check_Button {chk[26]} {
+            label {27. st}
+            callback {m_roi_auto[m_active_roi]->value(27);}
+            tooltip {fornix/stria terminalis} xywh {300 533 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 91 labelfont 1 labelsize 12 deactivate
+          }
+          Fl_Check_Button {chk[27]} {
+            label {28. cg}
+            callback {m_roi_auto[m_active_roi]->value(28);}
+            tooltip cingulum xywh {300 550 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 128 labelfont 1 labelsize 12
+          }
+        }
+        Fl_Group {} {
+          xywh {21 573 363 23} box PLASTIC_DOWN_BOX
+        } {
+          Fl_Check_Button {chk[28]} {
+            label {29. CC}
+            callback {m_roi_auto[m_active_roi]->value(29);}
+            tooltip {Corpus Callosum} xywh {37 576 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 101 labelfont 1 labelsize 12
+          }
+          Fl_Check_Button {chk[29]} {
+            label {30. fornix}
+            callback {m_roi_auto[m_active_roi]->value(30);}
+            tooltip tapetum xywh {111 577 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 71 labelfont 1 labelsize 12 labelcolor 7
+          }
+          Fl_Check_Button {chk[30]} {
+            label {31. mcp}
+            callback {m_roi_auto[m_active_roi]->value(31);}
+            tooltip tapetum xywh {183 577 65 15} box EMBOSSED_BOX down_box DOWN_BOX color 152 labelfont 1 labelsize 12 labelcolor 7
+          }
+        }
+      }
+      Fl_Button {} {
+        label {Do Tract}
+        callback {std::vector<unsigned int> vector_indices;
+for (unsigned int i =0;i<31;i++) {
+if (chk[i]->value() == true) vector_indices.push_back(i);
+}
+CreateAutomaticFiberTract(vector_indices);}
+        xywh {19 603 76 30} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label Normalize
+        callback {RegisterSeedsToData();}
+        xywh {98 603 76 30} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Load ROI}
+        callback {LoadROIS();}
+        xywh {177 603 76 30} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Do Connect}
+        callback {std::vector<unsigned int> vector_indices;
+for (unsigned int i =0;i<31;i++) {
+if (chk[i]->value() == true) vector_indices.push_back(i);
+}
+CreateAutomaticFiberTractRuben(vector_indices);}
+        xywh {177 635 76 30} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Auto Select}
+        callback {for (unsigned int i =0;i<31;i++) {
+if (chk[i]->value() == true) SelectAutoFiberTracts(i+1);
+}}
+        xywh {19 635 76 30} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Select Tract}
+        callback {for (unsigned int i =0;i<31;i++) {
+if (chk[i]->value() == true) SelectFiberTracts(i+1);
+}}
+        xywh {98 635 76 30} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Select all}
+        callback {bool t = !chk[0]->value();
+for (unsigned int i =0;i<31;i++) {
+chk[i]->value(t);
+}}
+        xywh {324 603 67 30} box PLASTIC_DOWN_BOX color 11 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label Main
+        callback {m_configTractographyAuto->hide();
+m_configIO->hide();
+m_configGeodesicPath->show();
+ActiveGroup = m_configGeodesicPath;}
+        xywh {324 635 67 30} box PLASTIC_DOWN_BOX color 8 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Tract Logic}
+        callback {int label1 = (int)m_roi_auto[0]->value();
+int label2 = (int)m_roi_auto[1]->value();
+std::vector<int> aux;
+aux.push_back(m_roi_auto[2]->value());
+this->SelectFiberTractsConnection(label1,label2, aux);}
+        xywh {19 668 76 30} box PLASTIC_DOWN_BOX color 33 labelfont 1 labelsize 12
+      }
+      Fl_Counter {m_roi_auto[0]} {
+        label {ROI 1}
+        callback {m_active_roi = 0;}
+        xywh {137 674 50 20} type Simple labelfont 1 labelsize 12 align 4 step 1 value 1
+      }
+      Fl_Counter {m_roi_auto[1]} {
+        label {ROI 2}
+        callback {m_active_roi = 1;}
+        xywh {229 674 50 20} type Simple labelfont 1 labelsize 12 align 4 step 1 value 1
+      }
+      Fl_Counter {m_roi_auto[2]} {
+        label {ROI 3}
+        callback {m_active_roi = 2;}
+        xywh {321 674 50 20} type Simple labelfont 1 labelsize 12 align 4 step 1
+      }
+    }
+    Fl_Button {} {
+      image {Images/apply.png} xywh {10 708 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configTractographyAuto->hide();
+m_configIO->hide();}
+      image {Images/apply_close.png} xywh {118 708 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configTractographyAuto->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 708 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configBackTrace {
+    label {Back trace}
+    xywh {5 388 400 350} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include "tensor/itkDWImages.h"}
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {12 503 389 202} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Button {} {
+        label show
+        callback {ImageViewer[m_activeinput]->showClickedPoints();}
+        xywh {15 673 48 25} box PLASTIC_DOWN_BOX color 11 labelfont 1
+      }
+      Fl_Button {} {
+        label clear
+        callback {ImageViewer[m_activeinput]->clearClickedPointsStored();}
+        xywh {69 673 45 25} box PLASTIC_DOWN_BOX color 11 labelfont 1
+      }
+      Fl_Value_Slider clickedRadius2 {
+        label {clicked radius}
+        callback {ImageViewer[m_activeinput]->SetClickedRadius(static_cast<unsigned int>(o->value()));}
+        xywh {119 682 105 14} type Horizontal labelfont 1 labelsize 12 align 5 maximum 10 step 1 value 2 textsize 14
+      }
+      Fl_Text_Display {} {
+        label seeds
+        xywh {12 668 220 35} labelfont 1 labelsize 12 align 5
+      }
+      Fl_Button GeoPathButton {
+        label {geo path}
+        callback {this->geodesicPath3D();
+this->CreateStreamLineFloat();}
+        xywh {125 625 65 25} box PLASTIC_DOWN_BOX color 4 labelfont 1
+      }
+      Fl_Button GeoPathFloatButton {
+        label {geo path float}
+        callback {this->geodesicPath3D();
+this->CreateStreamLineFloat();}
+        xywh {247 615 120 25} box PLASTIC_DOWN_BOX color 4 labelfont 1 hide
+      }
+      Fl_Value_Slider m_h {
+        label h
+        xywh {116 532 245 17} type Horizontal labelfont 1 align 4 minimum 0.1 maximum 20 step 0.1 value 1 textsize 14
+      }
+      Fl_Value_Slider m_sigma {
+        label Sigma
+        xywh {116 553 275 17} type Horizontal labelfont 1 align 4 minimum 0.5 maximum 10 step 0.1 value 3 textsize 14
+      }
+      Fl_Value_Slider m_metodo {
+        label Metodo
+        xywh {116 573 275 17} type Horizontal labelfont 1 align 4 minimum 1 maximum 4 step 1 value 4 textsize 14
+      }
+      Fl_Value_Slider m_metodo_pto_intermedio {
+        label Metodo
+        xywh {116 594 275 17} type Horizontal labelfont 1 align 4 minimum 1 maximum 3 step 1 value 1 textsize 14
+      }
+    }
+    Fl_Button {} {
+      image {Images/apply.png} xywh {10 708 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/apply_close.png} xywh {118 708 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 708 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group configDTI {
+    label {Scalar magnitudes}
+    xywh {5 388 400 350} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include "MyfltkImageViewer/MyfltkImageViewer.h"}
+  } {
+    Fl_Group {} {
+      xywh {14 410 385 291} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Text_Display {} {
+        label Basic
+        xywh {30 426 350 84} labelfont 1 labelsize 12 align 5
+      }
+      Fl_Button {} {
+        label FA
+        callback {this->ComputeScalarValue(  0,  "FA",  m_activeinput  );}
+        tooltip {Show Fractional Anisotropy} image {Images/FA_color.jpg} xywh {40 432 50 70} box ENGRAVED_BOX color 16 labelfont 1
+      }
+      Fl_Button {} {
+        label RA
+        callback {this->ComputeScalarValue(  1,  "RA",  m_activeinput  );}
+        tooltip {Show Relative Anisotropy} image {Images/FA_color.jpg} xywh {98 432 50 70} box ENGRAVED_BOX color 16 labelfont 1
+      }
+      Fl_Button {} {
+        label MD
+        callback {this->ComputeScalarValue(  5,  "MD",  m_activeinput  );}
+        tooltip {Show Mean Diffusivity} image {Images/MD.jpg} xywh {157 432 50 70} box ENGRAVED_BOX color 16 labelfont 1
+      }
+      Fl_Button {} {
+        label Color
+        callback {this->ColorOrientation();}
+        tooltip {Show color by orientation} image {Images/Color_orientacion.jpg} xywh {217 432 50 70} box ENGRAVED_BOX color 16 labelfont 1
+      }
+      Fl_Text_Display {} {
+        label Advanced
+        xywh {30 528 350 167} labelfont 1 labelsize 12 align 5
+      }
+      Fl_Button {} {
+        label Cl
+        callback {this->ComputeScalarValue(  12,  "Cl",  m_activeinput  );}
+        tooltip {Show linear coefficient} image {Images/prolate.jpg} xywh {40 536 50 70} box ENGRAVED_BOX color 29 labelfont 1
+      }
+      Fl_Button {} {
+        label Cp
+        callback {this->ComputeScalarValue(  13,  "Cp",  m_activeinput  );}
+        tooltip {Show planar coefficient} image {Images/oblate.jpg} xywh {95 536 50 70} box ENGRAVED_BOX color 29 labelfont 1
+      }
+      Fl_Button {} {
+        label Cs
+        callback {this->ComputeScalarValue(  14,  "Cs",  m_activeinput  );}
+        tooltip {Show spherical coefficient} image {Images/isotropo.jpg} xywh {150 536 50 70} box ENGRAVED_BOX color 29 labelfont 1
+      }
+      Fl_Button {} {
+        label {Eig 1}
+        callback {this->ComputeScalarValue(    2,  "E1",  m_activeinput  );}
+        tooltip {Show Mayor Eigenvalue} image {Images/Autoval_1_color.jpg} xywh {40 610 50 70} box ENGRAVED_BOX color 42 labelfont 1
+      }
+      Fl_Button {} {
+        label {Eig 2}
+        callback {this->ComputeScalarValue(    3,  "E2",  m_activeinput  );}
+        tooltip {Show Medium Eigenvalue} image {Images/Autoval_2_color.jpg} xywh {95 610 50 70} box ENGRAVED_BOX color 42 labelfont 1
+      }
+      Fl_Button {} {
+        label {Eig 3}
+        callback {this->ComputeScalarValue(    4,  "E3",  m_activeinput  );}
+        tooltip {Show Lower Eigenvalue} image {Images/Autoval_3_color.jpg} xywh {150 610 50 70} box ENGRAVED_BOX color 42 labelfont 1
+      }
+      Fl_Button {} {
+        label Dxx
+        callback {this->ComputeScalarValue(    6,  "Dxx",  m_activeinput  );}
+        tooltip {Show Component xx} image {Images/Dxx.jpg} xywh {209 536 50 70} box ENGRAVED_BOX color 25 labelfont 1
+      }
+      Fl_Button {} {
+        label Dxy
+        callback {this->ComputeScalarValue(    7,  "Dxy",  m_activeinput  );}
+        tooltip {Show Component xy} image {Images/Dxy.jpg} xywh {264 536 50 70} box ENGRAVED_BOX color 25 labelfont 1
+      }
+      Fl_Button {} {
+        label Dxz
+        callback {this->ComputeScalarValue(    8,  "Dxz",  m_activeinput  );}
+        tooltip {Show Component xz} image {Images/Dxz.jpg} xywh {319 536 50 70} box ENGRAVED_BOX color 25 labelfont 1
+      }
+      Fl_Button {} {
+        label Dyy
+        callback {this->ComputeScalarValue(    9,  "Dyy",  m_activeinput  );}
+        tooltip {Show Component yy} image {Images/Dyy.jpg} xywh {209 610 50 70} box ENGRAVED_BOX color 25 labelfont 1
+      }
+      Fl_Button {} {
+        label Dyz
+        callback {this->ComputeScalarValue(    10,  "Dyz",  m_activeinput  );}
+        tooltip {Show Component yz} image {Images/Dyz.jpg} xywh {264 610 50 70} box ENGRAVED_BOX color 25 labelfont 1
+      }
+      Fl_Button {} {
+        label Dzz
+        callback {this->ComputeScalarValue(    11,  "Dzz",  m_activeinput  );}
+        tooltip {Show Component zz} image {Images/Dzz.jpg} xywh {319 610 50 70} box ENGRAVED_BOX color 25 labelfont 1
+      }
+    }
+    Fl_Button {} {
+      callback {m_configIO->hide();
+configDTI->hide();}
+      image {Images/Close.png} xywh {154 708 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group configFilterDWI {
+    label {Filter DWI}
+    xywh {5 388 400 350} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include "MyfltkImageViewer/MyfltkImageViewer.h"}
+  } {
+    Fl_Group {} {
+      label {Options:}
+      xywh {21 497 374 201} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Text_Display {} {
+        label Parameters
+        xywh {30 572 245 77} labelfont 1 labelsize 12 align 5
+      }
+      Fl_Value_Slider m_rade {
+        label Radius
+        xywh {90 585 175 15} type Horizontal labelfont 1 labelsize 12 align 4 maximum 10 step 1 value 1 textsize 14
+      }
+      Fl_Value_Slider m_radf {
+        label Radius
+        xywh {90 604 175 15} type Horizontal labelfont 1 labelsize 12 align 4 maximum 10 step 1 value 2 textsize 14
+      }
+      Fl_Value_Slider m_iter1 {
+        label Iterations
+        xywh {90 624 175 15} type Horizontal labelfont 1 labelsize 12 align 4 maximum 10 step 1 value 1 textsize 14
+      }
+    }
+    Fl_Button {} {
+      callback {m_configIO->hide();
+configFilterDWI->hide();}
+      image {Images/Close.png} xywh {200 708 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {//this->FilterDWI(dwimage);}
+      image {Images/apply.png} xywh {81 708 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group configDTIMeasures {
+    label {DTI Measures}
+    xywh {5 388 400 358} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label ROIs
+      xywh {14 410 385 150} box PLASTIC_DOWN_BOX color 19 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Check_Button {m_ROImeasure[0]} {
+        label FA
+        xywh {21 418 46 16} down_box DOWN_BOX value 1 labelfont 1
+      }
+      Fl_Check_Button {m_ROImeasure[1]} {
+        label RA
+        xywh {77 418 46 16} down_box DOWN_BOX labelfont 1
+      }
+      Fl_Check_Button {m_ROImeasure[2]} {
+        label MD
+        xywh {134 418 46 16} down_box DOWN_BOX labelfont 1
+      }
+      Fl_Check_Button {m_ROImeasure[3]} {
+        label Eigenvalues
+        xywh {21 442 109 16} down_box DOWN_BOX labelfont 1 labelcolor 136
+      }
+      Fl_Check_Button {m_ROImeasure[4]} {
+        label {Geometric Coefficients}
+        xywh {134 442 181 16} down_box DOWN_BOX labelfont 1 labelcolor 58
+      }
+      Fl_Check_Button {m_ROImeasure[5]} {
+        label Dxx
+        xywh {21 468 50 16} down_box DOWN_BOX labelfont 1 labelcolor 4
+      }
+      Fl_Check_Button {m_ROImeasure[6]} {
+        label Dxy
+        xywh {77 468 50 16} down_box DOWN_BOX labelfont 1 labelcolor 4
+      }
+      Fl_Check_Button {m_ROImeasure[7]} {
+        label Dxz
+        xywh {134 468 50 16} down_box DOWN_BOX labelfont 1 labelcolor 4
+      }
+      Fl_Check_Button {m_ROImeasure[8]} {
+        label Dyy
+        xywh {192 468 50 16} down_box DOWN_BOX labelfont 1 labelcolor 4
+      }
+      Fl_Check_Button {m_ROImeasure[9]} {
+        label Dyz
+        xywh {238 468 50 16} down_box DOWN_BOX labelfont 1 labelcolor 4
+      }
+      Fl_Check_Button {m_ROImeasure[10]} {
+        label Dzz
+        xywh {285 468 50 16} down_box DOWN_BOX labelfont 1 labelcolor 4
+      }
+      Fl_Check_Button m_Coherence {
+        label Coherence
+        xywh {23 493 105 23} box PLASTIC_DOWN_BOX down_box DOWN_BOX labelfont 1
+      }
+      Fl_Button {} {
+        label Compute
+        callback {std::vector<unsigned int> vector_indices;
+for (unsigned int i =0;i<31;i++) {
+if (chk[i]->value() == true) vector_indices.push_back(i);
+}
+std::vector<unsigned int> ind_measures;
+for (unsigned int i =0;i<3;i++) {
+if (m_ROImeasure[i]->value() == true) ind_measures.push_back(i);
+}
+if (m_ROImeasure[3]->value() == true) {
+ind_measures.push_back(3);
+ind_measures.push_back(4);
+ind_measures.push_back(5);
+}
+if (m_ROImeasure[4]->value() == true) {
+ind_measures.push_back(6);
+ind_measures.push_back(7);
+ind_measures.push_back(8);
+}
+for (unsigned int i =5;i<11;i++) {
+if (m_ROImeasure[i]->value() == true) ind_measures.push_back(i+4);
+}
+this->EvaluateTractRegion(vector_indices,ind_measures,m_Coherence->value());
+this->ShowROIsMeasures();}
+        xywh {23 531 64 25} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label Show
+        callback {this->ShowROIsMeasures();}
+        xywh {90 531 64 25} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Save file}
+        callback {m_filename = fl_file_chooser("Filename","*.txt","");
+std::ofstream file;
+file.open(m_filename);
+file << m_bufferROIsText->text();
+file.close();}
+        xywh {156 531 64 25} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Deselect All}
+        callback {for (int i=0;i<11;i++) {
+  m_ROImeasure[i]->value(0);
+}}
+        xywh {250 531 74 25} box PLASTIC_DOWN_BOX color 34 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Select All}
+        callback {for (int i=0;i<11;i++) {
+  m_ROImeasure[i]->value(1);
+}}
+        xywh {325 531 64 25} box PLASTIC_DOWN_BOX color 34 labelfont 1 labelsize 12
+      }
+    }
+    Fl_Group {} {
+      label Fibers
+      xywh {14 582 385 123} box PLASTIC_DOWN_BOX color 57 labelfont 1 align 5
+    } {
+      Fl_Check_Button {m_Fiber_measure[0]} {
+        label FA
+        xywh {20 594 46 16} down_box DOWN_BOX value 1 labelfont 1
+      }
+      Fl_Check_Button {m_Fiber_measure[1]} {
+        label RA
+        xywh {75 594 46 16} down_box DOWN_BOX labelfont 1
+      }
+      Fl_Check_Button {m_Fiber_measure[2]} {
+        label MD
+        xywh {131 594 46 16} down_box DOWN_BOX labelfont 1
+      }
+      Fl_Check_Button {m_Fiber_measure[3]} {
+        label Length
+        xywh {186 594 72 16} down_box DOWN_BOX value 1 labelfont 1 labelcolor 152
+      }
+      Fl_Check_Button {m_Fiber_measure[4]} {
+        label Int
+        xywh {236 594 46 16} down_box DOWN_BOX labelfont 1 labelcolor 152 hide
+      }
+      Fl_Check_Button {m_Fiber_measure[5]} {
+        label Disc
+        xywh {286 594 46 16} down_box DOWN_BOX labelfont 1 labelcolor 152 hide
+      }
+      Fl_Check_Button {m_Fiber_measure[6]} {
+        label Con
+        xywh {342 594 46 16} down_box DOWN_BOX labelfont 1 labelcolor 152 hide
+      }
+      Fl_Check_Button {m_Fiber_measure[7]} {
+        label Eigenvalues
+        xywh {20 618 107 16} down_box DOWN_BOX labelfont 1 labelcolor 136
+      }
+      Fl_Check_Button {m_Fiber_measure[8]} {
+        label {Geometric Coefficients}
+        xywh {131 618 178 16} down_box DOWN_BOX labelfont 1 labelcolor 58
+      }
+      Fl_Check_Button {m_Fiber_measure[9]} {
+        label {Tensor Components}
+        xywh {20 644 163 16} down_box DOWN_BOX labelfont 1 labelcolor 4
+      }
+      Fl_Button {} {
+        label Compute
+        callback {this->ComputeFiberMeasures(false);}
+        xywh {25 670 64 25} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Save file}
+        callback {m_filename = fl_file_chooser("Filename","*","");
+this->ComputeFiberMeasures(true);}
+        xywh {158 670 64 25} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label Show
+        callback {this->ShowMeasures();}
+        xywh {91 670 64 25} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Deselect All}
+        callback {for (int i=0;i<10;i++) {
+  m_Fiber_measure[i]->value(0);
+}}
+        xywh {250 670 74 25} box PLASTIC_DOWN_BOX color 34 labelfont 1 labelsize 12
+      }
+      Fl_Button {} {
+        label {Select All}
+        callback {for (int i=0;i<10;i++) {
+  m_Fiber_measure[i]->value(1);
+}}
+        xywh {327 670 64 25} box PLASTIC_DOWN_BOX color 34 labelfont 1 labelsize 12
+      }
+    }
+    Fl_Button {} {
+      callback {m_configIO->hide();
+configDTIMeasures->hide();}
+      image {Images/Close.png} xywh {210 708 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {//this->FilterDWI(dwimage);}
+      image {Images/apply.png} xywh {91 708 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Function {Show(void)} {return_type {virtual void}
+  } {
+    Fl_Window {} {open
+      xywh {1249 60 100 100} type Double hide
+    } {}
+  }
+  Function {~TensorGUI()} {} {}
+  Function {geodesicPath3D()} {return_type {virtual void}
+  } {}
+  decl {Fl_Browser *m_dataBrowser,*m_tensordataBrowser,*m_modeldataBrowser;} {public
+  }
+  decl {typedef itk::DTITensor<float> TensorPixelType;} {public
+  }
+  decl {typedef itk::Image< float, 3 >    InputImageType;} {public
+  }
+  decl {typedef itk::Image<TensorPixelType, 3> TensorImageType;} {public
+  }
+  decl {typedef itk::DWImages<float, 3> DWImagesType;} {public
+  }
+  decl {typedef fltk::MyImageViewer<float,unsigned char>     MyViewerType;} {public
+  }
+  decl {Fl_Choice *m_op1,*m_op2,*m_destino;} {public
+  }
+  decl {unsigned int m_activeinput;} {public
+  }
+  decl {int m_active_roi;} {public
+  }
+  decl {int m_colorvalue;} {public
+  }
+  decl {MyViewerType** ImageViewer;} {public
+  }
+  decl {Viewer3D* ImageViewer3D;} {public
+  }
+  decl {Fl_Group* m_configIO;} {public
+  }
+  decl {Fl_Group* ActiveGroup;} {public
+  }
+  decl {Fl_Text_Buffer* m_buff[19];} {public
+  }
+  decl {Fl_Text_Buffer* m_buffNfibers;} {public
+  }
+  decl {Fl_Text_Buffer* m_bufferROIsText;} {public
+  }
+  decl {Fl_Text_Buffer* m_bufferROIsMeasuresText;} {public
+  }
+  decl {Fl_Text_Buffer* m_sbuff;} {public
+  }
+  decl {Fl_Double_Window* panelMeasures;} {public
+  }
+  decl {Fl_Double_Window* panelROIsMeasures;} {public
+  }
+  decl {Fl_Text_Display** Mdisplay;} {public
+  }
+  decl {Fl_Text_Display* m_fibersText;} {public
+  }
+  decl {Fl_Text_Display* m_ROIsText;} {public
+  }
+  decl {char *m_filename;} {public
+  }
+  Function {SetActiveInput(unsigned int &a)} {return_type void
+  } {
+    code {m_activeinput = a;} {}
+  }
+  Function {SetTensorDataBrowser(Fl_Browser* a)} {return_type void
+  } {
+    code {m_tensordataBrowser = a;} {}
+  }
+  Function {SetDataBrowser(Fl_Browser* a)} {return_type void
+  } {
+    code {m_dataBrowser = a;} {}
+  }
+  Function {SetModelBrowser(Fl_Browser* a)} {return_type void
+  } {
+    code {m_modeldataBrowser = a;} {}
+  }
+  Function {SetOp1(Fl_Choice* a)} {return_type void
+  } {
+    code {m_op1 = a;} {}
+  }
+  Function {SetOp2(Fl_Choice* a)} {return_type void
+  } {
+    code {m_op2 = a;} {}
+  }
+  Function {SetDestino(Fl_Choice* a)} {return_type void
+  } {
+    code {m_destino = a;} {}
+  }
+  Function {SetImageViewers(MyViewerType** a)} {return_type void
+  } {
+    code {ImageViewer = a;} {}
+  }
+  Function {SetImageViewer3D(Viewer3D* a)} {return_type void
+  } {
+    code {ImageViewer3D = a;} {}
+  }
+  Function {SetActiveGroup(Fl_Group *a)} {return_type void
+  } {
+    code {ActiveGroup = a;} {}
+  }
+  Function {SetConfigIO(Fl_Group *a)} {return_type void
+  } {
+    code {m_configIO = a;} {}
+  }
+  Function {SetPanelMeasures(Fl_Double_Window *a)} {return_type void
+  } {
+    code {panelMeasures = a;} {}
+  }
+  Function {SetMdisplay(Fl_Text_Display **a)} {return_type void
+  } {
+    code {Mdisplay = a;} {}
+  }
+  Function {SetFibersText(Fl_Text_Display *a)} {return_type void
+  } {
+    code {m_fibersText = a;} {}
+  }
+  Function {SetPanelROIsMeasures(Fl_Double_Window *a)} {return_type void
+  } {
+    code {panelROIsMeasures = a;} {}
+  }
+  Function {SetROIsText(Fl_Text_Display *a)} {return_type void
+  } {
+    code {m_ROIsText = a;} {}
+  }
+  Function {CreateStreamLine(void)} {open return_type {virtual void}
+  } {}
+  Function {CreateStreamLineNew(void)} {open return_type {virtual void}
+  } {}
+  Function {CreateStreamLineFloat(void)} {open return_type {virtual void}
+  } {}
+  Function {CreateStreamLineStraight(void)} {open return_type {virtual void}
+  } {}
+  Function {Mascara(TensorImageType::Pointer,InputImageType::Pointer)} {open return_type {virtual void}
+  } {}
+  Function {ColorOrientation(void)} {open return_type {virtual void}
+  } {}
+  Function {RungeKuttaTractography(void)} {open return_type {virtual void}
+  } {}
+  Function {ShapeCoefficients(TensorImageType::Pointer,int,int)} {open return_type {virtual void}
+  } {}
+  Function {FilterDWI(DWImagesType::Pointer)} {open return_type {virtual void}
+  } {}
+  Function {ComputeScalarValue( unsigned int scalar, const char* nameScalar, unsigned int window )} {open return_type {virtual void}
+  } {}
+  Function {BruteForceTractography(void)} {open return_type {virtual void}
+  } {}
+  Function {SelectFiberTracts(int)} {open return_type {virtual void}
+  } {}
+  Function {SetFibersColor(void)} {open return_type {virtual void}
+  } {}
+  Function {RungeKuttaTractographyWithConnection(void)} {open return_type {virtual void}
+  } {}
+  Function {RegisterSeedsToData(void)} {open return_type {virtual void}
+  } {}
+  Function {CreateAutomaticFiberTract(std::vector<unsigned int>)} {open return_type {virtual void}
+  } {}
+  Function {CreateAutomaticFiberTractRuben(std::vector<unsigned int>)} {open return_type {virtual void}
+  } {}
+  Function {LoadROIS()} {open return_type {virtual void}
+  } {}
+  Function {SelectFiberTractsConnection(int, int, std::vector<int>)} {open return_type {virtual void}
+  } {}
+  Function {SelectAutoFiberTracts(int)} {open return_type {virtual void}
+  } {}
+  Function {SetFibersColor(int)} {open return_type {virtual void}
+  } {}
+  Function {EvaluateTractRegion(std::vector<unsigned int>, std::vector<unsigned int>, bool)} {open return_type {virtual void}
+  } {}
+  Function {ShowMeasures()} {} {
+    code {panelMeasures->show();
+m_fibersText->buffer(m_buffNfibers);
+for (int i=0;i<=18;i++) {
+  Mdisplay[i]->buffer(m_buff[i]);
+}} {}
+  }
+  Function {ShowROIsMeasures()} {open
+  } {
+    code {panelROIsMeasures->show();
+m_ROIsText->textfont(FL_COURIER);
+m_ROIsText->buffer(m_bufferROIsText);} {}
+  }
+  Function {ComputeFiberMeasures(bool)} {open return_type {virtual void}
+  } {}
+  Fl_Group DTIGlyphsGroup {
+    label {Glifos DTI}
+    xywh {5 382 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include "tensor/itkDWImages.h"}
+    code1 {\#include "Viewer3D.h"}
+  } {
+    Fl_Group {} {
+      label {Options:} open
+      xywh {8 403 396 300} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Group {} {
+        label Execution open
+        xywh {12 415 388 267} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Button {} {
+          label Actualizar
+          callback {actualizarGlifosDTI()}
+          xywh {275 433 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+        }
+        Fl_Round_Button colorRA {
+          label {Colorear por RA}
+          callback {colorFA->value(false);
+colorCl->value(false);
+colorRA->value(true);}
+          xywh {25 460 64 15} down_box ROUND_DOWN_BOX
+        }
+        Fl_Round_Button colorFA {
+          label {Colorear por FA}
+          callback {colorRA->value(false);
+colorCl->value(false);
+colorFA->value(true);}
+          xywh {25 435 25 25} down_box ROUND_DOWN_BOX value 1
+        }
+        Fl_Round_Button colorCl {
+          label {Colorear por Cl}
+          callback {colorRA->value(false);
+colorFA->value(false);
+colorCl->value(true);}
+          xywh {25 475 25 25} down_box ROUND_DOWN_BOX
+        }
+        Fl_Round_Button verCuboides {
+          label Cuboides
+          callback {verElipsoides->value(false);
+verCuboides->value(true);
+verSupercuadricas->value(false);}
+          xywh {25 530 25 25} down_box ROUND_DOWN_BOX
+        }
+        Fl_Round_Button verElipsoides {
+          label Elipsoides
+          callback {verCuboides->value(false);
+verElipsoides->value(true);
+verSupercuadricas->value(false);}
+          xywh {25 510 25 25} down_box ROUND_DOWN_BOX value 1
+        }
+        Fl_Value_Slider glyphOpacity {
+          label Opacidad
+          callback {this->cambiarOpacidad(o->value());
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+          xywh {265 608 110 17} type Horizontal labelfont 1 align 4 step 0.1 value 1 textsize 14
+        }
+        Fl_Value_Slider xMinimo {
+          label Xmin
+          xywh {265 463 110 17} type Horizontal labelfont 1 align 4 maximum 255 step 1 textsize 14
+        }
+        Fl_Value_Slider xMaximo {
+          label XMax
+          xywh {265 483 110 17} type Horizontal labelfont 1 align 4 maximum 255 step 1 value 255 textsize 14
+        }
+        Fl_Value_Slider yMinimo {
+          label Ymin
+          xywh {265 503 110 17} type Horizontal labelfont 1 align 4 maximum 255 step 1 textsize 14
+        }
+        Fl_Value_Slider yMaximo {
+          label YMax
+          xywh {265 523 110 17} type Horizontal labelfont 1 align 4 maximum 255 step 1 value 255 textsize 14
+        }
+        Fl_Value_Slider zMinimo {
+          label Zmin
+          xywh {265 543 110 17} type Horizontal labelfont 1 align 4 maximum 41 step 1 textsize 14
+        }
+        Fl_Value_Slider zMaximo {
+          label ZMax
+          xywh {265 563 110 17} type Horizontal labelfont 1 align 4 maximum 40 step 1 value 40 textsize 14
+        }
+        Fl_Value_Slider valorGamma {
+          label Gamma
+          xywh {70 588 110 17} type Horizontal labelfont 1 align 4 maximum 10 step 0.1 value 3 textsize 14
+        }
+        Fl_Round_Button verSupercuadricas {
+          label Supercuadricas
+          callback {verElipsoides->value(false);
+verCuboides->value(false);
+verSupercuadricas->value(true);}
+          xywh {25 550 25 25} down_box ROUND_DOWN_BOX
+        }
+        Fl_Value_Slider valorcsMax {
+          label {Cs Max}
+          xywh {70 613 110 17} type Horizontal labelfont 1 align 4 step 0.05 value 1 textsize 14
+        }
+        Fl_Value_Slider valorThetaResolution {
+          label ThetaRes
+          xywh {265 653 110 17} type Horizontal labelfont 1 align 4 minimum 4 maximum 64 step 4 value 8 textsize 14
+        }
+        Fl_Value_Slider valorPhiResolution {
+          label {Phi Res}
+          xywh {265 633 110 17} type Horizontal labelfont 1 align 4 minimum 4 maximum 64 step 4 value 8 textsize 14
+        }
+        Fl_Button {} {
+          label verGlifos
+          callback {verGlifos()}
+          xywh {75 644 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+        }
+      }
+    }
+    Fl_Button {} {
+      image {Images/apply.png} xywh {10 705 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/apply_close.png} xywh {118 705 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 705 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Function {verGlifos()} {open return_type {virtual void}
+  } {}
+  Function {cambiarOpacidad(float)} {open return_type {virtual void}
+  } {}
+  Fl_Group CylinderGroup {
+    label {Modelo cilíndrico}
+    xywh {5 382 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include "tensor/itkDWImages.h"}
+    code1 {\#include "Viewer3D.h"}
+  } {
+    Fl_Group {} {
+      label {Options:} open
+      xywh {8 403 396 300} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Group {} {
+        label Execution open
+        xywh {12 415 388 267} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Button {} {
+          label verGlifos
+          callback {if (opc1a->value())
+probarEsfuerzo();
+else probarEsfuerzoDeform();}
+          xywh {275 433 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+        }
+        Fl_Round_Button opc1a {
+          label {Tensor de esfuerzo}
+          callback {opc1b->value(false);
+opc1c->value(false);
+opc1a->value(true);}
+          xywh {25 440 64 15} down_box ROUND_DOWN_BOX value 1
+        }
+        Fl_Round_Button opc1b {
+          label {Deformación}
+          callback {opc1a->value(false);
+opc1c->value(false);
+opc1b->value(true);}
+          xywh {25 455 25 25} down_box ROUND_DOWN_BOX
+        }
+        Fl_Round_Button opc1c {
+          label {1.c}
+          callback {opc1a->value(false);
+opc1b->value(false);
+opc1c->value(true);}
+          xywh {25 475 25 25} down_box ROUND_DOWN_BOX
+        }
+        Fl_Round_Button opc2b {
+          label {2.b}
+          callback {opc2a->value(false);
+opc2c->value(true);
+opc2b->value(false);}
+          xywh {25 540 25 25} down_box ROUND_DOWN_BOX
+        }
+        Fl_Round_Button opc2a {
+          label {2.a}
+          callback {opc2b->value(false);
+opc2c->value(true);
+opc2a->value(false);}
+          xywh {25 520 25 25} down_box ROUND_DOWN_BOX value 1
+        }
+        Fl_Value_Slider numero1 {
+          label numero1
+          xywh {265 463 110 17} type Horizontal labelfont 1 align 4 maximum 30 step 1 textsize 14
+        }
+        Fl_Value_Slider numero2 {
+          label numero2
+          xywh {265 483 110 17} type Horizontal labelfont 1 align 4 maximum 30 step 1 textsize 14
+        }
+        Fl_Value_Slider numero3 {
+          label numero3
+          xywh {265 503 110 17} type Horizontal labelfont 1 align 4 maximum 30 step 1 textsize 14
+        }
+        Fl_Value_Slider numero4 {
+          label {Tiempo     }
+          xywh {265 523 110 17} type Horizontal labelfont 1 align 4 maximum 16 step 1 textsize 14
+        }
+        Fl_Round_Button opc2c {
+          label {2.c}
+          callback {opc2a->value(false);
+opc2b->value(false);
+opc2c->value(true);}
+          xywh {25 560 25 25} down_box ROUND_DOWN_BOX
+        }
+        Fl_Button {} {
+          label {@<}
+          callback {int t = numero4->value();
+if (t>0) {
+ numero4->value(t-1);
+ probarEsfuerzo();
+} 
+else {
+ numero4->value(15);
+ probarEsfuerzo();
+}}
+          xywh {248 523 18 17} box ENGRAVED_BOX color 16
+        }
+        Fl_Button {} {
+          label {@>}
+          callback {int t = numero4->value();
+if (t<15) {
+ numero4->value(t+1);
+}
+else {
+ numero4->value(0);
+}
+
+if(opc1a->value()) probarEsfuerzo();
+else probarEsfuerzoDeform();}
+          xywh {373 523 18 17} box ENGRAVED_BOX color 16
+        }
+      }
+    }
+    Fl_Button {} {
+      image {Images/apply.png} xywh {10 705 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/apply_close.png} xywh {118 705 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 705 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Function {probarEsfuerzo()} {open return_type {virtual void}
+  } {}
+  Function {probarEsfuerzoDeform()} {open return_type {virtual void}
+  } {}
+  Fl_Group STGroup {
+    label {Tensor de esfuerzo} open selected
+    xywh {5 387 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include "tensor/itkDWImages.h"}
+    code1 {\#include "Viewer3D.h"}
+  } {
+    Fl_Group {} {
+      label {Options:} open
+      xywh {8 408 396 300} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Group {} {
+        label Execution open
+        xywh {12 420 388 267} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Button {} {
+          label verGlifos
+          callback {tensorEsfuerzo2D();}
+          xywh {275 438 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+        }
+        Fl_Value_Slider {} {
+          label numero1
+          xywh {265 468 110 17} type Horizontal labelfont 1 align 4 maximum 30 step 1 textsize 14
+        }
+        Fl_Value_Slider {} {
+          label numero2
+          xywh {265 488 110 17} type Horizontal labelfont 1 align 4 maximum 30 step 1 textsize 14
+        }
+        Fl_Value_Slider planoZ {
+          label {Plano Z}
+          xywh {265 508 110 17} type Horizontal labelfont 1 align 4 maximum 10 step 1 textsize 14
+        }
+        Fl_Value_Slider tiempo {
+          label {Tiempo     }
+          xywh {265 528 110 17} type Horizontal labelfont 1 align 4 maximum 10 step 1 textsize 14
+        }
+        Fl_Button {} {
+          label {@<}
+          callback {int t = tiempo->value();
+if (t>0) {
+ tiempo->value(t-1);
+ tensorEsfuerzo2D();
+}}
+          xywh {248 528 18 17} box ENGRAVED_BOX color 16
+        }
+        Fl_Button {} {
+          label {@>}
+          callback {int t = tiempo->value();
+if (t<10) {
+ tiempo->value(t+1);
+ tensorEsfuerzo2D();
+}}
+          xywh {375 528 18 17} box ENGRAVED_BOX color 16
+        }
+        Fl_Button {} {
+          label {@<}
+          callback {int t = planoZ->value();
+if (t>0) {
+ planoZ->value(t-1);
+ tensorEsfuerzo2D();
+}}
+          xywh {248 508 18 17} box ENGRAVED_BOX color 16
+        }
+        Fl_Button {} {
+          label {@>}
+          callback {int t = planoZ->value();
+if (t<10) {
+ planoZ->value(t+1);
+ tensorEsfuerzo2D();
+}}
+          xywh {375 508 18 17} box ENGRAVED_BOX color 16
+        }
+      }
+    }
+    Fl_Button {} {
+      image {Images/apply.png} xywh {10 710 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/apply_close.png} xywh {118 710 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 710 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Function {actualizarGlifosDTI()} {open return_type {virtual void}
+  } {}
+  Function {tensorEsfuerzo2D()} {open return_type {virtual void}
+  } {}
+} 

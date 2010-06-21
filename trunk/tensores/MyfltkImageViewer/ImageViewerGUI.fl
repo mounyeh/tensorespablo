@@ -1,0 +1,278 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+class ImageViewerGUI {open
+} {
+  Function {ImageViewerGUI()} {} {}
+  Function {~ImageViewerGUI()} {return_type virtual
+  } {}
+  Function {CreateGUI()} {open
+  } {
+    Fl_Window iviewWindow {open
+      xywh {223 68 260 347} type Double box PLASTIC_DOWN_BOX color 0 labelsize 10 resizable modal visible
+    } {
+      Fl_Group glWindowGroup {open
+        xywh {0 0 260 345}
+      } {
+        Fl_Box {} {
+          label {3D Win}
+          xywh {0 0 260 250} box PLASTIC_DOWN_BOX
+          code0 {\#include <GLSliceView.h>}
+          code1 {CreateGLSliceView( glWindowGroup, o );}
+          class Fl_Gl_Window
+        }
+      }
+      Fl_Group {} {open
+        xywh {0 250 260 96}
+      } {
+        Fl_Button {} {
+          label {+}
+          callback {this->ZoomIn();}
+          xywh {3 254 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 labelsize 10
+        }
+        Fl_Button {} {
+          label {-}
+          callback {this->ZoomOut();}
+          xywh {3 269 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelsize 10
+        }
+        Fl_Button {} {
+          label {@2<}
+          callback {ShiftUp();}
+          xywh {36 255 15 15} box PLASTIC_DOWN_BOX color 4 labelsize 10
+        }
+        Fl_Button {} {
+          label center
+          callback {CenterWindow();}
+          xywh {68 259 35 20} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelsize 10
+        }
+        Fl_Button {} {
+          label {@>}
+          callback {ShiftRight();}
+          xywh {51 263 15 15} box PLASTIC_DOWN_BOX color 4 labelsize 10
+        }
+        Fl_Button {} {
+          label {@<}
+          callback {ShiftLeft();}
+          xywh {21 263 15 15} box PLASTIC_DOWN_BOX color 4 labelsize 10
+        }
+        Fl_Button {} {
+          label {@2>}
+          callback {ShiftDown();}
+          xywh {36 270 15 15} box PLASTIC_DOWN_BOX color 4 labelsize 10
+        }
+        Fl_Value_Slider sliceNumberSlider {
+          label slice
+          callback {this->SelectSlice(o->value());}
+          xywh {34 289 215 15} type Horizontal box ENGRAVED_BOX color 8 selection_color 15 labelfont 1 labelsize 12 align 132 maximum 100 step 1 textsize 14
+        }
+        Fl_Button {} {
+          label T
+          callback {//this->transpose(); 
+Update();}
+          xywh {109 254 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelfont 1 labelsize 10
+        }
+        Fl_Button {} {
+          label v
+          callback {bool t = this->viewValue();
+this->ViewValue(!t); 
+Update();}
+          xywh {126 254 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelfont 1 labelsize 10
+        }
+        Fl_Button {} {
+          label d
+          callback {bool t = this->viewDetails();
+this->ViewDetails(!t); 
+Update();}
+          xywh {144 254 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelfont 1 labelsize 10
+        }
+        Fl_Button {} {
+          label c
+          callback {bool t = this->viewCrosshairs();
+this->ViewCrosshairs(!t); 
+Update();}
+          xywh {162 254 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelfont 1 labelsize 10
+        }
+        Fl_Value_Slider intensityWindowingMaxSlider {
+          label max
+          callback {SetIntensityWindowingMax(o->value());}
+          xywh {34 308 215 15} type Horizontal box ENGRAVED_BOX color 22 selection_color 15 labelfont 1 labelsize 12 align 4 textsize 14
+        }
+        Fl_Value_Slider intensityWindowingMinSlider {
+          label min
+          callback {SetIntensityWindowingMin(o->value());}
+          xywh {34 325 215 15} type Horizontal box ENGRAVED_BOX color 22 selection_color 15 labelfont 1 labelsize 12 align 4 textsize 14
+        }
+        Fl_Choice orientationChoice {
+          callback {SetOrientation();}
+          xywh {198 259 42 16} box PLASTIC_THIN_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1 labelsize 10 textsize 10
+        } {
+          MenuItem {} {
+            label X
+            xywh {10 10 100 20}
+          }
+          MenuItem {} {
+            label Y
+            xywh {10 10 100 20}
+          }
+          MenuItem {} {
+            label Z
+            xywh {20 20 100 20}
+          }
+        }
+        Fl_Button {} {
+          label x
+          callback {bool t = this->flipX();
+this->flipX(!t); 
+Update();}
+          xywh {128 272 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelfont 1 labelsize 10
+        }
+        Fl_Button {} {
+          label y
+          callback {bool t = this->flipY();
+this->flipY(!t); 
+Update();}
+          xywh {145 272 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelfont 1 labelsize 10
+        }
+        Fl_Button {} {
+          label z
+          callback {bool t = this->flipZ();
+this->flipZ(!t); 
+Update();}
+          xywh {162 272 15 15} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 selection_color 4 labelfont 1 labelsize 10
+        }
+        Fl_Text_Display {} {
+          label Flip
+          xywh {127 272 51 17} box BORDER_FRAME labelfont 1 labelsize 12 align 4
+        }
+      }
+    }
+    Fl_Window clickedPointsWindow {
+      label {Clicked Points}
+      xywh {872 243 290 405} type Double hide
+    } {
+      Fl_Browser clickedPointsBrowser {
+        xywh {10 15 270 345} textfont 4
+      }
+      Fl_Button {} {
+        label Update
+        callback {UpdateClickedPoints();}
+        xywh {27 370 65 25}
+      }
+      Fl_Button {} {
+        label Clear
+        callback {ClearClickedPoints();}
+        xywh {115 370 65 25}
+      }
+      Fl_Button {} {
+        label Close
+        callback {clickedPointsWindow->hide();}
+        xywh {200 370 65 25}
+      }
+    }
+    Fl_Window overlayOpacityControlWindow {
+      label {Overlay Opacity}
+      xywh {790 751 380 70} type Double box PLASTIC_UP_BOX color 59 labelsize 12 hide
+    } {
+      Fl_Button {} {
+        label Close
+        callback {overlayOpacityControlWindow->hide();}
+        xywh {135 44 110 16} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 0 labelsize 12
+      }
+      Fl_Value_Slider overlayOpacitySlider {
+        label Opacity
+        callback {SetOverlayOpacity( o->value() );}
+        xywh {10 19 360 16} type {Horz Fill} box PLASTIC_UP_BOX color 0 selection_color 21 labelsize 10 align 1 value 0.5
+      }
+    }
+  }
+  Function {CreateGLSliceView( Fl_Group *,Fl_Gl_Window * w )} {return_type {virtual void}
+  } {}
+  Function {AddMenuBarOptions(void)} {return_type {virtual void}
+  } {}
+  Function {AddFilterMenuOptions()} {return_type {virtual void}
+  } {}
+  Function {AddFileMenuOptions()} {return_type {virtual void}
+  } {}
+  Function {SetImage( itk::ImageBase<3> * img )} {return_type {virtual void}
+  } {}
+  Function {Show(void)} {return_type {virtual void}
+  } {}
+  Function {Hide(void)} {return_type {virtual void}
+  } {}
+  Function {Update(void)} {return_type {virtual void}
+  } {}
+  Function {Synchronize(void)} {return_type {virtual void}
+  } {}
+  Function {ImageMode(itk::ImageModeType mode)} {return_type {virtual void}
+  } {}
+  Function {SelectSlice(unsigned int)} {return_type {virtual void}
+  } {}
+  Function {SetIntensityWindowingMin(float)} {return_type {virtual void}
+  } {}
+  Function {SetIntensityWindowingMax(float)} {return_type {virtual void}
+  } {}
+  Function {CenterWindow(void)} {return_type {virtual void}
+  } {}
+  Function {ZoomIn(void)} {return_type {virtual void}
+  } {}
+  Function {ZoomOut(void)} {return_type {virtual void}
+  } {}
+  Function {ShiftUp(void)} {return_type {virtual void}
+  } {}
+  Function {ShiftDown(void)} {return_type {virtual void}
+  } {}
+  Function {ShiftLeft(void)} {return_type {virtual void}
+  } {}
+  Function {ShiftRight(void)} {return_type {virtual void}
+  } {}
+  Function {SetOrientation(void)} {return_type {virtual void}
+  } {}
+  Function {ShowClickedPointsWindow(void)} {return_type {virtual void}
+  } {}
+  Function {ClearClickedPoints(void)} {return_type {virtual void}
+  } {}
+  Function {ShowOverlayOpacityControl(void)} {return_type {virtual void}
+  } {}
+  Function {SetOverlayOpacity(float)} {return_type {virtual void}
+  } {}
+  Function {UpdateClickedPoints()} {return_type {virtual void}
+  } {}
+  Function {ViewDetails(bool)} {return_type {virtual void}
+  } {}
+  Function {ViewValue(bool)} {return_type {virtual void}
+  } {}
+  Function {ViewCrosshairs(bool)} {return_type {virtual void}
+  } {}
+  Function {viewCrosshairs(void)} {return_type {virtual bool}
+  } {
+    code {return true;} {}
+  }
+  Function {viewValue(void)} {return_type {virtual bool}
+  } {
+    code {return true;} {}
+  }
+  Function {viewDetails(void)} {return_type {virtual bool}
+  } {
+    code {return true;} {}
+  }
+  Function {flipX(void)} {return_type {virtual bool}
+  } {
+    code {return true;} {}
+  }
+  Function {flipX(bool)} {return_type {virtual void}
+  } {}
+  Function {flipY(void)} {return_type {virtual bool}
+  } {
+    code {return true;} {}
+  }
+  Function {flipY(bool)} {return_type {virtual void}
+  } {}
+  Function {flipZ(void)} {return_type {virtual bool}
+  } {
+    code {return true;} {selected
+    }
+  }
+  Function {flipZ(bool)} {return_type {virtual void}
+  } {}
+} 

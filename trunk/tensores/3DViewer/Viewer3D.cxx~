@@ -1,0 +1,431 @@
+#include "vtkPolyDataMapper.h"
+#include "vtkPolyDataReader.h"
+#include <vtkTubeFilter.h>
+#include <vtkPolyData.h>
+#include <vtkProperty.h>
+#include <vtkActor.h>
+#include <vtkCamera.h>
+#include <vtkUnsignedCharArray.h>
+#include <vtkFieldData.h>
+#include <vtkActor2D.h>
+#include <vtkPolyDataMapper2D.h>
+#include <vtkImagePlaneWidget.h>
+#include <vtkImageData.h>
+#include <vtkRenderer.h>
+#include <vtkRibbonFilter.h>
+#include <vtkImageMapToColors.h>
+#include <vtkLookupTable.h>
+
+// FLTK (needed for the call to Fl::run())
+#include <FL/Fl.H>
+// vtkFLTK
+#include "Viewer3D.h"
+#include <FL/Fl_File_Chooser.H>
+
+Viewer3D::Viewer3D(int x, int y, int w, int h, const char *l) 
+:Fl_VTK_Window(x,  y, w, h, l) 
+{
+   planeWidgetX = vtkImagePlaneWidget::New();
+   planeWidgetY = vtkImagePlaneWidget::New();
+   planeWidgetZ = vtkImagePlaneWidget::New();
+}
+
+Viewer3D::~Viewer3D() {
+
+}
+
+void Viewer3D::ConnectMapper(vtkPolyData* data, vtkActor* actor) {
+  //vtkPolyDataMapper* Mapper = vtkPolyDataMapper::New();
+  // Connect the Source to the Mapper and decrement its reference count.
+  vtkPolyDataMapper *Mapper = vtkPolyDataMapper::New();
+  Mapper->SetInput(data);
+  
+  // Connect the Mapper to the Actor and decrement its reference count.
+  Mapper->ScalarVisibilityOff();
+  actor->SetMapper(Mapper);
+  actor->GetProperty()->SetDiffuseColor(1, 0.8, 0.2);
+  actor->GetProperty()->SetSpecular(.3);
+  actor->GetProperty()->SetSpecularPower(20);
+
+  // Add Actor to default renderer and decrement its reference count.
+  this->AddViewProp(actor);
+	
+}
+
+void Viewer3D::ConnectMapperFiber(vtkPolyData* data, vtkActor* tractsActor) {
+
+  //We create tubes around the lines
+  vtkTubeFilter *tubes = vtkTubeFilter::New();
+  tubes->SetInput( data );
+  tubes->SetRadius( 0.2 );
+  tubes->SetNumberOfSides( 3 );
+	
+  vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
+  //mapper->SetInputConnection( tubes->GetOutputPort() );
+  mapper->SetInput( tubes->GetOutput() );
+	
+  //We give it to an actor
+  tractsActor->GetProperty()->SetColor( 0,1,1 );
+  tractsActor->SetMapper( mapper );
+	
+  this->AddViewProp( tractsActor );
+}
+
+void Viewer3D::ChangeColor(vtkActor* actor, double R, double G, double B ) {
+	actor->GetMapper()->ScalarVisibilityOff();
+	actor->GetProperty()->SetDiffuseColor(R, G, B);
+}
+
+void Viewer3D::SetScalarRange(vtkActor* actor,double min,double max) {
+	actor->GetMapper()->ScalarVisibilityOn();
+	actor->GetMapper()->SetScalarRange(min,max);
+}
+
+void Viewer3D::ChangeOpacity(vtkActor* actor, float value ) {
+	actor->GetProperty()->SetOpacity(value);
+}
+
+void Viewer3D::ChangeSpecular(vtkActor* actor, float value ) {
+	actor->GetProperty()->SetSpecular(value);
+}
+
+void Viewer3D::ChangeSpecularPower(vtkActor* actor, float value ) {
+	actor->GetProperty()->SetSpecularPower(value);
+}
+
+void Viewer3D::ChangeDiffuse(vtkActor* actor, float value ) {
+	actor->GetProperty()->SetDiffuse(value);
+}
+
+void Viewer3D::ChangeAmbient(vtkActor* actor, float value ) {
+	actor->GetProperty()->SetAmbient(value);
+}
+
+void Viewer3D::ShowModel(vtkActor *actor) {
+  actor->VisibilityOn();
+}
+
+void Viewer3D::HideModel(vtkActor *actor) {
+  actor->VisibilityOff();
+}
+
+void Viewer3D::DeleteModel(vtkPolyData* data,vtkActor *actor) {
+  actor->Delete();
+  data->Delete();
+}
+
+void Viewer3D::Update() {
+  this->redraw();
+}
+
+void Viewer3D::HideSlice(int orientation) {
+  if (orientation == 0) {
+	planeWidgetX->Off();
+  }
+  if (orientation == 1) {
+	planeWidgetY->Off();
+  }
+  if (orientation == 2) {
+	planeWidgetZ->Off();
+  }
+
+}
+
+void Viewer3D::SetSliceOpacity(float opacity) {
+  planeWidgetX->GetTexturePlaneProperty()->SetOpacity(opacity);
+  planeWidgetY->GetTexturePlaneProperty()->SetOpacity(opacity);
+  planeWidgetZ->GetTexturePlaneProperty()->SetOpacity(opacity);
+}
+
+void Viewer3D::SelectSlice(int orientation, unsigned int value) {
+  if (orientation == 0) {
+    planeWidgetX->SetSliceIndex(value);
+	this->redraw();
+  }
+  if (orientation == 1) {
+    planeWidgetY->SetSliceIndex(value);
+	this->redraw();
+  }
+  if (orientation == 2) {
+   planeWidgetZ->SetSliceIndex(value);
+   this->redraw();
+  }
+}
+
+void Viewer3D::SetSliceColor() {
+    vtkLookupTable *lut = vtkLookupTable::New();
+	  lut->SetTableRange (0, 1);
+      lut->SetHueRange (.6, 0);
+      lut->SetSaturationRange (0, 1);
+      lut->SetValueRange (.5, 1);
+	  lut->SetAlpha(1);
+      lut->Build(); //effective built
+	  
+	  planeWidgetX->SetLookupTable(lut);
+	  planeWidgetY->SetLookupTable(lut);
+	  planeWidgetZ->SetLookupTable(lut);
+	  this->redraw();
+}
+
+void Viewer3D::SetSliceColorDefault() {
+	  planeWidgetX->SetLookupTable(0);
+	  planeWidgetY->SetLookupTable(0);
+	  planeWidgetZ->SetLookupTable(0);
+	  this->redraw();
+}
+
+void Viewer3D::renderSlice(vtkImageData *image, int orientation) {
+
+	cout<<image->GetExtent()[0]<<" "<<image->GetExtent()[2]<<" "<<image->GetExtent()[4]<<" "<<image->GetExtent()[1]<<" "<<image->GetExtent()[3]<<" "<<image->GetExtent()[5]<<"\n";
+
+	//
+	// Add a PlaneWidget to interactively move the slice plane.
+	//
+	if (orientation == 0) {
+        planeWidgetX->DisplayTextOn();
+        planeWidgetX->SetInput((vtkDataSet*)image);
+        planeWidgetX->SetPlaneOrientationToXAxes();
+        planeWidgetX->SetSliceIndex(10);
+        //planeWidgetX->SetPicker(picker);
+		planeWidgetX->SetTextureVisibility(20);
+        planeWidgetX->SetKeyPressActivationValue('x');
+	    planeWidgetX->SetInteractor(this->GetInteractor());
+	    planeWidgetX->On();
+	}
+	if (orientation == 1) {
+        planeWidgetY->DisplayTextOn();
+        planeWidgetY->SetInput((vtkDataSet*)image);
+        planeWidgetY->SetPlaneOrientationToYAxes();
+        planeWidgetY->SetSliceIndex(10);
+        //planeWidgetY->SetPicker(picker);
+        planeWidgetY->SetKeyPressActivationValue('x');
+	    planeWidgetY->SetInteractor(this->GetInteractor());
+	    planeWidgetY->On();
+	}
+	if (orientation == 2) {
+		planeWidgetZ->DisplayTextOn();
+        planeWidgetZ->SetInput((vtkDataSet*)image);
+        planeWidgetZ->SetPlaneOrientationToZAxes();
+        planeWidgetZ->SetSliceIndex(10);
+		//planeWidgetZ->GetMarginProperty()->SetOpacity(0);
+        //planeWidgetZ->SetPicker(picker);
+		planeWidgetZ->SetKeyPressActivationValue('x');
+	    planeWidgetZ->SetInteractor(this->GetInteractor());
+	    planeWidgetZ->On();
+	}
+	
+	
+}	
+
+void Viewer3D::renderTractsTube(vtkPolyData *tracts, vtkActor* tractsActor) {
+	double color[3];
+	double opacity = 1;
+	color[0] = 0.1;
+	color[1] = 0.5;
+	color[2] = 0.1;
+	vtkUnsignedCharArray *colorarray = vtkUnsignedCharArray::New();
+    colorarray->SetNumberOfComponents(4);
+    colorarray->SetNumberOfTuples(2);
+    colorarray->SetComponent(0,0,(unsigned char) (255*color[0]));
+    colorarray->SetComponent(0,1,(unsigned char) (255*color[1]));
+    colorarray->SetComponent(0,2,(unsigned char) (255*color[2]));
+    colorarray->SetComponent(0,3,(unsigned char) (255*opacity));
+    colorarray->SetComponent(1,0,(unsigned char) (255*color[0]));
+    colorarray->SetComponent(1,1,(unsigned char) (255*color[1]));
+    colorarray->SetComponent(1,2,(unsigned char) (255*color[2]));
+    colorarray->SetComponent(1,3,(unsigned char) (255*opacity));
+    colorarray->SetName("Color");
+    vtkFieldData *fd = vtkFieldData::New();
+    fd->AddArray(colorarray);
+    tracts->SetFieldData(fd);
+
+	//We create tubes around the lines
+	vtkTubeFilter *tubes = vtkTubeFilter::New();
+	tubes->SetInput( tracts );
+    tubes->SetRadius( 0.2 );
+	tubes->SetNumberOfSides( 3 );
+
+	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
+	//mapper->SetInputConnection( tubes->GetOutputPort() );
+    mapper->SetInput( tubes->GetOutput() );
+
+	//We give it to an actor
+	tractsActor->GetProperty()->SetColor( 0,1,1 );
+    tractsActor->SetMapper( mapper );
+
+	this->AddViewProp( tractsActor );
+}
+
+void Viewer3D::renderTracts(vtkPolyData *tracts, vtkActor* tractsActor, double Color[3], double radius) {
+	double color[3];
+	double opacity = 1;
+	color[0] = 0.1;
+	color[1] = 0.5;
+	color[2] = 0.1;
+	vtkUnsignedCharArray *colorarray = vtkUnsignedCharArray::New();
+    colorarray->SetNumberOfComponents(4);
+    colorarray->SetNumberOfTuples(2);
+    colorarray->SetComponent(0,0,(unsigned char) (255*color[0]));
+    colorarray->SetComponent(0,1,(unsigned char) (255*color[1]));
+    colorarray->SetComponent(0,2,(unsigned char) (255*color[2]));
+    colorarray->SetComponent(0,3,(unsigned char) (255*opacity));
+    colorarray->SetComponent(1,0,(unsigned char) (255*color[0]));
+    colorarray->SetComponent(1,1,(unsigned char) (255*color[1]));
+    colorarray->SetComponent(1,2,(unsigned char) (255*color[2]));
+    colorarray->SetComponent(1,3,(unsigned char) (255*opacity));
+    colorarray->SetName("Color");
+    vtkFieldData *fd = vtkFieldData::New();
+    fd->AddArray(colorarray);
+    tracts->SetFieldData(fd);
+
+    // Tubes: 
+	//We create tubes around the lines
+	vtkTubeFilter *tubes = vtkTubeFilter::New();
+	tubes->SetInput( tracts );
+    tubes->SetRadius( radius );
+	tubes->SetNumberOfSides( 3 );
+	
+
+	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
+	//mapper->SetInputConnection( tubes->GetOutputPort() );
+    mapper->SetInput( tubes->GetOutput() );
+    //mapper->ScalarVisibilityOn( );
+	
+	//We give it to an actor
+	tractsActor->GetProperty()->SetColor( Color );
+    tractsActor->SetMapper( mapper );
+
+	this->AddViewProp( tractsActor );
+}
+
+void Viewer3D::renderTractsNew(vtkStreamLine *tracts, vtkActor* tractsActor) {
+	double color[3];
+	double opacity = 1;
+	color[0] = 0.1;
+	color[1] = 0.5;
+	color[2] = 0.1;
+	vtkUnsignedCharArray *colorarray = vtkUnsignedCharArray::New();
+    colorarray->SetNumberOfComponents(4);
+    colorarray->SetNumberOfTuples(2);
+    colorarray->SetComponent(0,0,(unsigned char) (255*color[0]));
+    colorarray->SetComponent(0,1,(unsigned char) (255*color[1]));
+    colorarray->SetComponent(0,2,(unsigned char) (255*color[2]));
+    colorarray->SetComponent(0,3,(unsigned char) (255*opacity));
+    colorarray->SetComponent(1,0,(unsigned char) (255*color[0]));
+    colorarray->SetComponent(1,1,(unsigned char) (255*color[1]));
+    colorarray->SetComponent(1,2,(unsigned char) (255*color[2]));
+    colorarray->SetComponent(1,3,(unsigned char) (255*opacity));
+    colorarray->SetName("Color");
+    vtkFieldData *fd = vtkFieldData::New();
+    fd->AddArray(colorarray);
+    //tracts->SetFieldData(fd);
+
+    //Ribbons:
+	//We create tubes around the lines
+//	vtkRibbonFilter *rF = vtkRibbonFilter::New();
+//	rF->SetInput( tracts->GetOutput() );
+//    rF->SetWidth( 0.2 );
+//	rF->SetWidthFactor( 5 );
+//
+//	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
+//	//mapper->SetInputConnection( tubes->GetOutputPort() );
+//    mapper->SetInput( rF->GetOutput() );
+
+    // Tubes: 
+	//We create tubes around the lines
+	vtkTubeFilter *tubes = vtkTubeFilter::New();
+	tubes->SetInput( tracts->GetOutput() );
+    tubes->SetRadius( 0.2 );
+	tubes->SetNumberOfSides( 1 );
+
+	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
+	//mapper->SetInputConnection( tubes->GetOutputPort() );
+    mapper->SetInput( tubes->GetOutput() );
+
+	//We give it to an actor
+	tractsActor->GetProperty()->SetColor( 1,0,1 );
+    tractsActor->SetMapper( mapper );
+
+	this->AddViewProp( tractsActor );
+}
+
+
+void Viewer3D::ResetView() {
+    this->GetDefaultRenderer()->ResetCamera();
+}
+
+void Viewer3D::SetZoom(float value) {
+    this->GetDefaultRenderer()->GetActiveCamera()->Zoom(value);
+}
+
+void Viewer3D::SetView(unsigned int value) {
+	double bounds[6];
+	this->GetDefaultRenderer()->ComputeVisiblePropBounds(bounds);
+
+	switch (value) {
+	case 0: // A
+      this->GetDefaultRenderer()->GetActiveCamera()->SetPosition(0,10*bounds[2],0);
+	  //this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,0,-1);
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,0,1);
+	  this->GetDefaultRenderer()->ResetCamera();
+      break;
+	case 1: // P 
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetPosition(0,10*bounds[3],0);
+	  //this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,0,-1);
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,0,1);
+	  this->GetDefaultRenderer()->ResetCamera();
+      break;
+	case 2: // L
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetPosition(10*bounds[0],0,0);
+	  //this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,0,-1);
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,0,1);
+	  this->GetDefaultRenderer()->ResetCamera();
+      break;
+	case 3: // R
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetPosition(10*bounds[1],0,0);
+	  //this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,0,-1);
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,0,1);
+	  this->GetDefaultRenderer()->ResetCamera();
+      break;
+	case 4: // I
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetPosition(0,0,10*bounds[4]);
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,1,0);
+	  this->GetDefaultRenderer()->ResetCamera();
+      break;
+	case 5: // S
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetPosition(0,0,-10*bounds[4]);
+	  this->GetDefaultRenderer()->GetActiveCamera()->SetViewUp(0,1,0);
+	  this->GetDefaultRenderer()->ResetCamera();
+	  break;
+	default: 
+	  break;
+	}
+	//double dx,dy,dz,vx,vy,vz;
+//	this->GetDefaultRenderer()->GetActiveCamera()->GetPosition(dx,dy,dz);
+//	this->GetDefaultRenderer()->GetActiveCamera()->GetViewUp(vx,vy,vz);
+//	std::cout << "bounds: " << bounds[0] << " " << bounds[1] << " " << bounds[2] << " " << bounds[3] << " " << bounds[4] << " " << bounds[5] << std::endl;   
+//	std::cout << "Pos: " << dx << " " << dy << " " << dz << " " << " ViewUp " << vx << " " << vy << " " << vz << std::endl;   
+    this->redraw();
+}
+
+
+void Viewer3D::Load() {
+  std::cout << "Leyendo " << std::endl;
+  m_filename = fl_file_chooser("Image VTK Filename ","*.{vtk}","");
+  vtkActor*          Actor  = vtkActor::New();
+  vtkPolyDataMapper* Mapper = vtkPolyDataMapper::New();
+  vtkPolyDataReader* reader = vtkPolyDataReader::New();
+  reader->SetFileName(m_filename);
+  reader->Update();
+  // Connect the Source to the Mapper and decrement its reference count.
+  Mapper->SetInput(reader->GetOutput());
+  
+  // Connect the Mapper to the Actor and decrement its reference count.
+  Actor->SetMapper(Mapper);
+  Mapper->Delete();
+  // Add Actor to default renderer and decrement its reference count.
+  this->AddViewProp(Actor);
+  Actor->Delete();
+}
+
+
