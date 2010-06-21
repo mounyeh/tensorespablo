@@ -1,0 +1,336 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0107 
+header_name {.h} 
+code_name {.cxx}
+widget_class {\#include <itkImage.h>} BasicOpGUI {open
+  xywh {788 44 417 747} type Double hide
+  code0 {\#include <FL/Fl_Browser.H>}
+  code1 {\#include <FL/Fl_Choice.H>}
+  code2 {\#include "MyfltkImageViewer/MyfltkImageViewer.h"}
+  code3 {\#include <itkImage.h>}
+} {
+  Fl_Group m_configAdd {
+    label Add
+    xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Button {} {
+      callback {this->AddFilter();}
+      image {apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configAdd->hide();
+m_configIO->hide();
+this->AddFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configAdd->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configMultiply {
+    label Multiply
+    xywh {5 388 400 349} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Button {} {
+      callback {this->MultiplyFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configMultiply->hide();
+m_configIO->hide();
+this->MultiplyFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configMultiply->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configGradient {
+    label Gradient
+    xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Button {} {
+      callback {this->GradientFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGradient->hide();
+m_op2->show();
+m_configIO->hide();
+this->GradientFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGradient->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configRescale {
+    label Rescale
+    xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {26 564 374 91} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Counter rescale_max {
+        label Maximum
+        xywh {115 590 80 20} labelfont 1 labelsize 12 align 4 step 1 value 255
+      }
+      Fl_Counter rescale_min {
+        label Minimum
+        xywh {275 590 80 20} labelfont 1 labelsize 12 align 4 step 1
+      }
+    }
+    Fl_Button {} {
+      callback {this->RescaleFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configRescale->hide();
+m_op2->show();
+m_configIO->hide();
+this->RescaleFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configRescale->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configRelabelImage {
+    label {Relabel Image}
+    xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {26 564 384 101} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Spinner {} {
+        label {Original label}
+        xywh {138 585 40 24} labelfont 1 labelsize 12 deactivate
+      }
+      Fl_Spinner {} {
+        label {Final label}
+        xywh {273 585 40 24} labelfont 1 labelsize 12 deactivate
+      }
+      Fl_Value_Slider relabel_orig {
+        label {Original label}
+        xywh {145 615 235 15} type Horizontal labelfont 1 align 4 maximum 100 step 1 textsize 14
+      }
+      Fl_Value_Slider relabel_result {
+        label {Final label}
+        xywh {145 637 235 15} type Horizontal labelfont 1 align 4 maximum 100 step 1 value 1 textsize 14
+      }
+    }
+    Fl_Button {} {
+      callback {this->RelabelFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configRelabelImage->hide();
+m_op2->show();
+m_configIO->hide();
+this->RelabelFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configRelabelImage->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configRelabelComponent {
+    label {Relabel Component}
+    xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Button {} {
+      callback {this->RelabelCompFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configRelabelComponent->hide();
+m_op2->show();
+m_configIO->hide();
+this->RelabelCompFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configRelabelComponent->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configInverse {
+    label Inverse
+    xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {26 554 384 70} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Value_Input max_out {
+        label {Maximum of output}
+        xywh {132 578 45 24} box PLASTIC_DOWN_BOX color 22 labelsize 10 maximum 100 value 255 textsize 10
+      }
+    }
+    Fl_Button {} {
+      callback {this->InvertFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configInverse->hide();
+m_op2->show();
+m_configIO->hide();
+this->InvertFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configInverse->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configErode {
+    label Erode
+    xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {28 562 374 91} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Counter m_objectvalue {
+        label {Objet Value}
+        xywh {117 588 80 20} labelfont 1 labelsize 12 align 4 step 1 value 1
+      }
+    }
+    Fl_Button {} {
+      callback {this->ErodeFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configErode->hide();
+m_op2->show();
+m_configIO->hide();
+this->ErodeFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configErode->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Fl_Group m_configDilate {
+    label Dilate selected
+    xywh {5 388 400 347} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+  } {
+    Fl_Group {} {
+      label {Parameters:}
+      xywh {30 565 374 91} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Counter m_objectvalue2 {
+        label {Objet Value}
+        xywh {119 591 80 20} labelfont 1 labelsize 12 align 4 step 1 value 1
+      }
+    }
+    Fl_Button {} {
+      callback {this->DilateFilter();}
+      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configDilate->hide();
+m_op2->show();
+m_configIO->hide();
+this->DilateFilter();}
+      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configDilate->hide();
+m_op2->show();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
+  Function {Show(void)} {return_type {virtual void}
+  } {}
+  Function {~BasicOpGUI()} {} {}
+  Function {ErodeFilter()} {return_type {virtual void}
+  } {}
+  decl {Fl_Browser *m_dataBrowser;} {public
+  }
+  decl {typedef itk::Image< float, 3 >    InputImageType;} {public
+  }
+  decl {typedef fltk::MyImageViewer<float,unsigned char>     MyViewerType;} {public
+  }
+  decl {Fl_Choice *m_op1,*m_op2,*m_destino;} {public
+  }
+  decl {unsigned int m_activeinput;} {public
+  }
+  decl {MyViewerType** ImageViewer;} {public
+  }
+  decl {Fl_Group* m_configIO;} {public
+  }
+  decl {Fl_Group* ActiveGroup;} {public
+  }
+  Function {SetActiveInput(unsigned int &a)} {return_type void
+  } {
+    code {m_activeinput = a;} {}
+  }
+  Function {SetDataBrowser(Fl_Browser* a)} {return_type void
+  } {
+    code {m_dataBrowser = a;} {}
+  }
+  Function {SetOp1(Fl_Choice* a)} {return_type void
+  } {
+    code {m_op1 = a;} {}
+  }
+  Function {SetOp2(Fl_Choice* a)} {return_type void
+  } {
+    code {m_op2 = a;} {}
+  }
+  Function {SetDestino(Fl_Choice* a)} {return_type void
+  } {
+    code {m_destino = a;} {}
+  }
+  Function {SetImageViewers(MyViewerType** a)} {return_type void
+  } {
+    code {ImageViewer = a;} {}
+  }
+  Function {SetActiveGroup(Fl_Group *a)} {return_type void
+  } {
+    code {ActiveGroup = a;} {}
+  }
+  Function {SetConfigIO(Fl_Group *a)} {return_type void
+  } {
+    code {m_configIO = a;} {}
+  }
+  Function {DilateFilter()} {open return_type {virtual void}
+  } {}
+  Function {RelabelFilter()} {open return_type {virtual void}
+  } {}
+  Function {RescaleFilter()} {open return_type {virtual void}
+  } {}
+  Function {RelabelCompFilter()} {open return_type {virtual void}
+  } {}
+  Function {MultiplyFilter()} {open return_type {virtual void}
+  } {}
+  Function {AddFilter()} {open return_type {virtual void}
+  } {}
+  Function {InvertFilter()} {open return_type {virtual void}
+  } {}
+  Function {GradientFilter()} {open return_type {virtual void}
+  } {}
+} 
