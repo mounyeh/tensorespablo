@@ -102,7 +102,7 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 	EigenVectorsMatrixType eigvec;
 	double factor, norm_factor;
 	float scalarValue;
-	int i,j,k;
+	int i,j,k,p;
 	int xSize, ySize, zSize;
 	RealType cl, cp, cs, t1, t2, t3, num;
 	int cont=0;
@@ -183,14 +183,15 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 	//
 	trans->PreMultiply();
 
-	for (inPtId=0; inPtId < numPts; inPtId++)
+	for (i=this->Bounds[0]; i<=this->Bounds[1]; i++)
+	for (j=this->Bounds[2]; j<=this->Bounds[3]; j++)
+	for (k=this->Bounds[4]; k<=this->Bounds[5]; k++)
 	{
 		ptIncr = inPtId * numSourcePts;
 
-		pixelIndex[0] = this->Bounds[0] + inPtId % xSize;
-		pixelIndex[1] = this->Bounds[2] + inPtId / xSize % ySize;
-		pixelIndex[2] = this->Bounds[4] + inPtId / (xSize * ySize) % zSize;
-
+		pixelIndex[0] = i;
+		pixelIndex[1] = j;
+		pixelIndex[2] = k;
 		pixel = input->GetPixel(pixelIndex);
 
 		pixel.ComputeEigenSystem(eigval,eigvec);
@@ -204,8 +205,6 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 
 //		if ( (this->GlyphType==SUPERQUADRIC) || (this->ColorMode==COLOR_BY_CL) )
 		pixel.ComputeShapeCoefficients(cl,cp,cs);
-
-cout<<pixel.GetFractionalAnisotropy()<<" "<<cl<<" "<<cs<<"\n";
 
 		switch (this->FilterMode)
 		{
@@ -306,7 +305,7 @@ cout<<pixel.GetFractionalAnisotropy()<<" "<<cl<<" "<<cs<<"\n";
 		}
 
 		// Copy point data from source
-		for (i=0; i < numSourcePts; i++) 
+		for (p=0; p < numSourcePts; p++) 
 		{
 			newScalars->InsertNextValue(scalarValue);
 		}
