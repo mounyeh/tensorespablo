@@ -3,14 +3,14 @@ version 1.0107
 header_name {.h} 
 code_name {.cxx}
 widget_class {\#include <itkImage.h>} TensorGUI {open
-  xywh {561 49 410 685} type Double
+  xywh {504 49 500 680} type Double
   code0 {\#include <FL/Fl_Browser.H>}
   code1 {\#include <FL/Fl_Choice.H>}
   code2 {\#include "tensor/itkDTITensor.h"}
   code3 {\#include <itkImage.h>} visible
 } {
   Fl_Group m_configGeodesicPath {
-    label Tractography
+    label Tractography open
     xywh {5 382 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
@@ -253,7 +253,7 @@ ImageViewer[m_activeinput]->ChangeActiveClass(int(class_value->value()));
         }
       }
       Fl_Group {} {
-        label Execution
+        label Execution open
         xywh {12 613 388 72} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
       } {
         Fl_Button TrachtographyVTKButton {
@@ -1205,136 +1205,6 @@ m_ROIsText->buffer(m_bufferROIsText);} {}
   }
   Function {ComputeFiberMeasures(bool)} {open return_type {virtual void}
   } {}
-  Fl_Group DTIGlyphsGroup {
-    label {Glifos DTI}
-    xywh {5 382 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
-    code0 {\#include "tensor/itkDWImages.h"}
-    code1 {\#include "Viewer3D.h"}
-  } {
-    Fl_Group {} {
-      label {Options:} open
-      xywh {8 403 396 300} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
-    } {
-      Fl_Group {} {
-        label Execution open
-        xywh {12 415 388 267} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
-      } {
-        Fl_Button {} {
-          label Actualizar
-          callback {actualizarGlifosDTI()}
-          xywh {275 433 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
-        }
-        Fl_Round_Button colorRA {
-          label {Colorear por RA}
-          callback {colorFA->value(false);
-colorCl->value(false);
-colorRA->value(true);}
-          xywh {25 460 64 15} down_box ROUND_DOWN_BOX
-        }
-        Fl_Round_Button colorFA {
-          label {Colorear por FA}
-          callback {colorRA->value(false);
-colorCl->value(false);
-colorFA->value(true);}
-          xywh {25 435 25 25} down_box ROUND_DOWN_BOX value 1
-        }
-        Fl_Round_Button colorCl {
-          label {Colorear por Cl}
-          callback {colorRA->value(false);
-colorFA->value(false);
-colorCl->value(true);}
-          xywh {25 475 25 25} down_box ROUND_DOWN_BOX
-        }
-        Fl_Round_Button verCuboides {
-          label Cuboides
-          callback {verElipsoides->value(false);
-verCuboides->value(true);
-verSupercuadricas->value(false);}
-          xywh {25 530 25 25} down_box ROUND_DOWN_BOX
-        }
-        Fl_Round_Button verElipsoides {
-          label Elipsoides
-          callback {verCuboides->value(false);
-verElipsoides->value(true);
-verSupercuadricas->value(false);}
-          xywh {25 510 25 25} down_box ROUND_DOWN_BOX value 1
-        }
-        Fl_Value_Slider glyphOpacity {
-          label Opacidad
-          callback {this->cambiarOpacidad(o->value());
-Fl::check();
-ImageViewer3D->redraw();
-Fl::check();}
-          xywh {265 608 110 17} type Horizontal labelfont 1 align 4 step 0.1 value 1 textsize 14
-        }
-        Fl_Value_Slider xMinimo {
-          label Xmin
-          xywh {265 463 110 17} type Horizontal labelfont 1 align 4 maximum 255 step 1 textsize 14
-        }
-        Fl_Value_Slider xMaximo {
-          label XMax
-          xywh {265 483 110 17} type Horizontal labelfont 1 align 4 maximum 255 step 1 value 255 textsize 14
-        }
-        Fl_Value_Slider yMinimo {
-          label Ymin
-          xywh {265 503 110 17} type Horizontal labelfont 1 align 4 maximum 255 step 1 textsize 14
-        }
-        Fl_Value_Slider yMaximo {
-          label YMax
-          xywh {265 523 110 17} type Horizontal labelfont 1 align 4 maximum 255 step 1 value 255 textsize 14
-        }
-        Fl_Value_Slider zMinimo {
-          label Zmin
-          xywh {265 543 110 17} type Horizontal labelfont 1 align 4 maximum 41 step 1 textsize 14
-        }
-        Fl_Value_Slider zMaximo {
-          label ZMax
-          xywh {265 563 110 17} type Horizontal labelfont 1 align 4 maximum 40 step 1 value 40 textsize 14
-        }
-        Fl_Value_Slider valorGamma {
-          label Gamma
-          xywh {70 588 110 17} type Horizontal labelfont 1 align 4 maximum 10 step 0.1 value 3 textsize 14
-        }
-        Fl_Round_Button verSupercuadricas {
-          label Supercuadricas
-          callback {verElipsoides->value(false);
-verCuboides->value(false);
-verSupercuadricas->value(true);}
-          xywh {25 550 25 25} down_box ROUND_DOWN_BOX
-        }
-        Fl_Value_Slider valorcsMax {
-          label {Cs Max}
-          xywh {70 613 110 17} type Horizontal labelfont 1 align 4 step 0.05 value 1 textsize 14
-        }
-        Fl_Value_Slider valorThetaResolution {
-          label ThetaRes
-          xywh {265 653 110 17} type Horizontal labelfont 1 align 4 minimum 4 maximum 64 step 4 value 8 textsize 14
-        }
-        Fl_Value_Slider valorPhiResolution {
-          label {Phi Res}
-          xywh {265 633 110 17} type Horizontal labelfont 1 align 4 minimum 4 maximum 64 step 4 value 8 textsize 14
-        }
-        Fl_Button {} {
-          label verGlifos
-          callback {verGlifos()}
-          xywh {75 644 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
-        }
-      }
-    }
-    Fl_Button {} {
-      image {Images/apply.png} xywh {10 705 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
-    }
-    Fl_Button {} {
-      callback {m_configGeodesicPath->hide();
-m_configIO->hide();}
-      image {Images/apply_close.png} xywh {118 705 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
-    }
-    Fl_Button {} {
-      callback {m_configGeodesicPath->hide();
-m_configIO->hide();}
-      image {Images/Close.png} xywh {310 705 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
-    }
-  }
   Function {verGlifos()} {open return_type {virtual void}
   } {}
   Function {cambiarOpacidad(float)} {open return_type {virtual void}
@@ -1466,7 +1336,7 @@ m_configIO->hide();}
   Function {probarEsfuerzoDeform()} {open return_type {virtual void}
   } {}
   Fl_Group STGroup {
-    label {Tensor de esfuerzo} open selected
+    label {Tensor de esfuerzo}
     xywh {5 387 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
@@ -1556,4 +1426,304 @@ m_configIO->hide();}
   } {}
   Function {tensorEsfuerzo2D()} {open return_type {virtual void}
   } {}
+  Fl_Group DTIGlyphsGroup {
+    label {Glifos DTI} open
+    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    code0 {\#include "tensor/itkDWImages.h"}
+    code1 {\#include "Viewer3D.h"}
+  } {
+    Fl_Group {} {
+      label {Options:} open
+      xywh {10 404 387 282} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+    } {
+      Fl_Group {} {
+        label Color open
+        xywh {15 409 160 26} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Check_Button colorFA {
+          label FA
+          callback {colorFA->value(true);
+colorRA->value(false);
+colorCl->value(false);}
+          xywh {55 416 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+        }
+        Fl_Check_Button colorRA {
+          label RA
+          callback {colorFA->value(false);
+colorRA->value(true);
+colorCl->value(false);}
+          xywh {90 416 40 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Check_Button colorCl {
+          label C_l
+          callback {colorFA->value(false);
+colorRA->value(false);
+colorCl->value(true);}
+          xywh {128 416 40 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+      }
+      Fl_Group {} {
+        label {Recorte de planos} open
+        xywh {15 549 380 93} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Box {} {
+          xywh {65 573 220 17} box DOWN_BOX
+        }
+        Fl_Box xBox {
+          xywh {75 575 200 14} box FLAT_BOX color 102
+        }
+        Fl_Slider xMaximo {
+          callback {if (o->value()<xMinimo->value())
+	o->value(xMinimo->value());
+	
+text_xmax->value(o->value());
+
+xMinimo->maximum(o->value());
+xMinimo->size(8+round(200*o->value()/255),xMinimo->h());
+
+xBox->size(round(200*(xMaximo->value()-xMinimo->value())/255),xBox->h());
+xBox->position(75+round(200*(xMinimo->value())/255),xBox->y());
+
+
+Fl::redraw();}
+          xywh {75 575 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1 value 255
+        }
+        Fl_Slider xMinimo {
+          callback {if (o->value()>xMaximo->value())
+	o->value(xMaximo->value());
+	
+text_xmin->value(o->value());
+
+xBox->size(round(200*(xMaximo->value()-xMinimo->value())/255),xBox->h());
+xBox->position(75+round(200*(xMinimo->value())/255),xBox->y());
+
+Fl::redraw();}
+          xywh {67 575 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1
+        }
+        Fl_Value_Output text_xmin {
+          xywh {30 573 35 17} labeltype NO_LABEL align 0
+        }
+        Fl_Value_Output text_xmax {
+          label {Sagital (X)} selected
+          xywh {285 573 35 17} labelfont 1 labelsize 12 align 8 value 255
+        }
+        Fl_Box {} {
+          xywh {65 594 220 17} box DOWN_BOX
+        }
+        Fl_Box yBox {
+          xywh {75 597 200 12} box FLAT_BOX color 102
+        }
+        Fl_Slider yMaximo {
+          callback {if (o->value()<yMinimo->value())
+	o->value(yMinimo->value());
+	
+text_ymax->value(o->value());
+
+yMinimo->maximum(o->value());
+yMinimo->size(8+round(200*o->value()/255),14);
+
+yBox->size(round(200*(yMaximo->value()-yMinimo->value())/255),yBox->h());
+yBox->position(75+round(200*(yMinimo->value())/255),yBox->y());
+
+
+Fl::redraw();}
+          xywh {75 596 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1 value 255
+        }
+        Fl_Slider yMinimo {
+          callback {if (o->value()>yMaximo->value())
+	o->value(yMaximo->value());
+	
+text_ymin->value(o->value());
+
+yBox->size(round(200*(yMaximo->value()-yMinimo->value())/255),yBox->h());
+yBox->position(75+round(200*(yMinimo->value())/255),yBox->y());
+
+Fl::redraw();}
+          xywh {67 596 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1
+        }
+        Fl_Value_Output text_ymin {
+          xywh {30 594 35 17} labeltype NO_LABEL align 0
+        }
+        Fl_Value_Output text_ymax {
+          label {Coronal (Y)}
+          xywh {285 594 35 17} labelfont 1 labelsize 12 align 8 value 255
+        }
+        Fl_Box {} {
+          xywh {65 615 220 17} box DOWN_BOX
+        }
+        Fl_Box zBox {
+          xywh {75 617 200 14} box FLAT_BOX color 102
+        }
+        Fl_Slider zMaximo {
+          callback {if (o->value()<zMinimo->value())
+	o->value(zMinimo->value());
+	
+text_zmax->value(o->value());
+
+zMinimo->maximum(o->value());
+zMinimo->size(8+round(200*o->value()/255),14);
+
+zBox->size(round(200*(zMaximo->value()-zMinimo->value())/255),xBox->h());
+zBox->position(75+round(200*(zMinimo->value())/255),zBox->y());
+
+
+Fl::redraw();}
+          xywh {75 617 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1 value 255
+        }
+        Fl_Slider zMinimo {
+          callback {if (o->value()>zMaximo->value())
+	o->value(zMaximo->value());
+	
+text_zmin->value(o->value());
+
+zBox->size(round(200*(zMaximo->value()-zMinimo->value())/255),zBox->h());
+zBox->position(75+round(200*(zMinimo->value())/255),zBox->y());
+
+Fl::redraw();}
+          xywh {67 617 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1
+        }
+        Fl_Value_Output text_zmin {
+          xywh {30 615 35 17} labeltype NO_LABEL align 0
+        }
+        Fl_Value_Output text_zmax {
+          label {Axial (Z)}
+          xywh {285 615 35 17} labelfont 1 labelsize 12 align 8 value 255
+        }
+      }
+      Fl_Group {} {
+        label {Glyph Type} open
+        xywh {15 437 380 110} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Check_Button verElipsoides {
+          label Elipsoide
+          callback {verElipsoides->value(true);
+verCuboides->value(false);
+verSupercuadricas->value(false);}
+          xywh {115 445 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+        }
+        Fl_Check_Button verCuboides {
+          label Cuboide
+          callback {verElipsoides->value(false);
+verCuboides->value(true);
+verSupercuadricas->value(false);}
+          xywh {205 445 50 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Check_Button verSupercuadricas {
+          label {Supercuádrica}
+          callback {verElipsoides->value(false);
+verCuboides->value(false);
+verSupercuadricas->value(true);}
+          xywh {290 445 48 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Group {} {
+          label {Parámetros} open
+          xywh {23 468 367 74} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+        } {
+          Fl_Value_Slider glyphOpacity {
+            label Opacidad
+            callback {this->cambiarOpacidad(o->value());
+Fl::check();
+ImageViewer3D->redraw();
+Fl::check();}
+            xywh {275 515 105 15} type Horizontal labelfont 1 labelsize 12 align 4 step 0.1 value 1 textsize 14
+          }
+          Fl_Value_Slider valorGamma {
+            label {Gamma (Spq.)}
+            xywh {275 494 105 15} type Horizontal labelfont 1 labelsize 12 align 4 maximum 10 step 0.2 value 3 textsize 14
+          }
+          Fl_Value_Output valorThetaResolution {
+            label {Resolución theta}
+            xywh {135 494 22 16} color 7 labelfont 1 labelsize 11 value 8 textsize 12
+          }
+          Fl_Repeat_Button {} {
+            label {@-22<}
+            callback {valorThetaResolution->value(valorThetaResolution->value()+4);}
+            xywh {157 494 8 8}
+          }
+          Fl_Repeat_Button {} {
+            label {@-22>}
+            callback {if (valorThetaResolution->value()>4)
+	valorThetaResolution->value(valorThetaResolution->value()-4);}
+            xywh {157 502 8 8}
+          }
+          Fl_Value_Output valorPhiResolution {
+            label {Resolución phi}
+            xywh {135 514 22 16} color 7 labelfont 1 labelsize 11 value 8 textsize 12
+          }
+          Fl_Repeat_Button {} {
+            label {@-22<}
+            callback {valorPhiResolution->value(valorPhiResolution->value()+4);}
+            xywh {157 514 8 8}
+          }
+          Fl_Repeat_Button {} {
+            label {@-22>}
+            callback {if (valorPhiResolution->value()>4)
+	valorPhiResolution->value(valorPhiResolution->value()-4);}
+            xywh {157 522 8 8}
+          }
+        }
+      }
+      Fl_Group {} {
+        label Filter open
+        xywh {15 645 380 39} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Check_Button filtrarFA {
+          label {FA min}
+          callback {if (filtrarCs->value()) valorFiltro->value(0.0);
+
+filtrarFA->value(true);
+filtrarCl->value(false);
+filtrarCs->value(false);}
+          xywh {36 665 48 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+        }
+        Fl_Check_Button filtrarCl {
+          label {Cl min}
+          callback {if (filtrarCs->value()) valorFiltro->value(0.0);
+
+filtrarFA->value(false);
+filtrarCl->value(true);
+filtrarCs->value(false);}
+          xywh {105 665 50 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Check_Button filtrarCs {
+          label {Cs max}
+          callback {if (!filtrarCs->value()) valorFiltro->value(1.0);
+
+filtrarFA->value(false);
+filtrarCl->value(false);
+filtrarCs->value(true);}
+          xywh {166 665 40 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Value_Slider valorFiltro {
+          xywh {246 662 140 17} type Horizontal labelfont 1 labelsize 12 align 8 step 0.01 textsize 14
+        }
+      }
+      Fl_Group {} {open
+        xywh {177 409 218 26} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Check_Button mostrarGlifos {
+          label {Mostrar glifos}
+          xywh {180 415 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Actualizar
+          callback {actualizarGlifosDTI()}
+          xywh {293 412 100 20} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+        }
+      }
+    }
+    Fl_Button {} {
+      image {Images/apply.png} xywh {15 705 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/apply_close.png} xywh {123 705 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      callback {m_configGeodesicPath->hide();
+m_configIO->hide();}
+      image {Images/Close.png} xywh {315 705 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+  }
 } 

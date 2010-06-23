@@ -55,7 +55,8 @@ vtkSaturnTensorGlyph::vtkSaturnTensorGlyph()
 	this->Bounds[4] = 0;
 	this->Bounds[5] = 0;
 
-	this->csThreshold = 1;
+	this->FilterMode = FILTER_BY_FA;
+	this->FilterThreshold = 0.0;
 }
 
 vtkSaturnTensorGlyph::~vtkSaturnTensorGlyph()
@@ -213,7 +214,23 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 //		if ( (this->GlyphType==SUPERQUADRIC) || (this->ColorMode==COLOR_BY_CL) )
 		pixel.ComputeShapeCoefficients(cl,cp,cs);
 
-		if (fabs(cs)>=csThreshold) continue;
+cout<<pixel.GetFractionalAnisotropy()<<" "<<cl<<" "<<cs<<"\n";
+
+		switch (this->FilterMode)
+		{
+			case FILTER_BY_FA: 
+				if (pixel.GetFractionalAnisotropy() < FilterThreshold) continue;
+				break;
+
+			case FILTER_BY_CL: 
+				if (cl < FilterThreshold) continue;
+				break;
+
+			case FILTER_BY_CS: 
+				if (cs > FilterThreshold) continue;
+				break;
+
+		}
 
 /*		if ( this->ClampScaling )
 		{
@@ -368,8 +385,6 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 		else norm_factor = 1 / eigval[2];
 
 		pixel.ComputeShapeCoefficients(cl,cp,cs);
-
-		if (fabs(cs)>=csThreshold) continue;
 
 		// Now do the real work for each "direction"
 
