@@ -4277,10 +4277,6 @@ void TensorConsole::actualizarGlifosDTI() {
 
 void TensorConsole::verGlifos(int orientation) {
 
-//	iMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[0];
-//	jMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[1];
-//	kMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[2];	
-
 	int i,j,k;
 	int xMin, xMax, yMin, yMax, zMin, zMax;
 
@@ -4377,8 +4373,6 @@ void TensorConsole::verGlifos(int orientation, int xMin, int xMax, int yMin, int
 	glifo->SetThetaResolution(valorThetaResolution->value());
 	glifo->SetGamma(valorGamma->value());
 
-cout<<xMin<<" "<<xMax<<" "<<yMin<<" "<<yMax<<" "<<zMin<<" "<<zMax<<"\n";
-
 	if (verCuboides->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::CUBOID);
 	else if (verSupercuadricas->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::SUPERQUADRIC);
 	else glifo->SetGlyphType(vtkSaturnTensorGlyph::ELLIPSOID);
@@ -4420,17 +4414,7 @@ m_activeActorZ->GetProperty()->BackfaceCullingOn();
 
 	}
 
-output->Delete();
-
-/*	vtkLookupTable *lut = vtkLookupTable::New();
-	lut->SetValueRange(0.0,1.0);
-	lut->SetTableRange(0,256);
-
-	vtkColorTransferFunction *color = vtkColorTransferFunction::New();
-	color->AddRGBPoint(0,1.0,0.0,0.0);
-	color->AddRGBPoint(.5,0.0,1.0,0.0);
-	color->AddRGBPoint(1,0.0,0.0,1.0);
-*/
+	output->Delete();
 
 	vtkLookupTable *lut = vtkLookupTable::New();
 	lut->Build();
@@ -4450,27 +4434,7 @@ output->Delete();
 		m_scalarBar->SetTitle("Cl");
 
 	ImageViewer3D->AddViewProp(m_scalarBar);
-/*
-	vtkLight *luz1 = vtkLight::New();
-	luz1->SetPosition(1000,1000,0);
-	luz1->SetFocalPoint(0,0,0);
-	ImageViewer3D->GetDefaultRenderer()->AddLight(luz1);
 
-	vtkLight *luz2 = vtkLight::New();
-	luz2->SetPosition(-1000,1000,0);
-	luz2->SetFocalPoint(0,0,0);
-	ImageViewer3D->GetDefaultRenderer()->AddLight(luz2);
-
-	vtkLight *luz3 = vtkLight::New();
-	luz3->SetPosition(1000,-1000,0);
-	luz3->SetFocalPoint(0,0,0);
-	ImageViewer3D->GetDefaultRenderer()->AddLight(luz3);
-
-	vtkLight *luz4 = vtkLight::New();
-	luz4->SetPosition(-1000,-1000,0);
-	luz4->SetFocalPoint(0,0,0);
-	ImageViewer3D->GetDefaultRenderer()->AddLight(luz4);
-*/
 	Fl::check();
 	ImageViewer3D->redraw();
 	Fl::check();

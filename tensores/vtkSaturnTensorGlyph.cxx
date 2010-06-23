@@ -187,15 +187,6 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 	{
 		ptIncr = inPtId * numSourcePts;
 
-		// Translation is postponed
-
-		/*
-		// compute scale factors
-		w[0] *= this->ScaleFactor;
-		w[1] *= this->ScaleFactor;
-		w[2] *= this->ScaleFactor;
-		*/
-
 		pixelIndex[0] = this->Bounds[0] + inPtId % xSize;
 		pixelIndex[1] = this->Bounds[2] + inPtId / xSize % ySize;
 		pixelIndex[2] = this->Bounds[4] + inPtId / (xSize * ySize) % zSize;
@@ -232,54 +223,12 @@ cout<<pixel.GetFractionalAnisotropy()<<" "<<cl<<" "<<cs<<"\n";
 
 		}
 
-/*		if ( this->ClampScaling )
-		{
-			for (maxScale=0.0, i=0; i<3; i++)
-			{
-				if ( maxScale < fabs(eigval[i]) )
-				{
-					maxScale = fabs(eigval[i]);
-				}
-			}
-			if ( maxScale > this->MaxScaleFactor )
-			{
-				maxScale = this->MaxScaleFactor / maxScale;
-				for (i=0; i<3; i++)
-				{
-					eigval[i] *= maxScale; //preserve overall shape of glyph
-				}
-			}
-		}
-
-		// normalization is postponed
-/*
-		// make sure scale is okay (non-zero) and scale data
-		for (maxScale=0.0, i=0; i<3; i++)
-		{
-			if ( eigval[i] > maxScale )
-			{
-				maxScale = eigval[i];
-			}
-		}
-		if ( maxScale == 0.0 )
-		{
-			maxScale = 1.0;
-		}
-		for (i=0; i<3; i++)
-		{
-			if ( eigval[i] == 0.0 )
-			{
-				eigval[i] = maxScale * 1.0e-06;
-			}
-		}
-/**/
 		// Now do the real work for each "direction"
 
 		// Remove previous scales ...
 		trans->Identity();
 
 		// translate Source to Input point
-//		input->GetPoint(inPtId, x);
 		x[0] = origin[0] + spacing[0] * pixelIndex[0];
 		x[1] = origin[1] + spacing[1] * pixelIndex[1];
 		x[2] = origin[2] + spacing[2] * pixelIndex[2];
@@ -356,7 +305,7 @@ cout<<pixel.GetFractionalAnisotropy()<<" "<<cl<<" "<<cs<<"\n";
 
 		}
 
-			// Copy point data from source
+		// Copy point data from source
 		for (i=0; i < numSourcePts; i++) 
 		{
 			newScalars->InsertNextValue(scalarValue);
