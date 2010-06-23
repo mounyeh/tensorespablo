@@ -188,14 +188,7 @@ public:
   void verGlifos(int);
   void verGlifos(int,int,int,int,int,int,int);
   void borrarGlifos(int);
-//  void verGlifosX();
-//  void verGlifosY();
-//  void verGlifosZ();
-//  void borrarGlifosX();
-//  void borrarGlifosY();
-//  void borrarGlifosZ();
   void cambiarOpacidad(float);
-  int DibujarSupercuadricas(vtkDataSet *, vtkPolyData *, vtkPolyData *);
 
   void probarEsfuerzo();
   void probarEsfuerzoDeform();
