@@ -83,10 +83,15 @@ public:
 	double GetGamma()
 		{return this->Gamma;};
 
-	void SetcsThreshold(double value)
-		{this->csThreshold = value;};
+	void SetFilterMode(int value)
+		{this->FilterMode = value;};
+	int GetFilterMode()
+		{return this->FilterMode;};
+
+	void SetFilterThreshold(double value)
+		{this->FilterThreshold = value;};
 	double GetcsThreshold()
-		{return this->csThreshold;};
+		{return this->FilterThreshold;};
 
 	void interpolacionLineal (double x[3],TensorPixelType *pixel);
 	void interpolacionLogEuclidea (double x[3],TensorPixelType *pixel);
@@ -123,6 +128,13 @@ public:
 	COLOR_BY_CL
 	};
 
+	enum
+	{
+	FILTER_BY_FA,
+	FILTER_BY_CL,
+	FILTER_BY_CS
+	};
+
 protected:
 
 	TensorImageType::Pointer input;
@@ -142,7 +154,8 @@ protected:
 
 	double Gamma;
 
-	double csThreshold;
+	int FilterMode;
+	double FilterThreshold;
 
 };
 

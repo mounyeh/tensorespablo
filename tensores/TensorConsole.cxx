@@ -3910,7 +3910,6 @@ void TensorConsole::verGlifos() {
 	glifo->SetPhiResolution(valorPhiResolution->value());
 	glifo->SetThetaResolution(valorThetaResolution->value());
 	glifo->SetGamma(valorGamma->value());
-	glifo->SetcsThreshold(valorcsMax->value());
 
 	if (verCuboides->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::CUBOID);
 	else if (verSupercuadricas->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::SUPERQUADRIC);
@@ -4377,20 +4376,24 @@ void TensorConsole::verGlifos(int orientation, int xMin, int xMax, int yMin, int
 	glifo->SetPhiResolution(valorPhiResolution->value());
 	glifo->SetThetaResolution(valorThetaResolution->value());
 	glifo->SetGamma(valorGamma->value());
-	glifo->SetcsThreshold(valorcsMax->value());
+
+cout<<xMin<<" "<<xMax<<" "<<yMin<<" "<<yMax<<" "<<zMin<<" "<<zMax<<"\n";
 
 	if (verCuboides->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::CUBOID);
 	else if (verSupercuadricas->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::SUPERQUADRIC);
 	else glifo->SetGlyphType(vtkSaturnTensorGlyph::ELLIPSOID);
 
-
 	if (colorRA->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_RA);
 	else if (colorFA->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_FA);
 	else if (colorCl->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_CL);
 
-	vtkPolyData *output = glifo->GetOutput();
+	if (filtrarFA->value()) glifo->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_FA);
+	else if (filtrarCl->value()) glifo->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_CL);
+	else if (filtrarCs->value()) glifo->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_CS);
 
-//	cout<<"num: "<<output->GetNumberOfPoints()<<"\n";
+	glifo->SetFilterThreshold(valorFiltro->value());
+
+	vtkPolyData *output = glifo->GetOutput();
 
 	switch (orientation) {
 		
