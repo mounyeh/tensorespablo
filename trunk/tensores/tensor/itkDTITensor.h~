@@ -167,9 +167,6 @@ public:
 	/** Compute the tensor from vector in the Log-Euclidean space with weighting factors  */
 	Self ComputeTensorFromLogVector(Vector<TComponent,6>) const;
 
-void Autovectores( EigenValuesArrayType& eigval, EigenVectorsMatrixType& eigvec );
-
-
 	
 //public:
 //	static const RealType m_Tolerance=1e-5;

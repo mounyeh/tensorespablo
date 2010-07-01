@@ -3,37 +3,37 @@ version 1.0107
 header_name {.h} 
 code_name {.cxx}
 widget_class {\#include <itkImage.h>} TensorGUI {open
-  xywh {504 49 500 680} type Double
+  xywh {504 49 500 680} type Double hide
   code0 {\#include <FL/Fl_Browser.H>}
   code1 {\#include <FL/Fl_Choice.H>}
   code2 {\#include "tensor/itkDTITensor.h"}
-  code3 {\#include <itkImage.h>} visible
+  code3 {\#include <itkImage.h>}
 } {
   Fl_Group m_configGeodesicPath {
     label Tractography open
-    xywh {5 382 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
   } {
     Fl_Group {} {
       label {Options:} open
-      xywh {8 398 396 300} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
+      xywh {8 403 396 300} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
     } {
       Fl_Group {} {
         label Color open
-        xywh {12 401 388 66} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
+        xywh {12 406 388 66} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
       } {
         Fl_Value_Slider m_color_r {
           label R
-          xywh {39 443 110 17} type Horizontal labelfont 1 align 4 step 0.01 value 1 textsize 14 hide
+          xywh {39 448 110 17} type Horizontal labelfont 1 align 4 step 0.01 value 1 textsize 14 hide
         }
         Fl_Value_Slider m_color_g {
           label G
-          xywh {165 443 110 17} type Horizontal labelfont 1 align 4 step 0.01 textsize 14 hide
+          xywh {165 448 110 17} type Horizontal labelfont 1 align 4 step 0.01 textsize 14 hide
         }
         Fl_Value_Slider m_color_b {
           label B
-          xywh {290 443 110 17} type Horizontal labelfont 1 align 4 step 0.01 textsize 14 hide
+          xywh {290 448 110 17} type Horizontal labelfont 1 align 4 step 0.01 textsize 14 hide
         }
         Fl_Check_Button {colortype[0]} {
           label FA
@@ -42,7 +42,7 @@ colortype[i]->value(false);
 }
 colortype[0]->value(true);
 m_colorvalue = 0;}
-          xywh {22 419 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+          xywh {22 424 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
         }
         Fl_Check_Button {colortype[1]} {
           label Size
@@ -51,7 +51,7 @@ colortype[i]->value(false);
 }
 colortype[1]->value(true);
 m_colorvalue = 1;}
-          xywh {61 419 50 15} down_box DOWN_BOX labelfont 1 labelsize 12
+          xywh {61 424 50 15} down_box DOWN_BOX labelfont 1 labelsize 12
         }
         Fl_Check_Button {colortype[2]} {
           label RGB
@@ -60,7 +60,7 @@ colortype[i]->value(false);
 }
 colortype[2]->value(true);
 m_colorvalue = 2;}
-          xywh {113 419 48 15} down_box DOWN_BOX labelfont 1 labelsize 12
+          xywh {113 424 48 15} down_box DOWN_BOX labelfont 1 labelsize 12
         }
         Fl_Check_Button {colortype[3]} {
           label Curvature
@@ -69,7 +69,7 @@ colortype[i]->value(false);
 }
 colortype[3]->value(true);
 m_colorvalue = 3;}
-          xywh {118 422 78 15} down_box DOWN_BOX labelfont 1 labelsize 11 hide
+          xywh {118 427 78 15} down_box DOWN_BOX labelfont 1 labelsize 11 hide
         }
         Fl_Check_Button {colortype[4]} {
           label Distance
@@ -78,7 +78,7 @@ colortype[i]->value(false);
 }
 colortype[4]->value(true);
 m_colorvalue = 4;}
-          xywh {160 419 72 15} down_box DOWN_BOX labelfont 1 labelsize 12
+          xywh {160 424 72 15} down_box DOWN_BOX labelfont 1 labelsize 12
         }
         Fl_Check_Button {colortype[5]} {
           label {Major Eig}
@@ -87,16 +87,16 @@ colortype[i]->value(false);
 }
 colortype[5]->value(true);
 m_colorvalue = 5;}
-          xywh {230 419 78 15} down_box DOWN_BOX labelfont 1 labelsize 12
+          xywh {230 424 78 15} down_box DOWN_BOX labelfont 1 labelsize 12
         }
         Fl_Button {} {
           label {Set fiber color}
           callback {this->SetFibersColor(m_colorvalue);
 ImageViewer3D->Update();}
-          xywh {304 414 90 22} box PLASTIC_DOWN_BOX color 11 labelfont 1 labelsize 12
+          xywh {304 419 90 22} box PLASTIC_DOWN_BOX color 11 labelfont 1 labelsize 12
         }
         Fl_Group {} {open
-          xywh {16 440 380 24} box PLASTIC_THIN_DOWN_BOX color 11 labelfont 1 labelsize 12 align 0
+          xywh {16 445 380 24} box PLASTIC_THIN_DOWN_BOX color 11 labelfont 1 labelsize 12 align 0
         } {
           Fl_Check_Button {colortype[6]} {
             label skin
@@ -106,7 +106,7 @@ colortype[i]->value(false);
 colortype[6]->value(true);
 m_colorvalue = 6;
 ImageViewer[m_activeinput]->ChangeActiveClass(4);}
-            xywh {20 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 3 labelfont 1 labelsize 12
+            xywh {20 449 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 3 labelfont 1 labelsize 12
           }
           Fl_Check_Button {colortype[7]} {
             label bone
@@ -116,7 +116,7 @@ colortype[i]->value(false);
 colortype[7]->value(true);
 m_colorvalue = 7;
 ImageViewer[m_activeinput]->ChangeActiveClass(7);}
-            xywh {72 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 16 labelfont 1 labelsize 12
+            xywh {72 449 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 16 labelfont 1 labelsize 12
           }
           Fl_Check_Button {colortype[8]} {
             label gray
@@ -126,7 +126,7 @@ colortype[i]->value(false);
 colortype[8]->value(true);
 m_colorvalue = 8;
 ImageViewer[m_activeinput]->ChangeActiveClass(8);}
-            xywh {125 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 32 labelfont 1 labelsize 12
+            xywh {125 449 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 32 labelfont 1 labelsize 12
           }
           Fl_Check_Button {colortype[9]} {
             label red
@@ -136,7 +136,7 @@ colortype[i]->value(false);
 colortype[9]->value(true);
 m_colorvalue = 9;
 ImageViewer[m_activeinput]->ChangeActiveClass(1);}
-            xywh {179 444 46 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 1 labelfont 1 labelsize 12
+            xywh {179 449 46 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 1 labelfont 1 labelsize 12
           }
           Fl_Check_Button {colortype[10]} {
             label green
@@ -146,7 +146,7 @@ colortype[i]->value(false);
 colortype[10]->value(true);
 m_colorvalue = 10;
 ImageViewer[m_activeinput]->ChangeActiveClass(5);}
-            xywh {227 444 55 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 2 labelfont 1 labelsize 12
+            xywh {227 449 55 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 2 labelfont 1 labelsize 12
           }
           Fl_Check_Button {colortype[11]} {
             label blue
@@ -156,7 +156,7 @@ colortype[i]->value(false);
 colortype[11]->value(true);
 m_colorvalue = 11;
 ImageViewer[m_activeinput]->ChangeActiveClass(3);}
-            xywh {285 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 6 labelfont 1 labelsize 12
+            xywh {285 449 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 6 labelfont 1 labelsize 12
           }
           Fl_Check_Button {colortype[12]} {
             label sea
@@ -166,71 +166,71 @@ colortype[i]->value(false);
 colortype[12]->value(true);
 m_colorvalue = 12;
 ImageViewer[m_activeinput]->ChangeActiveClass(6);}
-            xywh {339 444 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 15 labelfont 1 labelsize 12
+            xywh {339 449 53 17} box PLASTIC_DOWN_BOX down_box DOWN_BOX color 15 labelfont 1 labelsize 12
           }
         }
       }
       Fl_Group {} {
         label Parameters
-        xywh {12 470 388 92} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+        xywh {12 475 388 92} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
       } {
         Fl_Value_Slider m_int_step {
           label {Integration Step }
-          xywh {149 481 245 17} type Horizontal box PLASTIC_DOWN_BOX labelfont 1 align 0 step 0.1 value 0.5 textsize 14 hide
+          xywh {149 486 245 17} type Horizontal box PLASTIC_DOWN_BOX labelfont 1 align 0 step 0.1 value 0.5 textsize 14 hide
         }
         Fl_Value_Slider m_prop_time {
           label {Propag. time}
-          xywh {118 482 275 17} type Horizontal labelfont 1 align 4 maximum 1000 step 10 value 100 textsize 14 hide
+          xywh {118 487 275 17} type Horizontal labelfont 1 align 4 maximum 1000 step 10 value 100 textsize 14 hide
         }
         Fl_Value_Slider m_radius {
           label Radius
-          xywh {16 485 300 17} type Horizontal labelfont 1 labelsize 12 align 8 minimum 0.01 step 0.01 value 0.3 textsize 14
+          xywh {16 490 300 17} type Horizontal labelfont 1 labelsize 12 align 8 minimum 0.01 step 0.01 value 0.3 textsize 14
         }
         Fl_Value_Slider m_step_length {
           label {Step Length}
-          xywh {16 504 301 17} type Horizontal labelfont 1 labelsize 12 align 8 maximum 2 step 0.01 value 0.98 textsize 14
+          xywh {16 509 301 17} type Horizontal labelfont 1 labelsize 12 align 8 maximum 2 step 0.01 value 0.98 textsize 14
         }
         Fl_Value_Slider m_fa_threshold {
           label {FA threshold}
-          xywh {16 523 300 17} type Horizontal labelfont 1 labelsize 12 align 8 step 0.01 value 0.15 textsize 14
+          xywh {16 528 300 17} type Horizontal labelfont 1 labelsize 12 align 8 step 0.01 value 0.15 textsize 14
         }
         Fl_Value_Slider m_curvature_threshold {
           label {Curv Thresh}
-          xywh {16 542 300 17} type Horizontal labelfont 1 labelsize 12 align 8 maximum 180 step 1 value 90 textsize 14
+          xywh {16 547 300 17} type Horizontal labelfont 1 labelsize 12 align 8 maximum 180 step 1 value 90 textsize 14
         }
       }
       Fl_Group {} {
         label ROIs
-        xywh {12 566 388 44} box PLASTIC_DOWN_BOX color 44 labelfont 1 labelsize 12 align 21
+        xywh {12 571 388 44} box PLASTIC_DOWN_BOX color 44 labelfont 1 labelsize 12 align 21
       } {
         Fl_Button {} {
           label load
           callback {ImageViewer[m_activeinput]->Update();}
-          xywh {74 569 48 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
+          xywh {74 574 48 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
         }
         Fl_Button {} {
           label show
           callback {//ImageViewer[m_activeinput]->showClickedPoints();
 ImageViewer[m_activeinput]->ViewOverlayData();
 ImageViewer[m_activeinput]->Update();}
-          xywh {21 589 48 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
+          xywh {21 594 48 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
         }
         Fl_Button {} {
           label clear
           callback {//ImageViewer[m_activeinput]->clearClickedPointsStored();
 ImageViewer[m_activeinput]->ClearOverlay();
 ImageViewer[m_activeinput]->Update();}
-          xywh {75 589 45 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
+          xywh {75 594 45 17} box PLASTIC_DOWN_BOX color 11 labelfont 1
         }
         Fl_Value_Slider clickedRadius_ {
           label {clicked radius}
           callback {ImageViewer[m_activeinput]->SetClickedRadius(static_cast<unsigned int>(o->value()));}
-          xywh {125 592 105 14} type Horizontal labelfont 1 labelsize 12 align 5 maximum 10 step 1 value 2 textsize 14 hide
+          xywh {125 597 105 14} type Horizontal labelfont 1 labelsize 12 align 5 maximum 10 step 1 value 2 textsize 14 hide
         }
         Fl_Counter clickedRadius {
           label radius
           callback {ImageViewer[m_activeinput]->SetClickedRadius(static_cast<unsigned int>(o->value()));}
-          xywh {127 589 46 17} type Simple labelfont 1 labelsize 12 align 1 minimum 0 maximum 10 step 1 value 2
+          xywh {127 594 46 17} type Simple labelfont 1 labelsize 12 align 1 minimum 0 maximum 10 step 1 value 2
         }
         Fl_Check_Button {} {
           label erase
@@ -239,32 +239,32 @@ ImageViewer[m_activeinput]->ChangeActiveClass(0);
 } else {
 ImageViewer[m_activeinput]->ChangeActiveClass(int(class_value->value()));
 }}
-          xywh {179 591 53 15} down_box DOWN_BOX labelfont 1 labelsize 12 align 0
+          xywh {179 596 53 15} down_box DOWN_BOX labelfont 1 labelsize 12 align 0
         }
         Fl_Counter class_value {
           label class
           callback {ImageViewer[m_activeinput]->ChangeActiveClass(int(o->value()));}
-          xywh {235 589 46 17} type Simple labelfont 1 labelsize 12 align 1 minimum 0 maximum 50 step 1 value 1
+          xywh {235 594 46 17} type Simple labelfont 1 labelsize 12 align 1 minimum 0 maximum 50 step 1 value 1
         }
         Fl_Value_Slider {} {
           label opacity
           callback {ImageViewer[m_activeinput]->SetOverlayOpacity(o->value());}
-          xywh {286 590 109 16} type Horizontal labelfont 1 labelsize 12 align 5 step 0.01 value 1 textsize 14
+          xywh {286 595 109 16} type Horizontal labelfont 1 labelsize 12 align 5 step 0.01 value 1 textsize 14
         }
       }
       Fl_Group {} {
         label Execution open
-        xywh {12 613 388 72} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+        xywh {12 618 388 72} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
       } {
         Fl_Button TrachtographyVTKButton {
           label {tract vtk}
           callback {this->CreateStreamLineNew();}
-          xywh {18 632 97 25} box PLASTIC_DOWN_BOX color 4 labelfont 1 hide
+          xywh {18 637 97 25} box PLASTIC_DOWN_BOX color 4 labelfont 1 hide
         }
         Fl_Button RungeKuttaButton {
           label Tractography
           callback {this->RungeKuttaTractography();}
-          xywh {19 631 103 21} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
+          xywh {19 636 103 21} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
         }
         Fl_Button {} {
           label {Tractog. Logic}
@@ -281,21 +281,21 @@ if (m_exc_all->value() == 1) {
   }
 }
 this->SelectFiberTractsConnection(label1,label2, aux);}
-          xywh {218 631 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+          xywh {218 636 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
         }
         Fl_Check_Button m_connect {
           label connect
-          xywh {120 650 67 15} down_box DOWN_BOX labelfont 1 labelsize 12 hide
+          xywh {120 655 67 15} down_box DOWN_BOX labelfont 1 labelsize 12 hide
         }
         Fl_Button RungeKuttaButtonAll {
           label {Brute force}
           callback {this->BruteForceTractography();}
-          xywh {131 631 80 21} box PLASTIC_DOWN_BOX color 9 labelfont 1 labelsize 12
+          xywh {131 636 80 21} box PLASTIC_DOWN_BOX color 9 labelfont 1 labelsize 12
         }
         Fl_Button SelectFibers {
           label {Select Fibers}
           callback {this->SelectFiberTracts(-1);}
-          xywh {131 656 80 21} box PLASTIC_DOWN_BOX color 9 labelfont 1 labelsize 12
+          xywh {131 661 80 21} box PLASTIC_DOWN_BOX color 9 labelfont 1 labelsize 12
         }
         Fl_Button {} {
           label {Tractog. Auto}
@@ -303,38 +303,38 @@ this->SelectFiberTractsConnection(label1,label2, aux);}
 m_configIO->hide();
 m_configTractographyAuto->show();
 ActiveGroup = this->m_configTractographyAuto;}
-          xywh {19 656 103 21} box PLASTIC_DOWN_BOX color 14 labelfont 1 labelsize 12
+          xywh {19 661 103 21} box PLASTIC_DOWN_BOX color 14 labelfont 1 labelsize 12
         }
         Fl_Spinner m_roi1 {
           label {ROI 1}
-          xywh {246 655 32 20} labelfont 1 labelsize 11
+          xywh {246 660 32 20} labelfont 1 labelsize 11
         }
         Fl_Spinner m_roi2 {
           label {ROI 2}
-          xywh {312 655 32 20} labelfont 1 labelsize 11
+          xywh {312 660 32 20} labelfont 1 labelsize 11
         }
         Fl_Spinner m_roi3 {
           label {Ex.}
-          xywh {364 655 32 20} labelfont 1 labelsize 11
+          xywh {364 660 32 20} labelfont 1 labelsize 11
         }
         Fl_Check_Button m_exc_all {
           label {Excl. all}
-          xywh {324 633 71 17} down_box DOWN_BOX labelfont 1 labelsize 12
+          xywh {324 638 71 17} down_box DOWN_BOX labelfont 1 labelsize 12
         }
       }
     }
     Fl_Button {} {
-      image {Images/apply.png} xywh {10 700 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+      image {Images/apply.png} xywh {10 705 102 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
     }
     Fl_Button {} {
       callback {m_configGeodesicPath->hide();
 m_configIO->hide();}
-      image {Images/apply_close.png} xywh {118 700 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
+      image {Images/apply_close.png} xywh {118 705 185 30} box PLASTIC_DOWN_BOX color 23 labelfont 1 labelsize 12
     }
     Fl_Button {} {
       callback {m_configGeodesicPath->hide();
 m_configIO->hide();}
-      image {Images/Close.png} xywh {310 700 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+      image {Images/Close.png} xywh {310 705 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
     }
   }
   Fl_Group m_configTractographyAuto {
@@ -1504,7 +1504,7 @@ Fl::redraw();}
           xywh {30 573 35 17} labeltype NO_LABEL align 0
         }
         Fl_Value_Output text_xmax {
-          label {Sagital (X)} selected
+          label {Sagital (X)}
           xywh {285 573 35 17} labelfont 1 labelsize 12 align 8 value 255
         }
         Fl_Box {} {
@@ -1561,14 +1561,14 @@ Fl::redraw();}
 text_zmax->value(o->value());
 
 zMinimo->maximum(o->value());
-zMinimo->size(8+round(200*o->value()/255),14);
+zMinimo->size(8+round(200*o->value()/40),14);
 
-zBox->size(round(200*(zMaximo->value()-zMinimo->value())/255),xBox->h());
-zBox->position(75+round(200*(zMinimo->value())/255),zBox->y());
+zBox->size(round(200*(zMaximo->value()-zMinimo->value())/40),xBox->h());
+zBox->position(75+round(200*(zMinimo->value())/40),zBox->y());
 
 
 Fl::redraw();}
-          xywh {75 617 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1 value 255
+          xywh {75 617 208 14} type Horizontal box NO_BOX labelsize 12 maximum 40 step 1 value 41
         }
         Fl_Slider zMinimo {
           callback {if (o->value()>zMaximo->value())
@@ -1576,18 +1576,18 @@ Fl::redraw();}
 	
 text_zmin->value(o->value());
 
-zBox->size(round(200*(zMaximo->value()-zMinimo->value())/255),zBox->h());
-zBox->position(75+round(200*(zMinimo->value())/255),zBox->y());
+zBox->size(round(200*(zMaximo->value()-zMinimo->value())/40),zBox->h());
+zBox->position(75+round(200*(zMinimo->value())/40),zBox->y());
 
 Fl::redraw();}
-          xywh {67 617 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1
+          xywh {67 617 208 14} type Horizontal box NO_BOX labelsize 12 maximum 40 step 1
         }
         Fl_Value_Output text_zmin {
           xywh {30 615 35 17} labeltype NO_LABEL align 0
         }
         Fl_Value_Output text_zmax {
-          label {Axial (Z)}
-          xywh {285 615 35 17} labelfont 1 labelsize 12 align 8 value 255
+          label {Axial (Z)} selected
+          xywh {285 615 35 17} labelfont 1 labelsize 12 align 8 value 40
         }
       }
       Fl_Group {} {
@@ -1687,7 +1687,7 @@ filtrarCs->value(false);}
         }
         Fl_Check_Button filtrarCs {
           label {Cs max}
-          callback {if (!filtrarCs->value()) valorFiltro->value(1.0);
+          callback {if (filtrarFA->value() || filtrarCl->value()) valorFiltro->value(1.0);
 
 filtrarFA->value(false);
 filtrarCl->value(false);

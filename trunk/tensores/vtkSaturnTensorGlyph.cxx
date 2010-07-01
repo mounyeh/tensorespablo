@@ -55,6 +55,8 @@ vtkSaturnTensorGlyph::vtkSaturnTensorGlyph()
 	this->Bounds[4] = 0;
 	this->Bounds[5] = 0;
 
+	this->Gamma = 3.0;
+
 	this->FilterMode = FILTER_BY_FA;
 	this->FilterThreshold = 0.0;
 }
@@ -198,11 +200,6 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 
 		if (eigval[0]==0) continue;
 
-		if (fabs(eigval[0])>fabs(eigval[2]))
-			norm_factor = 1 / eigval[0];
-
-		else norm_factor = 1 / eigval[2];
-
 //		if ( (this->GlyphType==SUPERQUADRIC) || (this->ColorMode==COLOR_BY_CL) )
 		pixel.ComputeShapeCoefficients(cl,cp,cs);
 
@@ -222,6 +219,11 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 
 		}
 
+		if (fabs(eigval[0])>fabs(eigval[2]))
+			norm_factor = 1 / eigval[0];
+
+		else norm_factor = 1 / eigval[2];
+
 		// Now do the real work for each "direction"
 
 		// Remove previous scales ...
@@ -235,9 +237,6 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 
 		// normalized eigenvectors rotate object for eigen direction 0
 
-		float signo = 1.0;
-		if ( (eigvec[0][1]*eigvec[1][2]-eigvec[0][2]*eigvec[1][1]) * eigvec[2][0] < 0) signo = -1.0; 
-
 		matrix->Element[0][0] = eigvec[0][0];
 		matrix->Element[0][1] = eigvec[1][0];
 		matrix->Element[0][2] = eigvec[2][0];
@@ -250,7 +249,13 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 
 		trans->Concatenate(matrix);
 
-		factor = signo*norm_factor*this->ScaleFactor;
+		float signo = 1.0;
+//		if ( (eigvec[0][1]*eigvec[1][2]-eigvec[0][2]*eigvec[1][1]) * eigvec[2][0] < 0) signo = -1.0; 
+
+		factor = signo*norm_factor;
+
+		if (this->Scaling)
+			factor *= this->ScaleFactor;
 
 		trans->Scale(factor*eigval[0],factor*eigval[1],factor*eigval[2]);
  
@@ -358,7 +363,10 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 		float signo = 1.0;
 		if ( (eigvec[0][1]*eigvec[1][2]-eigvec[0][2]*eigvec[1][1]) * eigvec[2][0] < 0) signo = -1.0; 
 
-		factor = signo*norm_factor*this->ScaleFactor;
+		factor = signo*norm_factor;
+
+		if (this->Scaling)
+			factor *= this->ScaleFactor;
 
 		trans->Scale(factor*eigval[0],factor*eigval[1],factor*eigval[2]);
 

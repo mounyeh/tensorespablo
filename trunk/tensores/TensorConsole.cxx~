@@ -3910,7 +3910,6 @@ void TensorConsole::verGlifos() {
 	glifo->SetPhiResolution(valorPhiResolution->value());
 	glifo->SetThetaResolution(valorThetaResolution->value());
 	glifo->SetGamma(valorGamma->value());
-	glifo->SetcsThreshold(valorFiltro->value());
 
 	if (verCuboides->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::CUBOID);
 	else if (verSupercuadricas->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::SUPERQUADRIC);
@@ -4277,10 +4276,6 @@ void TensorConsole::actualizarGlifosDTI() {
 }
 
 void TensorConsole::verGlifos(int orientation) {
-
-//	iMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[0];
-//	jMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[1];
-//	kMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[2];	
 
 	int i,j,k;
 	int xMin, xMax, yMin, yMax, zMin, zMax;
