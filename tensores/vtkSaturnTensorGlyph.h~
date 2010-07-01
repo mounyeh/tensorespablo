@@ -83,7 +83,7 @@ public:
 	double GetGamma()
 		{return this->Gamma;};
 
-	void FilterMode(int value)
+	void SetFilterMode(int value)
 		{this->FilterMode = value;};
 	int GetFilterMode()
 		{return this->FilterMode;};

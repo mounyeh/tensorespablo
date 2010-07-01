@@ -110,12 +110,6 @@ public:
 
 	enum
 	{
-	COLOR_BY_SCALARS,
-	COLOR_BY_EIGENVALUES
-	};
-
-	enum
-	{
 	ELLIPSOID,
 	CUBOID,
 	SUPERQUADRIC

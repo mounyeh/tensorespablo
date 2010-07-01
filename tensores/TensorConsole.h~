@@ -257,7 +257,7 @@ private:
   vtkPolyData* 	m_activeGlyphZ;
   vtkScalarBarActor* m_scalarBar;
   vtkPoints* 	m_puntosTract;
-  double 	m_colorTract[3];
+  double* 	m_colorTract;
 
   UCharImageType::Pointer	m_SeedRegionsImage;
   UCharImageType::Pointer	m_TractRegionsImage;
