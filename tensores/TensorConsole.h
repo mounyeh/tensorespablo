@@ -184,9 +184,9 @@ public:
   void EstimateTensor( DWImagesType::Pointer dwimage, TensorImageType::Pointer &tensor, InputImageType::Pointer &t2image, bool mask);
   void ApplyMask( TensorImageType::Pointer &tensor);
 
-  void verGlifos();
   void verGlifos(int);
-  void verGlifos(int,int,int,int,int,int,int);
+  void verGlifosTract();
+//  void verGlifos(int,int,int,int,int,int,int);
   void borrarGlifos(int);
   void cambiarOpacidad(float);
 

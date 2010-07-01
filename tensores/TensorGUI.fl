@@ -2,12 +2,12 @@
 version 1.0107 
 header_name {.h} 
 code_name {.cxx}
-widget_class {\#include <itkImage.h>} TensorGUI {open
-  xywh {504 49 500 680} type Double hide
+widget_class {\#include <itkImage.h>} TensorGUI {open selected
+  xywh {504 49 500 680} type Double
   code0 {\#include <FL/Fl_Browser.H>}
   code1 {\#include <FL/Fl_Choice.H>}
   code2 {\#include "tensor/itkDTITensor.h"}
-  code3 {\#include <itkImage.h>}
+  code3 {\#include <itkImage.h>} visible
 } {
   Fl_Group m_configGeodesicPath {
     label Tractography open
@@ -1428,7 +1428,7 @@ m_configIO->hide();}
   } {}
   Fl_Group DTIGlyphsGroup {
     label {Glifos DTI} open
-    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
   } {
@@ -1586,12 +1586,12 @@ Fl::redraw();}
           xywh {30 615 35 17} labeltype NO_LABEL align 0
         }
         Fl_Value_Output text_zmax {
-          label {Axial (Z)} selected
+          label {Axial (Z)}
           xywh {285 615 35 17} labelfont 1 labelsize 12 align 8 value 40
         }
       }
       Fl_Group {} {
-        label {Glyph Type} open
+        label Glifos open
         xywh {15 437 380 110} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
       } {
         Fl_Check_Button verElipsoides {
@@ -1599,21 +1599,21 @@ Fl::redraw();}
           callback {verElipsoides->value(true);
 verCuboides->value(false);
 verSupercuadricas->value(false);}
-          xywh {115 445 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+          xywh {85 445 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
         }
         Fl_Check_Button verCuboides {
           label Cuboide
           callback {verElipsoides->value(false);
 verCuboides->value(true);
 verSupercuadricas->value(false);}
-          xywh {205 445 50 15} down_box DOWN_BOX labelfont 1 labelsize 12
+          xywh {185 445 50 15} down_box DOWN_BOX labelfont 1 labelsize 12
         }
         Fl_Check_Button verSupercuadricas {
           label {Supercuádrica}
           callback {verElipsoides->value(false);
 verCuboides->value(false);
 verSupercuadricas->value(true);}
-          xywh {290 445 48 15} down_box DOWN_BOX labelfont 1 labelsize 12
+          xywh {275 445 48 15} down_box DOWN_BOX labelfont 1 labelsize 12
         }
         Fl_Group {} {
           label {Parámetros} open
@@ -1664,7 +1664,7 @@ Fl::check();}
         }
       }
       Fl_Group {} {
-        label Filter open
+        label Filtrado open
         xywh {15 645 380 39} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
       } {
         Fl_Check_Button filtrarFA {
@@ -1703,7 +1703,7 @@ filtrarCs->value(true);}
       } {
         Fl_Check_Button mostrarGlifos {
           label {Mostrar glifos}
-          xywh {180 415 40 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+          xywh {180 415 40 15} down_box DOWN_BOX labelfont 1 labelsize 12
         }
         Fl_Button {} {
           label Actualizar

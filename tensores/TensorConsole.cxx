@@ -3923,183 +3923,10 @@ void TensorConsole::verGlifos() {
 	m_activeGlyphX = glifo->GetOutput();
 	m_activeActorX = vtkActor::New();
 
-
-/*	double color[3];
-	double opacity = 1;
-	color[0] = 0.1;
-	color[1] = 0.5;
-	color[2] = 0.1;
-	vtkUnsignedCharArray *colorarray = vtkUnsignedCharArray::New();
-    	colorarray->SetNumberOfComponents(4);
-    	colorarray->SetNumberOfTuples(2);
-    	colorarray->SetComponent(0,0,(unsigned char) (255*color[0]));
-    	colorarray->SetComponent(0,1,(unsigned char) (255*color[1]));
-    	colorarray->SetComponent(0,2,(unsigned char) (255*color[2]));
-    	colorarray->SetComponent(0,3,(unsigned char) (255*opacity));
-    	colorarray->SetComponent(1,0,(unsigned char) (255*color[0]));
-    	colorarray->SetComponent(1,1,(unsigned char) (255*color[1]));
-    	colorarray->SetComponent(1,2,(unsigned char) (255*color[2]));
-    	colorarray->SetComponent(1,3,(unsigned char) (255*opacity));
-    	colorarray->SetName("Color");
-    	vtkFieldData *fd = vtkFieldData::New();
-    	fd->AddArray(colorarray);
-    	m_activeGlyphX->SetFieldData(fd);
-*/
 	ImageViewer3D->ConnectMapper(m_activeGlyphX, m_activeActorX);
 	ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);	
 
-	//We give it to an actor
-	m_activeActorX->GetProperty()->SetColor( m_colorTract );
-
-
 	return;
-/*
-	TensorImageType::IndexType index;
-	TensorPixelType pixel;
-
-	int dataId = m_tensordataBrowser->value()-1;
-
-	int iMax, jMax, kMax;
-	int i,j,k;
-
-	iMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[3];
-	jMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[1];
-	kMax = (*m_VectorTensorData)[dataId].image->GetRequestedRegion().GetSize()[2];	
-
-	cout<<"Límites. "<<iMax<<" "<<jMax<<" "<<kMax<<"\n";
-
-	for (i=0; i<iMax; i++) 	for (j=0; j<jMax; j++)	for (k=0; k<kMax; k++) {
-
-		index[0] = i;
-		index[1] = j;
-		index[2] = k;
-		index[3] = 0;
-
-		pixel = (*m_VectorTensorData)[dataId].image->GetPixel(index);	
-
-		cout<<pixel[0]<<" "<<pixel[1]<<" "<<pixel[2]<<" "<<pixel[3]<<" "<<pixel[4]<<" "<<pixel[5]<<"\n";
-	}
-	return;
-*/
-/*
-	vtkRenderer *irenderer = vtkRenderer::New();
-	vtkRenderWindow *iwindow = vtkRenderWindow::New();
-	iwindow->AddRenderer(irenderer);
-	iwindow->SetSize(400,400);
-	vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
-	iren->SetRenderWindow(iwindow);
-
-	borrarGlifos(0);
-
-	vtkStructuredPoints *vol = vtkStructuredPoints::New();
-	vol->SetDimensions (2,2,1);
-	vol->SetOrigin(100,100,0);
-	vol->SetSpacing(100,100,100);
-
-	vtkFloatArray *tensores = vtkFloatArray::New();
-	tensores->SetNumberOfComponents(9);
-	tensores->SetNumberOfTuples(4);
-
-tensores->InsertTuple9(0,1,0,0,0,1,0,0,0,0);
-tensores->InsertTuple9(1,.2,0,0,0,1,0,0,0,0);
-
-tensores->InsertTuple9(2,1,0,0,0,.2,0,0,0,0);
-tensores->InsertTuple9(3,1,0,0,0,.5,0,0,0,0);
-
-	vtkFloatArray *scalars = vtkFloatArray::New();
-	scalars->SetNumberOfComponents(1);
-	scalars->SetNumberOfTuples(4);
-
-	scalars->InsertTuple1(0,.3);
-	scalars->InsertTuple1(1,.3);
-	scalars->InsertTuple1(2,.3);
-	scalars->InsertTuple1(3,.3);
-
-vol->GetPointData()->SetTensors(tensores);
-vol->GetPointData()->SetScalars(scalars);
-
-	vol->Update();
-	m_activeGlyphX = vtkPolyData::New();
-
-	vtkSphereSource *fuente = vtkSphereSource::New();
-	fuente->SetThetaResolution(4);
-	fuente->SetPhiResolution(4);
-	fuente->Update();
-
-//	vtkCubeSource *fuente = vtkCubeSource::New();
-
-	vtkTensorGlyph *glifo = vtkTensorGlyph::New();
-	glifo->SetInput(vol);
-	glifo->SetSource(fuente->GetOutput());
-	glifo->SetScaleFactor(100.0);
-	m_activeGlyphX = glifo->GetOutput();
-
-  vtkGlyphSource2D *glyphsource = vtkGlyphSource2D::New();
-  glyphsource->SetGlyphTypeToTriangle();
-  glyphsource->FilledOff();
-  glyphsource->CrossOn();
-  glyphsource->SetScale(20);
-  glyphsource->SetColor(.5,.5,.5);
-  glyphsource->Update();
-
-	m_activeActorZ = vtkActor::New();
-	m_activeActorZ->GetProperty()->BackfaceCullingOn();
-	ImageViewer3D->ConnectMapper(glyphsource->GetOutput(), m_activeActorZ);
-	ImageViewer3D->SetScalarRange(m_activeActorZ, 0, .5);
-
-//	return;
-
-
-                vtkPolyDataMapper2D *m = vtkPolyDataMapper2D::New();
-                vtkActor2D *vtkActor = vtkActor2D::New();
-//                 m->SetInput(glifo->GetOutput());
-		m->SetInput(glyphsource->GetOutput());
-                vtkActor->SetMapper(m);
-                vtkActor->VisibilityOn();
-                vtkActor->GetProperty()->SetColor(1, .5, 0);
-
-                irenderer->AddViewProp(vtkActor);
-
-                iwindow->Render(); 
-*/
-//iren->Start();
-
-/*	m_activeGlyphX = glifo->GetOutput();
-	m_activeActorX = vtkActor::New();
-	ImageViewer3D->ConnectMapper(m_activeGlyphX, m_activeActorX);
-	ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);
-*/
-/*
-m_activeGlyphX->Update();
-	vtkPolyDataMapper2D *Mapper2D = vtkPolyDataMapper2D::New();
-	Mapper2D->SetInput(m_activeGlyphX);
-
-	vtkActor2D *actor2d = vtkActor2D::New();
-	actor2d->SetMapper(Mapper2D);
-
-cout<<actor2d->GetPosition()[0]<<" "<<actor2d->GetPosition()[1]<<"\n";
-cout<<actor2d->GetHeight()<<" "<<actor2d->GetWidth()<<"\n";
-
-	actor2d->SetHeight(10);
-	actor2d->SetWidth(10);
-
-	actor2d->SetPosition(1,1);
-
-	ImageViewer3D->AddViewProp(actor2d);
-
-	vtkLookupTable *lut = vtkLookupTable::New();
-	lut->Build();
-
-	m_scalarBar = vtkScalarBarActor::New();
-	m_scalarBar->SetLookupTable(lut);
-	m_scalarBar->SetHeight(0.25);
-	m_scalarBar->SetWidth(0.05);
-
-	ImageViewer3D->AddViewProp(m_scalarBar);
-
-cout<<m_scalarBar->GetPosition()[0]<<" "<<m_scalarBar->GetPosition()[1]<<"\n";
-*/
-
 }
 
 void TensorConsole::tensorEsfuerzo2D() {
@@ -4274,7 +4101,7 @@ void TensorConsole::actualizarGlifosDTI() {
 	if (m_activeActorZ) verGlifos(2);
 
 }
-
+/*
 void TensorConsole::verGlifos(int orientation) {
 
 	int i,j,k;
@@ -4307,7 +4134,7 @@ void TensorConsole::verGlifos(int orientation) {
 	}
 
 }
-
+*/
 void TensorConsole::cambiarOpacidad(float value) {
 	
 	if (m_activeActorX)
@@ -4355,7 +4182,7 @@ void TensorConsole::borrarGlifos(int orientation) {
 
 }
 
-void TensorConsole::verGlifos(int orientation, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax) {
+void TensorConsole::verGlifos(int orientation) {
 
 	int dataId = m_tensordataBrowser->value()-1;
 
@@ -4366,9 +4193,17 @@ void TensorConsole::verGlifos(int orientation, int xMin, int xMax, int yMin, int
 	double v0[3], v1[3], v2[3];
 	double factor;
 
+	int xMin, xMax, yMin, yMax, zMin, zMax;
+
+	xMin = xMinimo->value();
+	xMax = xMaximo->value();
+	yMin = yMinimo->value();
+	yMax = yMaximo->value();
+	zMin = zMinimo->value();
+	zMax = zMaximo->value();
+
 	vtkSaturnTensorGlyph *glifo = new vtkSaturnTensorGlyph();
 	glifo->SetInput((*m_VectorTensorData)[dataId].image);
-	glifo->SetBounds(xMin,xMax,yMin,yMax,zMin,zMax);
 	glifo->SetPhiResolution(valorPhiResolution->value());
 	glifo->SetThetaResolution(valorThetaResolution->value());
 	glifo->SetGamma(valorGamma->value());
@@ -4387,25 +4222,32 @@ void TensorConsole::verGlifos(int orientation, int xMin, int xMax, int yMin, int
 
 	glifo->SetFilterThreshold(valorFiltro->value());
 
-	vtkPolyData *output = glifo->GetOutput();
-
 	switch (orientation) {
 		
-		case 0: m_activeGlyphX = output;
+		case 0: borrarGlifos(0);
+			i=ImageViewer3D->planeWidgetX->GetSliceIndex();
+			glifo->SetBounds(i,i, yMin,yMax, zMin,zMax);
+			m_activeGlyphX = glifo->GetOutput();
 			m_activeActorX = vtkActor::New();
 m_activeActorX->GetProperty()->BackfaceCullingOn();
 			ImageViewer3D->ConnectMapper(m_activeGlyphX, m_activeActorX);
 			ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);
 			break;
 
-		case 1: m_activeGlyphY = output;
+		case 1: borrarGlifos(1);
+			j=ImageViewer3D->planeWidgetY->GetSliceIndex();
+			glifo->SetBounds(xMin,xMax, j,j, zMin,zMax);
+			m_activeGlyphY = glifo->GetOutput();
 			m_activeActorY = vtkActor::New();
 m_activeActorY->GetProperty()->BackfaceCullingOn();
 			ImageViewer3D->ConnectMapper(m_activeGlyphY, m_activeActorY);
 			ImageViewer3D->SetScalarRange(m_activeActorY, 0, 1);
 			break;
 
-		case 2: m_activeGlyphZ = output;
+		case 2: borrarGlifos(2);
+			k=ImageViewer3D->planeWidgetZ->GetSliceIndex();
+			glifo->SetBounds(xMin,xMax, yMin,yMax, k,k);
+			m_activeGlyphZ = glifo->GetOutput();
 			m_activeActorZ = vtkActor::New();
 m_activeActorZ->GetProperty()->BackfaceCullingOn();
 			ImageViewer3D->ConnectMapper(m_activeGlyphZ, m_activeActorZ);
@@ -4413,8 +4255,6 @@ m_activeActorZ->GetProperty()->BackfaceCullingOn();
 			break;
 
 	}
-
-	output->Delete();
 
 	vtkLookupTable *lut = vtkLookupTable::New();
 	lut->Build();
