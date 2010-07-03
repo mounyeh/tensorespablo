@@ -2,15 +2,15 @@
 version 1.0107 
 header_name {.h} 
 code_name {.cxx}
-widget_class {\#include <itkImage.h>} TensorGUI {open selected
-  xywh {504 49 500 680} type Double
+widget_class {\#include <itkImage.h>} TensorGUI {open
+  xywh {600 49 500 680} type Double
   code0 {\#include <FL/Fl_Browser.H>}
   code1 {\#include <FL/Fl_Choice.H>}
   code2 {\#include "tensor/itkDTITensor.h"}
   code3 {\#include <itkImage.h>} visible
 } {
   Fl_Group m_configGeodesicPath {
-    label Tractography open
+    label Tractography
     xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
@@ -263,7 +263,10 @@ ImageViewer[m_activeinput]->ChangeActiveClass(int(class_value->value()));
         }
         Fl_Button RungeKuttaButton {
           label Tractography
-          callback {this->RungeKuttaTractography();}
+          callback {this->RungeKuttaTractography();
+
+imagenActiva(3,true);
+verGlifosTract();}
           xywh {19 636 103 21} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
         }
         Fl_Button {} {
@@ -1197,17 +1200,24 @@ for (int i=0;i<=18;i++) {
   Mdisplay[i]->buffer(m_buff[i]);
 }} {}
   }
-  Function {ShowROIsMeasures()} {open
-  } {
+  Function {ShowROIsMeasures()} {} {
     code {panelROIsMeasures->show();
 m_ROIsText->textfont(FL_COURIER);
 m_ROIsText->buffer(m_bufferROIsText);} {}
   }
   Function {ComputeFiberMeasures(bool)} {open return_type {virtual void}
   } {}
-  Function {verGlifos()} {open return_type {virtual void}
+  Function {glifosActivos()} {open return_type {virtual void}
+  } {}
+  Function {verGlifosTract()} {open return_type {virtual void}
   } {}
   Function {cambiarOpacidad(float)} {open return_type {virtual void}
+  } {}
+  Function {borrarGlifos(int)} {open return_type {virtual void}
+  } {}
+  Function {imagenActiva(int,bool)} {open return_type {virtual void}
+  } {}
+  Function {actualizarGlifosDTI()} {open return_type {virtual void}
   } {}
   Fl_Group CylinderGroup {
     label {Modelo cilíndrico}
@@ -1422,13 +1432,11 @@ m_configIO->hide();}
       image {Images/Close.png} xywh {310 710 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
     }
   }
-  Function {actualizarGlifosDTI()} {open return_type {virtual void}
-  } {}
   Function {tensorEsfuerzo2D()} {open return_type {virtual void}
   } {}
   Fl_Group DTIGlyphsGroup {
     label {Glifos DTI} open
-    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5
+    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
   } {
@@ -1460,6 +1468,34 @@ colorCl->value(false);}
 colorRA->value(false);
 colorCl->value(true);}
           xywh {128 416 40 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+      }
+      Fl_Group {} {
+        label Ejecucion open
+        xywh {177 409 218 26} box PLASTIC_DOWN_BOX color 15 labeltype NO_LABEL labelfont 1 labelsize 12 align 21
+      } {
+        Fl_Check_Button mostrarGlifos {
+          label {Mostrar glifos}
+          callback {if (o->value())
+	glifosActivos();
+	
+else {
+	borrarGlifos(0);
+	borrarGlifos(1);
+	borrarGlifos(2);
+	borrarGlifos(3);
+
+}
+
+Fl::redraw();}
+          xywh {180 415 40 15} down_box DOWN_BOX labelfont 1 labelsize 12
+        }
+        Fl_Button {} {
+          label Actualizar
+          callback {actualizarGlifosDTI();
+
+Fl::redraw();} selected
+          xywh {293 412 100 20} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
         }
       }
       Fl_Group {} {
@@ -1619,17 +1655,17 @@ verSupercuadricas->value(true);}
           label {Parámetros} open
           xywh {23 468 367 74} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
         } {
-          Fl_Value_Slider glyphOpacity {
+          Fl_Value_Slider valorOpacidad {
             label Opacidad
             callback {this->cambiarOpacidad(o->value());
 Fl::check();
 ImageViewer3D->redraw();
 Fl::check();}
-            xywh {275 515 105 15} type Horizontal labelfont 1 labelsize 12 align 4 step 0.1 value 1 textsize 14
+            xywh {275 500 105 15} type Horizontal labelfont 1 labelsize 12 align 4 step 0.1 value 1 textsize 14
           }
           Fl_Value_Slider valorGamma {
             label {Gamma (Spq.)}
-            xywh {275 494 105 15} type Horizontal labelfont 1 labelsize 12 align 4 maximum 10 step 0.2 value 3 textsize 14
+            xywh {275 520 105 15} type Horizontal labelfont 1 labelsize 12 align 4 maximum 10 step 0.2 value 3 textsize 14
           }
           Fl_Value_Output valorThetaResolution {
             label {Resolución theta}
@@ -1660,6 +1696,10 @@ Fl::check();}
             callback {if (valorPhiResolution->value()>4)
 	valorPhiResolution->value(valorPhiResolution->value()-4);}
             xywh {157 522 8 8}
+          }
+          Fl_Value_Slider valorEscala {
+            label Escala
+            xywh {275 480 105 15} type Horizontal labelfont 1 labelsize 12 align 4 minimum 0.5 maximum 2 step 0.1 value 1 textsize 14
           }
         }
       }
@@ -1696,19 +1736,6 @@ filtrarCs->value(true);}
         }
         Fl_Value_Slider valorFiltro {
           xywh {246 662 140 17} type Horizontal labelfont 1 labelsize 12 align 8 step 0.01 textsize 14
-        }
-      }
-      Fl_Group {} {open
-        xywh {177 409 218 26} box PLASTIC_DOWN_BOX color 15 labelfont 1 labelsize 12 align 21
-      } {
-        Fl_Check_Button mostrarGlifos {
-          label {Mostrar glifos}
-          xywh {180 415 40 15} down_box DOWN_BOX labelfont 1 labelsize 12
-        }
-        Fl_Button {} {
-          label Actualizar
-          callback {actualizarGlifosDTI()}
-          xywh {293 412 100 20} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
         }
       }
     }

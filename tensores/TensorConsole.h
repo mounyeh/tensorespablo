@@ -189,6 +189,8 @@ public:
 //  void verGlifos(int,int,int,int,int,int,int);
   void borrarGlifos(int);
   void cambiarOpacidad(float);
+  void glifosActivos();
+  void imagenActiva(int,bool);
 
   void probarEsfuerzo();
   void probarEsfuerzoDeform();
@@ -249,8 +251,16 @@ private:
   vtkActor*	m_activeActorZ;
   vtkPolyData* 	m_activeGlyphZ;
   vtkScalarBarActor* m_scalarBar;
+
   vtkPoints* 	m_puntosTract;
+  vtkActor*	m_tractActor;
+  vtkPolyData*	m_tractGlyphs;
   double* 	m_colorTract;
+
+  bool m_planoActivoX;
+  bool m_planoActivoY;
+  bool m_planoActivoZ;
+  bool m_tractActiva;
 
   UCharImageType::Pointer	m_SeedRegionsImage;
   UCharImageType::Pointer	m_TractRegionsImage;

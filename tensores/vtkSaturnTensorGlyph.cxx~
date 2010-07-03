@@ -250,9 +250,7 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 		if (fabs(eigval[0])>fabs(eigval[2]))
 			norm_factor = 1 / eigval[0];
 
-		else {norm_factor = 1 / eigval[2];
-cout<<eigval<<"\n";
-}
+		else norm_factor = 1 / eigval[2];
 
 		factor = norm_factor;
 
@@ -353,13 +351,13 @@ cout<<eigval<<"\n";
 		// normalized eigenvectors rotate object for eigen direction 0
 		matrix->Element[0][0] = eigvec[0][0];
 		matrix->Element[0][1] = eigvec[1][0];
-		matrix->Element[0][2] = eigvec[2][0];
+		matrix->Element[0][2] = signo*eigvec[2][0];
 		matrix->Element[1][0] = eigvec[0][1];
 		matrix->Element[1][1] = eigvec[1][1];
-		matrix->Element[1][2] = eigvec[2][1];
+		matrix->Element[1][2] = signo*eigvec[2][1];
 		matrix->Element[2][0] = eigvec[0][2];
 		matrix->Element[2][1] = eigvec[1][2];
-		matrix->Element[2][2] = eigvec[2][2];
+		matrix->Element[2][2] = signo*eigvec[2][2];
 
 		trans->Concatenate(matrix);
 

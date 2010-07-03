@@ -236,12 +236,12 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 
 		matrix->Element[0][0] = eigvec[0][0];
 		matrix->Element[0][1] = eigvec[1][0];
-		matrix->Element[0][2] = eigvec[2][0];
+		matrix->Element[0][2] = signo*eigvec[2][0];
 		matrix->Element[1][0] = eigvec[0][1];
 		matrix->Element[1][1] = eigvec[1][1];
-		matrix->Element[1][2] = eigvec[2][1];
-		matrix->Element[2][0] = signo*eigvec[0][2];
-		matrix->Element[2][1] = signo*eigvec[1][2];
+		matrix->Element[1][2] = signo*eigvec[2][1];
+		matrix->Element[2][0] = eigvec[0][2];
+		matrix->Element[2][1] = eigvec[1][2];
 		matrix->Element[2][2] = signo*eigvec[2][2];
 
 		trans->Concatenate(matrix);
@@ -351,13 +351,13 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 		// normalized eigenvectors rotate object for eigen direction 0
 		matrix->Element[0][0] = eigvec[0][0];
 		matrix->Element[0][1] = eigvec[1][0];
-		matrix->Element[0][2] = eigvec[2][0];
+		matrix->Element[0][2] = signo*eigvec[2][0];
 		matrix->Element[1][0] = eigvec[0][1];
 		matrix->Element[1][1] = eigvec[1][1];
-		matrix->Element[1][2] = eigvec[2][1];
+		matrix->Element[1][2] = signo*eigvec[2][1];
 		matrix->Element[2][0] = eigvec[0][2];
 		matrix->Element[2][1] = eigvec[1][2];
-		matrix->Element[2][2] = eigvec[2][2];
+		matrix->Element[2][2] = signo*eigvec[2][2];
 
 		trans->Concatenate(matrix);
 
