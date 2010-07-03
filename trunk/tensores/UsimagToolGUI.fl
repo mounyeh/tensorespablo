@@ -8,7 +8,7 @@ class UsimagToolGUI {open : {public UsimagToolBase}
   } {
     Fl_Window panel {
       label {--- Saturn ---} open
-      xywh {63 49 1210 720} type Double color 0 selection_color 48 labelfont 1 labelcolor 255 resizable
+      xywh {63 49 1210 680} type Double color 0 selection_color 48 labelfont 1 labelcolor 255 resizable
       code0 {\#include "UsimagToolBase.h"} visible
     } {
       Fl_Group {} {
@@ -661,7 +661,7 @@ MyTensorConsole->ProjectROIsFromFibers(m_VectorModelData[dataId].data);
             label {Glifos DTI}
             callback {ActiveGroup->hide();
 MyTensorConsole->DTIGlyphsGroup->show();
-ActiveGroup = MyTensorConsole->DTIGlyphsGroup;} selected
+ActiveGroup = MyTensorConsole->DTIGlyphsGroup;}
             xywh {0 0 30 20}
           }
           MenuItem STMenuItem {
@@ -778,7 +778,6 @@ MyTensorConsole->verGlifos(1);}
 if (t>1) {
  sliceCoronal3D->value(t-1);
  ImageViewer3D->SelectSlice(1,t-1);
- MyTensorConsole->borrarGlifos(1);
  MyTensorConsole->verGlifos(1);
 }}
             xywh {590 54 18 17} box ENGRAVED_BOX color 16
@@ -789,7 +788,6 @@ if (t>1) {
 
 sliceCoronal3D->value(t+1);
 ImageViewer3D->SelectSlice(1,t+1);
-MyTensorConsole->borrarGlifos(1);
 MyTensorConsole->verGlifos(1);}
             xywh {608 54 18 17} box ENGRAVED_BOX color 16
           }
@@ -805,7 +803,6 @@ MyTensorConsole->verGlifos(0);}
 
 sliceSagital3D->value(t+1);
 ImageViewer3D->SelectSlice(0,t+1);
-MyTensorConsole->borrarGlifos(0);
 MyTensorConsole->verGlifos(0);}
             xywh {770 54 18 17} box ENGRAVED_BOX color 16
           }
@@ -815,7 +812,6 @@ MyTensorConsole->verGlifos(0);}
 if (t>1) {
  sliceSagital3D->value(t-1);
  ImageViewer3D->SelectSlice(0,t-1);
- MyTensorConsole->borrarGlifos(0);
  MyTensorConsole->verGlifos(0);
 }}
             xywh {752 54 18 17} box ENGRAVED_BOX color 16
@@ -832,7 +828,6 @@ MyTensorConsole->verGlifos(2);}
 
 sliceAxial3D->value(t+1);
 ImageViewer3D->SelectSlice(2,t+1);
-MyTensorConsole->borrarGlifos(2);
 MyTensorConsole->verGlifos(2);}
             xywh {931 54 18 17} box ENGRAVED_BOX color 16
           }
@@ -842,7 +837,6 @@ MyTensorConsole->verGlifos(2);}
 if (t>1) {
  sliceAxial3D->value(t-1);
  ImageViewer3D->SelectSlice(2,t-1);
- MyTensorConsole->borrarGlifos(2);
  MyTensorConsole->verGlifos(2);
 }}
             xywh {914 54 18 17} box ENGRAVED_BOX color 16
@@ -854,13 +848,14 @@ if (o->value() == true) {
   this->ViewSliceIn3DWindow(m_VectorData[dataId].image,1);
 sliceCoronal3D->range( 0.0f, m_VectorData[dataId].image->GetLargestPossibleRegion().GetSize()[1]-1 );
 sliceCoronal3D->redraw();
-MyTensorConsole->borrarGlifos(1);
+MyTensorConsole->imagenActiva(1,true);
 MyTensorConsole->verGlifos(1);
 Fl::check();
 ImageViewer3D->redraw();
 Fl::check();
 }  else {
 ImageViewer3D->HideSlice(1);
+MyTensorConsole->imagenActiva(1,false);
 MyTensorConsole->borrarGlifos(1);
 Fl::check();
 ImageViewer3D->redraw();
@@ -875,13 +870,14 @@ if (o->value() == true) {
   this->ViewSliceIn3DWindow(m_VectorData[dataId].image,0);
 sliceSagital3D->range( 0.0f, m_VectorData[dataId].image->GetLargestPossibleRegion().GetSize()[0]-1 );
 sliceSagital3D->redraw();
-MyTensorConsole->borrarGlifos(0);
+MyTensorConsole->imagenActiva(0,true);
 MyTensorConsole->verGlifos(0);
 Fl::check();
 ImageViewer3D->redraw();
 Fl::check();
 }  else {
 ImageViewer3D->HideSlice(0);
+MyTensorConsole->imagenActiva(0,false);
 MyTensorConsole->borrarGlifos(0);
 Fl::check();
 ImageViewer3D->redraw();
@@ -896,18 +892,19 @@ if (o->value() == true) {
   this->ViewSliceIn3DWindow(m_VectorData[dataId].image,2);
 sliceAxial3D->range( 0.0f, m_VectorData[dataId].image->GetLargestPossibleRegion().GetSize()[2]-1 );
 sliceAxial3D->redraw();
-MyTensorConsole->borrarGlifos(2);
+MyTensorConsole->imagenActiva(2,true);
 MyTensorConsole->verGlifos(2);
 Fl::check();
 ImageViewer3D->redraw();
 Fl::check();
 }  else {
 ImageViewer3D->HideSlice(2);
+MyTensorConsole->imagenActiva(2,false);
 MyTensorConsole->borrarGlifos(2);
 Fl::check();
 ImageViewer3D->redraw();
 Fl::check();
-}}
+}} selected
             xywh {793 32 156 18} box ENGRAVED_BOX down_box ROUND_DOWN_BOX labelfont 1
           }
           Fl_Button {} {

@@ -2294,9 +2294,8 @@ void TensorConsole::RungeKuttaTractography( void )
 	
 	ImageViewer3D->renderTracts(streamlineList, Actor, color, m_radius->value());
 
-m_puntosTract = points;
-m_colorTract = color;
-verGlifos();
+	m_puntosTract = vtkPoints::New();
+	m_puntosTract->DeepCopy(points);
 	
 	Fl::check();
 	ImageViewer3D->redraw();
@@ -3899,7 +3898,9 @@ void TensorConsole::ApplyMask(  TensorImageType::Pointer &tensor ) {
 	std::cout << "Calculada mascara!" << std::endl;
 }
 
-void TensorConsole::verGlifos() {
+void TensorConsole::verGlifosTract() {
+
+	if (!mostrarGlifos->value()) return;
 
 	int dataId = m_tensordataBrowser->value()-1;
 
@@ -3907,6 +3908,7 @@ void TensorConsole::verGlifos() {
 	glifo->SetInput((*m_VectorTensorData)[dataId].image);
 	glifo->SetInputPoints(m_puntosTract);
 	glifo->SetBounds(0,0,0,0,0,0);
+	glifo->SetScaleFactor(valorEscala->value());
 	glifo->SetPhiResolution(valorPhiResolution->value());
 	glifo->SetThetaResolution(valorThetaResolution->value());
 	glifo->SetGamma(valorGamma->value());
@@ -3919,12 +3921,16 @@ void TensorConsole::verGlifos() {
 	else if (colorFA->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_FA);
 	else if (colorCl->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_CL);
 
-	borrarGlifos(0);
-	m_activeGlyphX = glifo->GetOutput();
-	m_activeActorX = vtkActor::New();
+	borrarGlifos(3);
+	m_tractGlyphs = glifo->GetOutput();
+	m_tractActor = vtkActor::New();
 
-	ImageViewer3D->ConnectMapper(m_activeGlyphX, m_activeActorX);
-	ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);	
+	ImageViewer3D->ConnectMapper(m_tractGlyphs, m_tractActor);
+	ImageViewer3D->SetScalarRange(m_tractActor, 0, 1);	
+
+	Fl::check();
+	ImageViewer3D->redraw();
+	Fl::check();
 
 	return;
 }
@@ -4096,9 +4102,65 @@ cout<<tam1<<" "<<tam2<<" "<<tam3<<" "<<tam4<<"\n";
 
 void TensorConsole::actualizarGlifosDTI() {
 
-	if (m_activeActorX) verGlifos(0);
-	if (m_activeActorY) verGlifos(1);
-	if (m_activeActorZ) verGlifos(2);
+	if (m_planoActivoX) verGlifos(0);
+	if (m_planoActivoY) verGlifos(1);
+	if (m_planoActivoZ) verGlifos(2);
+	if (m_tractActiva) verGlifosTract();
+
+	Fl::check();
+	ImageViewer3D->redraw();
+	Fl::check();
+}
+
+void TensorConsole::imagenActiva(int numPlano,bool activo) {
+
+	switch (numPlano) {
+		case 0: m_planoActivoX = activo;
+			break;
+
+		case 1: m_planoActivoY = activo;
+			break;
+
+		case 2: m_planoActivoZ = activo;
+			break;
+
+		case 3: m_tractActiva = activo;
+			break;
+
+	}
+
+}
+
+
+void TensorConsole::glifosActivos() {
+
+	if (m_planoActivoX) verGlifos(0);
+	
+	if (m_planoActivoY) verGlifos(1);
+
+	if (m_planoActivoZ) verGlifos(2);
+
+	if (m_tractActiva) verGlifosTract();
+
+	vtkLookupTable *lut = vtkLookupTable::New();
+	lut->Build();
+
+	m_scalarBar = vtkScalarBarActor::New();
+	m_scalarBar->SetLookupTable(lut);
+	m_scalarBar->SetHeight(0.25);
+	m_scalarBar->SetWidth(0.05);
+
+	if (colorRA->value())
+		m_scalarBar->SetTitle("RA");
+
+	else if (colorFA->value())				
+		m_scalarBar->SetTitle("FA");
+
+	else if (colorCl->value())
+		m_scalarBar->SetTitle("Cl");
+
+	ImageViewer3D->AddViewProp(m_scalarBar);
+
 
 }
 /*
@@ -4146,6 +4208,10 @@ void TensorConsole::cambiarOpacidad(float value) {
 	if (m_activeActorZ)
 		ImageViewer3D->ChangeOpacity(m_activeActorZ, value);
 
+	if (m_tractActor)
+		ImageViewer3D->ChangeOpacity(m_tractActor, value);
+
+
 }
 
 void TensorConsole::borrarGlifos(int orientation) {
@@ -4177,12 +4243,28 @@ void TensorConsole::borrarGlifos(int orientation) {
 			}
 			break;
 
-	}
+		case 3:	if (m_tractActor) {
+				ImageViewer3D->HideModel(m_tractActor);
+				m_tractActor->GetMapper()->Delete();
+				m_tractActor->Delete();
+				m_tractActor=NULL;
+			}
+			break;
 
+		case 4:	if (m_scalarBar) {
+				ImageViewer3D->RemovePropA(m_scalarBar);
+				m_scalarBar->Delete();
+				m_scalarBar=NULL;
+			}
+			break;
+
+	}
 
 }
 
 void TensorConsole::verGlifos(int orientation) {
+
+if (!mostrarGlifos->value()) return;
 
 	int dataId = m_tensordataBrowser->value()-1;
 
@@ -4204,6 +4286,7 @@ void TensorConsole::verGlifos(int orientation) {
 
 	vtkSaturnTensorGlyph *glifo = new vtkSaturnTensorGlyph();
 	glifo->SetInput((*m_VectorTensorData)[dataId].image);
+	glifo->SetScaleFactor(valorEscala->value());
 	glifo->SetPhiResolution(valorPhiResolution->value());
 	glifo->SetThetaResolution(valorThetaResolution->value());
 	glifo->SetGamma(valorGamma->value());
@@ -4255,25 +4338,6 @@ m_activeActorZ->GetProperty()->BackfaceCullingOn();
 			break;
 
 	}
-
-	vtkLookupTable *lut = vtkLookupTable::New();
-	lut->Build();
-
-	m_scalarBar = vtkScalarBarActor::New();
-	m_scalarBar->SetLookupTable(lut);
-	m_scalarBar->SetHeight(0.25);
-	m_scalarBar->SetWidth(0.05);
-
-	if (colorRA->value())
-		m_scalarBar->SetTitle("RA");
-
-	else if (colorFA->value())				
-		m_scalarBar->SetTitle("FA");
-
-	else if (colorCl->value())
-		m_scalarBar->SetTitle("Cl");
-
-	ImageViewer3D->AddViewProp(m_scalarBar);
 
 	Fl::check();
 	ImageViewer3D->redraw();
