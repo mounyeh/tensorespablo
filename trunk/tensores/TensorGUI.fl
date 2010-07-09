@@ -1436,7 +1436,7 @@ m_configIO->hide();}
   } {}
   Fl_Group DTIGlyphsGroup {
     label {Glifos DTI} open selected
-    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5
+    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
   } {
