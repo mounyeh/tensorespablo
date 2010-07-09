@@ -1435,8 +1435,8 @@ m_configIO->hide();}
   Function {tensorEsfuerzo2D()} {open return_type {virtual void}
   } {}
   Fl_Group DTIGlyphsGroup {
-    label {Glifos DTI} open
-    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    label {Glifos DTI} open selected
+    xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
   } {
@@ -1494,7 +1494,7 @@ Fl::redraw();}
           label Actualizar
           callback {actualizarGlifosDTI();
 
-Fl::redraw();} selected
+Fl::redraw();}
           xywh {293 412 100 20} box PLASTIC_DOWN_BOX color 2 labelfont 1 labelsize 12
         }
       }
@@ -1506,7 +1506,7 @@ Fl::redraw();} selected
           xywh {65 573 220 17} box DOWN_BOX
         }
         Fl_Box xBox {
-          xywh {75 575 200 14} box FLAT_BOX color 102
+          xywh {70 575 210 14} box PLASTIC_THIN_DOWN_BOX color 2 selection_color 82
         }
         Fl_Slider xMaximo {
           callback {if (o->value()<xMinimo->value())
@@ -1517,8 +1517,8 @@ text_xmax->value(o->value());
 xMinimo->maximum(o->value());
 xMinimo->size(8+round(200*o->value()/255),xMinimo->h());
 
-xBox->size(round(200*(xMaximo->value()-xMinimo->value())/255),xBox->h());
-xBox->position(75+round(200*(xMinimo->value())/255),xBox->y());
+xBox->size(10+round(200*(xMaximo->value()-xMinimo->value())/255),xBox->h());
+xBox->position(70+round(200*(xMinimo->value())/255),xBox->y());
 
 
 Fl::redraw();}
@@ -1530,8 +1530,8 @@ Fl::redraw();}
 	
 text_xmin->value(o->value());
 
-xBox->size(round(200*(xMaximo->value()-xMinimo->value())/255),xBox->h());
-xBox->position(75+round(200*(xMinimo->value())/255),xBox->y());
+xBox->size(10+round(200*(xMaximo->value()-xMinimo->value())/255),xBox->h());
+xBox->position(70+round(200*(xMinimo->value())/255),xBox->y());
 
 Fl::redraw();}
           xywh {67 575 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1
@@ -1547,7 +1547,7 @@ Fl::redraw();}
           xywh {65 594 220 17} box DOWN_BOX
         }
         Fl_Box yBox {
-          xywh {75 597 200 12} box FLAT_BOX color 102
+          xywh {70 596 210 14} box PLASTIC_DOWN_BOX color 2
         }
         Fl_Slider yMaximo {
           callback {if (o->value()<yMinimo->value())
@@ -1558,8 +1558,8 @@ text_ymax->value(o->value());
 yMinimo->maximum(o->value());
 yMinimo->size(8+round(200*o->value()/255),14);
 
-yBox->size(round(200*(yMaximo->value()-yMinimo->value())/255),yBox->h());
-yBox->position(75+round(200*(yMinimo->value())/255),yBox->y());
+yBox->size(10+round(200*(yMaximo->value()-yMinimo->value())/255),yBox->h());
+yBox->position(70+round(200*(yMinimo->value())/255),yBox->y());
 
 
 Fl::redraw();}
@@ -1571,8 +1571,8 @@ Fl::redraw();}
 	
 text_ymin->value(o->value());
 
-yBox->size(round(200*(yMaximo->value()-yMinimo->value())/255),yBox->h());
-yBox->position(75+round(200*(yMinimo->value())/255),yBox->y());
+yBox->size(10+round(200*(yMaximo->value()-yMinimo->value())/255),yBox->h());
+yBox->position(70+round(200*(yMinimo->value())/255),yBox->y());
 
 Fl::redraw();}
           xywh {67 596 208 14} type Horizontal box NO_BOX labelsize 12 maximum 255 step 1
@@ -1588,7 +1588,7 @@ Fl::redraw();}
           xywh {65 615 220 17} box DOWN_BOX
         }
         Fl_Box zBox {
-          xywh {75 617 200 14} box FLAT_BOX color 102
+          xywh {70 617 210 14} box PLASTIC_DOWN_BOX color 2
         }
         Fl_Slider zMaximo {
           callback {if (o->value()<zMinimo->value())
@@ -1599,8 +1599,8 @@ text_zmax->value(o->value());
 zMinimo->maximum(o->value());
 zMinimo->size(8+round(200*o->value()/40),14);
 
-zBox->size(round(200*(zMaximo->value()-zMinimo->value())/40),xBox->h());
-zBox->position(75+round(200*(zMinimo->value())/40),zBox->y());
+zBox->size(10+round(200*(zMaximo->value()-zMinimo->value())/40),zBox->h());
+zBox->position(70+round(200*(zMinimo->value())/40),zBox->y());
 
 
 Fl::redraw();}
@@ -1612,8 +1612,8 @@ Fl::redraw();}
 	
 text_zmin->value(o->value());
 
-zBox->size(round(200*(zMaximo->value()-zMinimo->value())/40),zBox->h());
-zBox->position(75+round(200*(zMinimo->value())/40),zBox->y());
+zBox->size(10+round(200*(zMaximo->value()-zMinimo->value())/40),zBox->h());
+zBox->position(70+round(200*(zMinimo->value())/40),zBox->y());
 
 Fl::redraw();}
           xywh {67 617 208 14} type Horizontal box NO_BOX labelsize 12 maximum 40 step 1

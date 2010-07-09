@@ -46,7 +46,7 @@ public:
 	vtkPoints *GetInputPoints()
 		{return this->inputPoints;};
 
-	vtkPolyData *GetOutput();
+	void *GetOutput(vtkPolyData*);
 
 	void SetGlyphType(int type)
 		{this->GlyphType = type;};
@@ -107,12 +107,6 @@ public:
 	};
 	int *GetBounds()
 		{return this->Bounds;};
-
-	enum
-	{
-	COLOR_BY_SCALARS,
-	COLOR_BY_EIGENVALUES
-	};
 
 	enum
 	{

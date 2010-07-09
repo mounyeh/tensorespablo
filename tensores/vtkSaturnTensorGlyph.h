@@ -46,7 +46,7 @@ public:
 	vtkPoints *GetInputPoints()
 		{return this->inputPoints;};
 
-	vtkPolyData *GetOutput();
+	void GetOutput(vtkPolyData*);
 
 	void SetGlyphType(int type)
 		{this->GlyphType = type;};

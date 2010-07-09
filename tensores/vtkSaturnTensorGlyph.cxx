@@ -64,10 +64,11 @@ vtkSaturnTensorGlyph::~vtkSaturnTensorGlyph()
 {
 }
 
-vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
+void vtkSaturnTensorGlyph::GetOutput(vtkPolyData *output)
 {
 
-	vtkPolyData *output = vtkPolyData::New();
+//	vtkPolyData *output = vtkPolyData::New();
+//	output = vtkPolyData::New();
 
 	vtkDataArray *inTensors;
 	double tensor[9];
@@ -144,6 +145,7 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 	}
 
 	pts = new vtkIdType[source->GetMaxCellSize()];
+
 	trans = vtkTransform::New();
 	matrix = vtkMatrix4x4::New();
 
@@ -511,7 +513,8 @@ vtkPolyData *vtkSaturnTensorGlyph::GetOutput()
 	trans->Delete();
 	matrix->Delete();
 //	source->Delete();
-	return output;
+//	return output;
+	return;
 }
 
 void vtkSaturnTensorGlyph::interpolacionLineal (double x[3],TensorPixelType *pixel) {
