@@ -254,8 +254,7 @@ private:
 
   vtkPoints* 	m_puntosTract;
   vtkActor*	m_tractActor;
-  vtkPolyData*	m_tractGlyphs;
-  double* 	m_colorTract;
+//  vtkPolyData*	m_tractGlyphs;
 
   bool m_planoActivoX;
   bool m_planoActivoY;

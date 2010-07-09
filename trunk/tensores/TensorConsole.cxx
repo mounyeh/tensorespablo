@@ -3904,35 +3904,38 @@ void TensorConsole::verGlifosTract() {
 
 	int dataId = m_tensordataBrowser->value()-1;
 
-	vtkSaturnTensorGlyph *glifo = new vtkSaturnTensorGlyph();
-	glifo->SetInput((*m_VectorTensorData)[dataId].image);
-	glifo->SetInputPoints(m_puntosTract);
-	glifo->SetBounds(0,0,0,0,0,0);
-	glifo->SetScaleFactor(valorEscala->value());
-	glifo->SetPhiResolution(valorPhiResolution->value());
-	glifo->SetThetaResolution(valorThetaResolution->value());
-	glifo->SetGamma(valorGamma->value());
+	vtkSaturnTensorGlyph *gen = new vtkSaturnTensorGlyph();
+	gen->SetInput((*m_VectorTensorData)[dataId].image);
+	gen->SetInputPoints(m_puntosTract);
+	gen->SetBounds(0,0,0,0,0,0);
+	gen->SetScaleFactor(valorEscala->value());
+	gen->SetPhiResolution(valorPhiResolution->value());
+	gen->SetThetaResolution(valorThetaResolution->value());
+	gen->SetGamma(valorGamma->value());
 
-	if (verCuboides->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::CUBOID);
-	else if (verSupercuadricas->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::SUPERQUADRIC);
-	else glifo->SetGlyphType(vtkSaturnTensorGlyph::ELLIPSOID);
+	if (verCuboides->value()) gen->SetGlyphType(vtkSaturnTensorGlyph::CUBOID);
+	else if (verSupercuadricas->value()) gen->SetGlyphType(vtkSaturnTensorGlyph::SUPERQUADRIC);
+	else gen->SetGlyphType(vtkSaturnTensorGlyph::ELLIPSOID);
 
-	if (colorRA->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_RA);
-	else if (colorFA->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_FA);
-	else if (colorCl->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_CL);
+	if (colorRA->value()) gen->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_RA);
+	else if (colorFA->value()) gen->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_FA);
+	else if (colorCl->value()) gen->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_CL);
 
 	borrarGlifos(3);
-	m_tractGlyphs = glifo->GetOutput();
+
+	vtkPolyData *glifos = vtkPolyData::New();
+
+	gen->GetOutput(glifos);
+
 	m_tractActor = vtkActor::New();
 
-	ImageViewer3D->ConnectMapper(m_tractGlyphs, m_tractActor);
+	ImageViewer3D->ConnectMapper(glifos, m_tractActor);
 	ImageViewer3D->SetScalarRange(m_tractActor, 0, 1);	
 
 	Fl::check();
 	ImageViewer3D->redraw();
 	Fl::check();
-
-	return;
+	glifos->Delete();
 }
 
 void TensorConsole::tensorEsfuerzo2D() {
@@ -4214,9 +4217,9 @@ void TensorConsole::cambiarOpacidad(float value) {
 
 }
 
-void TensorConsole::borrarGlifos(int orientation) {
+void TensorConsole::borrarGlifos(int numImagen) {
 	
-	switch (orientation) {
+	switch (numImagen) {
 	
 		case 0:	if (m_activeActorX) {
 				ImageViewer3D->HideModel(m_activeActorX);
@@ -4262,7 +4265,7 @@ void TensorConsole::borrarGlifos(int orientation) {
 
 }
 
-void TensorConsole::verGlifos(int orientation) {
+void TensorConsole::verGlifos(int numImagen) {
 
 if (!mostrarGlifos->value()) return;
 
@@ -4284,56 +4287,58 @@ if (!mostrarGlifos->value()) return;
 	zMin = zMinimo->value();
 	zMax = zMaximo->value();
 
-	vtkSaturnTensorGlyph *glifo = new vtkSaturnTensorGlyph();
-	glifo->SetInput((*m_VectorTensorData)[dataId].image);
-	glifo->SetScaleFactor(valorEscala->value());
-	glifo->SetPhiResolution(valorPhiResolution->value());
-	glifo->SetThetaResolution(valorThetaResolution->value());
-	glifo->SetGamma(valorGamma->value());
+	vtkSaturnTensorGlyph *gen = new vtkSaturnTensorGlyph();
+	gen->SetInput((*m_VectorTensorData)[dataId].image);
+	gen->SetScaleFactor(valorEscala->value());
+	gen->SetPhiResolution(valorPhiResolution->value());
+	gen->SetThetaResolution(valorThetaResolution->value());
+	gen->SetGamma(valorGamma->value());
 
-	if (verCuboides->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::CUBOID);
-	else if (verSupercuadricas->value()) glifo->SetGlyphType(vtkSaturnTensorGlyph::SUPERQUADRIC);
-	else glifo->SetGlyphType(vtkSaturnTensorGlyph::ELLIPSOID);
+	if (verCuboides->value()) gen->SetGlyphType(vtkSaturnTensorGlyph::CUBOID);
+	else if (verSupercuadricas->value()) gen->SetGlyphType(vtkSaturnTensorGlyph::SUPERQUADRIC);
+	else gen->SetGlyphType(vtkSaturnTensorGlyph::ELLIPSOID);
 
-	if (colorRA->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_RA);
-	else if (colorFA->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_FA);
-	else if (colorCl->value()) glifo->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_CL);
+	if (colorRA->value()) gen->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_RA);
+	else if (colorFA->value()) gen->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_FA);
+	else if (colorCl->value()) gen->SetColorMode(vtkSaturnTensorGlyph::COLOR_BY_CL);
 
-	if (filtrarFA->value()) glifo->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_FA);
-	else if (filtrarCl->value()) glifo->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_CL);
-	else if (filtrarCs->value()) glifo->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_CS);
+	if (filtrarFA->value()) gen->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_FA);
+	else if (filtrarCl->value()) gen->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_CL);
+	else if (filtrarCs->value()) gen->SetFilterMode(vtkSaturnTensorGlyph::FILTER_BY_CS);
 
-	glifo->SetFilterThreshold(valorFiltro->value());
+	gen->SetFilterThreshold(valorFiltro->value());
 
-	switch (orientation) {
+	vtkPolyData *glifos = vtkPolyData::New();
+
+	switch (numImagen) {
 		
 		case 0: borrarGlifos(0);
 			i=ImageViewer3D->planeWidgetX->GetSliceIndex();
-			glifo->SetBounds(i,i, yMin,yMax, zMin,zMax);
-			m_activeGlyphX = glifo->GetOutput();
+			gen->SetBounds(i,i, yMin,yMax, zMin,zMax);
+			gen->GetOutput(glifos);
 			m_activeActorX = vtkActor::New();
 m_activeActorX->GetProperty()->BackfaceCullingOn();
-			ImageViewer3D->ConnectMapper(m_activeGlyphX, m_activeActorX);
+			ImageViewer3D->ConnectMapper(glifos, m_activeActorX);
 			ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);
 			break;
 
 		case 1: borrarGlifos(1);
 			j=ImageViewer3D->planeWidgetY->GetSliceIndex();
-			glifo->SetBounds(xMin,xMax, j,j, zMin,zMax);
-			m_activeGlyphY = glifo->GetOutput();
+			gen->SetBounds(xMin,xMax, j,j, zMin,zMax);
+			gen->GetOutput(glifos);
 			m_activeActorY = vtkActor::New();
 m_activeActorY->GetProperty()->BackfaceCullingOn();
-			ImageViewer3D->ConnectMapper(m_activeGlyphY, m_activeActorY);
+			ImageViewer3D->ConnectMapper(glifos, m_activeActorY);
 			ImageViewer3D->SetScalarRange(m_activeActorY, 0, 1);
 			break;
 
 		case 2: borrarGlifos(2);
 			k=ImageViewer3D->planeWidgetZ->GetSliceIndex();
-			glifo->SetBounds(xMin,xMax, yMin,yMax, k,k);
-			m_activeGlyphZ = glifo->GetOutput();
+			gen->SetBounds(xMin,xMax, yMin,yMax, k,k);
+			gen->GetOutput(glifos);
 			m_activeActorZ = vtkActor::New();
 m_activeActorZ->GetProperty()->BackfaceCullingOn();
-			ImageViewer3D->ConnectMapper(m_activeGlyphZ, m_activeActorZ);
+			ImageViewer3D->ConnectMapper(glifos, m_activeActorZ);
 			ImageViewer3D->SetScalarRange(m_activeActorZ, 0, 1);
 			break;
 
@@ -4343,7 +4348,7 @@ m_activeActorZ->GetProperty()->BackfaceCullingOn();
 	ImageViewer3D->redraw();
 	Fl::check();
 
-	
+	glifos->Delete();
 
 //	cout<<m_activeActor->GetBounds()[0]<<" "<<m_activeActor->GetBounds()[1]<<" "<<m_activeActor->GetBounds()[2]<<" "<<m_activeActor->GetBounds()[3]<<" "<<m_activeActor->GetBounds()[4]<<" "<<m_activeActor->GetBounds()[5]<<"\n";
 
