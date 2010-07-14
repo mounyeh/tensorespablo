@@ -37,6 +37,7 @@ public:
   void SaveModel(void);
   void SaveTensor(void);
   void SaveTensorVTK(void);
+  void SaveStrainTensor(void);
   void Save(const char*);
   void SaveOverlay(void);
   void SaveDWI(void);
@@ -55,6 +56,7 @@ public:
   void LoadJPEG(void);
   void LoadVTK(void);
   void LoadTensorVTK(void);
+  void LoadStrainTensor();
   void LoadTensorNrrd(void);
   void LoadTIFF(void);
   void LoadPNG(void);
@@ -71,8 +73,6 @@ public:
   void LoadNrrd();
   void LoadModel(void);
   void LoadFibers(void);
-  void LoadStrainTensor();
-  void LoadStrainTensorNrrd();
   void WriteFibers(vtkPolyData* streamlines);
   void Distribuir(InputImageType::Pointer aux, int window, const char* filename);
   void DistribuirColor(ImageRGBType::Pointer aux, int window, const char* filename);
@@ -105,9 +105,11 @@ public:
   void DeleteScalar( int );
   void DeleteTensor( int );
   void DeleteModel( int );
+  void DeleteStrainTensor( int );
   void RenameScalar( int, const char* );
   void RenameTensor( int, const char* );
   void RenameModel( int, const char* );
+  void RenameStrainTensor( int, const char* );
   void GenerateNewData(InputImageType::Pointer aux);
   void CopyData(InputImageType::Pointer aux);
   void OnAmplify(Fl_Group* viewSplit,int window);

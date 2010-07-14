@@ -1346,7 +1346,7 @@ m_configIO->hide();}
   Function {probarEsfuerzoDeform()} {open return_type {virtual void}
   } {}
   Fl_Group STGroup {
-    label {Tensor de esfuerzo}
+    label {Tensor de esfuerzo} open
     xywh {5 387 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
@@ -1385,8 +1385,9 @@ m_configIO->hide();}
           callback {int t = tiempo->value();
 if (t>0) {
  tiempo->value(t-1);
- tensorEsfuerzo2D();
-}}
+ verGlifosStrain();
+}
+else (tiempo->value(tiempo->maximum()))}
           xywh {248 528 18 17} box ENGRAVED_BOX color 16
         }
         Fl_Button {} {
@@ -1394,8 +1395,9 @@ if (t>0) {
           callback {int t = tiempo->value();
 if (t<10) {
  tiempo->value(t+1);
- tensorEsfuerzo2D();
-}}
+ verGlifosStrain();
+}
+else (tiempo->value(tiempo->minimum()))}
           xywh {375 528 18 17} box ENGRAVED_BOX color 16
         }
         Fl_Button {} {
@@ -1403,7 +1405,7 @@ if (t<10) {
           callback {int t = planoZ->value();
 if (t>0) {
  planoZ->value(t-1);
- tensorEsfuerzo2D();
+ verGlifosStrain();
 }}
           xywh {248 508 18 17} box ENGRAVED_BOX color 16
         }
@@ -1412,9 +1414,14 @@ if (t>0) {
           callback {int t = planoZ->value();
 if (t<10) {
  planoZ->value(t+1);
- tensorEsfuerzo2D();
-}}
+ verGlifosStrain();
+}} selected
           xywh {375 508 18 17} box ENGRAVED_BOX color 16
+        }
+        Fl_Button {} {
+          label verGlifos
+          callback {verGlifosStrain();}
+          xywh {275 554 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
         }
       }
     }
@@ -1435,7 +1442,7 @@ m_configIO->hide();}
   Function {tensorEsfuerzo2D()} {open return_type {virtual void}
   } {}
   Fl_Group DTIGlyphsGroup {
-    label {Glifos DTI} open selected
+    label {Glifos DTI}
     xywh {5 387 400 348} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
@@ -1753,4 +1760,6 @@ m_configIO->hide();}
       image {Images/Close.png} xywh {315 705 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
     }
   }
+  Function {verGlifosStrain()} {open return_type {virtual void}
+  } {}
 } 

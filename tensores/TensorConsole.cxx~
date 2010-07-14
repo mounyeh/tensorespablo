@@ -165,6 +165,11 @@ void TensorConsole::SetVectorDWIData(void* VectorDWIData)
 	m_VectorDWIData = (VectorOfDWIDataType*)VectorDWIData;
 }
 
+void TensorConsole::SetVectorSTData(void* VectorSTData)
+{
+	m_VectorSTData = (VectorOfSTDataType*)VectorSTData;
+}
+
 void TensorConsole::SetImageColorViewer(MyColorViewerType* ImageColorViewerIn)
 {
 	ImageColorViewer = ImageColorViewerIn;
@@ -3935,10 +3940,116 @@ void TensorConsole::verGlifosTract() {
 	Fl::check();
 	ImageViewer3D->redraw();
 	Fl::check();
+
 	glifos->Delete();
 }
 
+void TensorConsole::verGlifosStrain(int dataId) {
+
+	borrarGlifos(0);
+
+	STImageType::Pointer esfuerzo = (*m_VectorSTData)[dataId].image;
+
+	vtkTensorGlyph2D *glifos = new vtkTensorGlyph2D();
+	glifos->SetInput(esfuerzo);
+	glifos->SetPlanoZ(planoZ->value());
+	glifos->SetTiempo(tiempo->value());
+	glifos->SetScaleFactor(0.004);
+
+  	vtkGlyphSource2D *glyphsource = vtkGlyphSource2D::New();
+  	glyphsource->SetGlyphTypeToDiamond();
+  	glyphsource->FilledOn();
+  	glyphsource->SetColor(.5,.5,.5);
+  	glyphsource->Update();
+
+	m_activeActorX = vtkActor::New();
+	m_activeActorX->GetProperty()->SetColor(1,1,1);
+	ImageViewer3D->ConnectMapper(glifos->GetOutput(), m_activeActorX);
+	ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);
+
+
+}
+
 void TensorConsole::tensorEsfuerzo2D() {
+
+cout<<"a1\n";
+
+	STImageType::Pointer esfuerzo = STImageType::New();
+	STImageType::IndexType start;
+	STImageType::SizeType size;
+	unsigned int a;
+cout<<"a2\n";
+cout<<"a3\n";
+	start.Fill(0);
+//	size.Fill(10);
+	size[0] = 11;
+	size[1] = 12;
+	size[2] = 13;
+	size[3] = 14;
+cout<<"a4\n";
+	STImageType::RegionType region;
+cout<<"a5\n";
+	region.SetSize( size );
+	region.SetIndex( start );
+cout<<"a6\n";
+	esfuerzo->SetRegions( region );
+cout<<"a7\n";
+	esfuerzo->Allocate();
+cout<<"a8\n";
+	STPixelType f;
+	STImageType::IndexType indice;
+
+srand ( time(NULL) );
+	for (int ind0=0; ind0<10; ind0++) {
+		indice[0] = ind0;
+		for (int ind1=0; ind1<10; ind1++) {
+			indice[1] = ind1;
+			for (int ind2=0; ind2<10; ind2++) {
+				indice[2] = ind2;
+				for (int ind3=0; ind3<10; ind3++) {
+					indice[3] = ind3;
+					f[0] = rand() % 1000 - 500;
+					f[1] = rand() % 1000 - 500;
+					f[2] = rand() % 1000 - 500;
+					esfuerzo->SetPixel(indice,f);
+				}
+			}
+		}
+	}
+
+//	for (unsigned int i=0; i<3; i++) { f[a] = a; }
+//	esfuerzo->FillBuffer( f );
+cout<<"a9\n";
+
+
+
+	STPixelType pix;
+	indice[0] = 0;
+	indice[1] = 0;
+	indice[2] = 0;
+	indice[3] = 0;
+cout<<"a\n";
+	pix = esfuerzo->GetPixel(indice);
+cout<<"b\n";
+cout<<"Pixel: "<<pix[0]<<" "<<pix[1]<<" "<<pix[2]<<"\n";
+
+	int tam1, tam2, tam3, tam4;
+	tam1 = esfuerzo->GetRequestedRegion().GetSize()[0];
+	tam2 = esfuerzo->GetRequestedRegion().GetSize()[1];
+	tam3 = esfuerzo->GetRequestedRegion().GetSize()[2];
+	tam4 = esfuerzo->GetRequestedRegion().GetSize()[3];
+cout<<tam1<<" "<<tam2<<" "<<tam3<<" "<<tam4<<"\n";
+
+
+	DataSTElementType tensor_data;
+	char bname[200];
+	tensor_data.Id     = m_VectorSTData->size();
+	tensor_data.nombre = "Nombre";
+	tensor_data.image  = esfuerzo;
+
+	m_VectorSTData->push_back(tensor_data);
+
+return;
 
 	if (m_activeActorX) {
 		ImageViewer3D->HideModel(m_activeActorX);
@@ -3984,69 +4095,6 @@ int offset = 0;
 		}
 	}
 */
-cout<<"a1\n";
-
-	StrainImageType::Pointer esfuerzo = StrainImageType::New();
-	StrainImageType::IndexType start;
-	StrainImageType::SizeType size;
-	unsigned int a;
-cout<<"a2\n";
-cout<<"a3\n";
-	start.Fill(0);
-	size.Fill(10);
-cout<<"a4\n";
-	StrainImageType::RegionType region;
-cout<<"a5\n";
-	region.SetSize( size );
-	region.SetIndex( start );
-cout<<"a6\n";
-	esfuerzo->SetRegions( region );
-cout<<"a7\n";
-	esfuerzo->Allocate();
-cout<<"a8\n";
-	StrainPixelType f;
-	StrainImageType::IndexType indice;
-
-srand ( time(NULL) );
-	for (int ind0=0; ind0<10; ind0++) {
-		indice[0] = ind0;
-		for (int ind1=0; ind1<10; ind1++) {
-			indice[1] = ind1;
-			for (int ind2=0; ind2<10; ind2++) {
-				indice[2] = ind2;
-				for (int ind3=0; ind3<10; ind3++) {
-					indice[3] = ind3;
-					f[0] = rand() % 1000 - 500;
-					f[1] = rand() % 1000 - 500;
-					f[2] = rand() % 1000 - 500;
-					esfuerzo->SetPixel(indice,f);
-				}
-			}
-		}
-	}
-
-//	for (unsigned int i=0; i<3; i++) { f[a] = a; }
-//	esfuerzo->FillBuffer( f );
-cout<<"a9\n";
-
-
-
-	StrainPixelType pix;
-	indice[0] = 0;
-	indice[1] = 0;
-	indice[2] = 0;
-	indice[3] = 0;
-cout<<"a\n";
-	pix = esfuerzo->GetPixel(indice);
-cout<<"b\n";
-cout<<"Pixel: "<<pix[0]<<" "<<pix[1]<<" "<<pix[2]<<"\n";
-
-	int tam1, tam2, tam3, tam4;
-	tam1 = esfuerzo->GetRequestedRegion().GetSize()[0];
-	tam2 = esfuerzo->GetRequestedRegion().GetSize()[1];
-	tam3 = esfuerzo->GetRequestedRegion().GetSize()[2];
-	tam4 = esfuerzo->GetRequestedRegion().GetSize()[3];
-cout<<tam1<<" "<<tam2<<" "<<tam3<<" "<<tam4<<"\n";
 /*
 	vol->GetPointData()->SetTensors(tensors);
 	vol->GetPointData()->SetScalars(scalars);
@@ -4074,6 +4122,7 @@ cout<<tam1<<" "<<tam2<<" "<<tam3<<" "<<tam4<<"\n";
 	m_activeActorX->GetProperty()->SetColor(1,1,1);
 	ImageViewer3D->ConnectMapper(glifos->GetOutput(), m_activeActorX);
 	ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);
+
 
 	Fl::check();
 	ImageViewer3D->redraw();
@@ -4217,9 +4266,9 @@ void TensorConsole::cambiarOpacidad(float value) {
 
 }
 
-void TensorConsole::borrarGlifos(int orientation) {
+void TensorConsole::borrarGlifos(int numImagen) {
 	
-	switch (orientation) {
+	switch (numImagen) {
 	
 		case 0:	if (m_activeActorX) {
 				ImageViewer3D->HideModel(m_activeActorX);
@@ -4265,7 +4314,7 @@ void TensorConsole::borrarGlifos(int orientation) {
 
 }
 
-void TensorConsole::verGlifos(int orientation) {
+void TensorConsole::verGlifos(int numImagen) {
 
 if (!mostrarGlifos->value()) return;
 
@@ -4310,7 +4359,7 @@ if (!mostrarGlifos->value()) return;
 
 	vtkPolyData *glifos = vtkPolyData::New();
 
-	switch (orientation) {
+	switch (numImagen) {
 		
 		case 0: borrarGlifos(0);
 			i=ImageViewer3D->planeWidgetX->GetSliceIndex();

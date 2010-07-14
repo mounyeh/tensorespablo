@@ -102,8 +102,8 @@ public:
   typedef TransformType::ParametersType												ParametersType;
 
   enum { StrainDimension =  4 };
-  typedef itk::StrainTensor<float>					StrainPixelType;
-  typedef itk::Image<StrainPixelType, StrainDimension>              	StrainImageType;
+  typedef itk::StrainTensor<float> 		STPixelType;
+  typedef itk::Image<STPixelType, StrainDimension> 	STImageType;
 
 
   // Funciones para tensores
@@ -192,6 +192,7 @@ public:
   void glifosActivos();
   void imagenActiva(int,bool);
 
+  void verGlifosStrain(int);
   void probarEsfuerzo();
   void probarEsfuerzoDeform();
   void tensorEsfuerzo2D();
@@ -215,11 +216,13 @@ public:
 	typedef VolumesContainer<DataElementType>        VectorOfDataType;
 	typedef VolumesContainer<DataTensorElementType>  VectorOfTensorDataType;
 	typedef VolumesContainer<DataDWIElementType>  VectorOfDWIDataType;
+	typedef VolumesContainer<DataSTElementType>  VectorOfSTDataType;
 	
 	void SetVectorModelData(void* VectorModelData);
 	void SetVectorTensorData(void* VectorTensorData);
 	void SetVectorDWIData(void* VectorDWIData);
 	void SetVectorData(void* VectorData);
+	void SetVectorSTData (void* VectorSTData);
 	
 	void SetHasBeenRegistered(bool value){
 		m_HasBeenRegistered=value;
@@ -244,6 +247,8 @@ private:
 	Fl_Value_Slider *min_scalar_range,*max_scalar_range; 
   std::list<ClickPoint> clicked_points;
 
+  VectorOfSTDataType*	m_VectorSTData;
+
   vtkActor*	m_activeActorX;
   vtkPolyData* 	m_activeGlyphX;
   vtkActor*	m_activeActorY;
@@ -254,7 +259,6 @@ private:
 
   vtkPoints* 	m_puntosTract;
   vtkActor*	m_tractActor;
-//  vtkPolyData*	m_tractGlyphs;
 
   bool m_planoActivoX;
   bool m_planoActivoY;

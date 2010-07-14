@@ -119,6 +119,7 @@ public:
 	bool copyData( InputImageType::Pointer aux ){
 		return false;
 	}
+	unsigned int             Id;
 
 	std::string              nombre;
 	vtkPolyData*             data;
