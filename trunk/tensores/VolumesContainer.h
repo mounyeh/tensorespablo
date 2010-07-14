@@ -34,7 +34,7 @@ typedef itk::DTITensor< float >          TensorPixelType;
 typedef itk::Image< TensorPixelType, 3 > TensorImageType;
 typedef itk::DWImages< float, 3 >    DWImagesType;
 typedef itk::StrainTensor<float> STPixelType;
-typedef itk::Image<STPixelType, 3> STImageType;
+typedef itk::Image<STPixelType, 4> STImageType;
 
 
 class DataElementType

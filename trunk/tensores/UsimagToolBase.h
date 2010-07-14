@@ -113,7 +113,7 @@ public:
   typedef itk::Image<TensorPixelType, Dimension> TensorImageType;
 
   typedef itk::StrainTensor<float> STPixelType;
-  typedef itk::Image<STPixelType, Dimension> STImageType;
+  typedef itk::Image<STPixelType, 4> STImageType;
 
   // Readers: 
   typedef itk::ImageFileReader< InputImageType >     FileReaderType;
@@ -148,6 +148,7 @@ public:
   typedef itk::ImageFileWriter< FloatImageType >     FloatWriterType;
   typedef itk::ImageFileWriter< TensorImageType >    TensorWriterType;
   typedef itk::ImageFileWriter< DWImagesType >       DWIWriterType;
+  typedef itk::ImageFileWriter< STImageType >       STWriterType;
 
   // Viewers 
   typedef fltk::VTKImageViewer<InputImageType::PixelType>  VTKImageViewerType;

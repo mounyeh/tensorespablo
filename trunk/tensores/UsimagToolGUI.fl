@@ -8,8 +8,8 @@ class UsimagToolGUI {open : {public UsimagToolBase}
   } {
     Fl_Window panel {
       label {--- Saturn ---} open
-      xywh {63 49 1210 680} type Double color 0 selection_color 48 labelfont 1 labelcolor 255 resizable
-      code0 {\#include "UsimagToolBase.h"} visible
+      xywh {63 49 1210 680} type Double color 0 selection_color 48 labelfont 1 labelcolor 255 hide resizable
+      code0 {\#include "UsimagToolBase.h"}
     } {
       Fl_Group {} {
         label {Visualization modes}
@@ -35,7 +35,7 @@ class UsimagToolGUI {open : {public UsimagToolBase}
         }
       }
       Fl_Menu_Bar UsimagToolMainMenu {
-        label Menu open
+        label Menu
         xywh {-1 0 1128 25} box PLASTIC_THIN_DOWN_BOX color 225 selection_color 32
       } {
         Submenu UsimagToolSubmenu {
@@ -57,7 +57,7 @@ m_configIO->hide();}
           }
         }
         Submenu FileSubMenu {
-          label File
+          label File open
           xywh {15 15 66 24} labelcolor 56
         } {
           MenuItem OpenMenuItem {
@@ -125,6 +125,24 @@ this->LoadRaw();}
             label {Save DWI data}
             callback {this->SaveDWI();}
             xywh {65 65 30 20} shortcut 0x40077
+          }
+          MenuItem SaveStrainTensorVTKMenuItem {
+            label {Save Strain Tensor}
+            callback {this->SaveStrainTensor();}
+            xywh {0 0 30 20}
+          }
+          MenuItem LoadStrainTensorVTKMenuItem {
+            label {Load Strain Tensor VTK}
+            callback {LoadStrainTensor();
+
+ActiveOptionGroup->hide();
+m_StrainTensorDataGroup->show();
+ActiveOptionGroup = m_StrainTensorDataGroup;
+
+ActiveGroup->hide();
+MyTensorConsole->STGroup->show();
+ActiveGroup = MyTensorConsole->STGroup;}
+            xywh {0 0 30 20}
           }
         }
         Submenu ImageSubMenu {
@@ -688,7 +706,7 @@ ActiveGroup = MyTensorConsole->STGroup;}
         }
       }
       Fl_Group {} {
-        label Views open
+        label Views
         xywh {410 24 809 717} color 0 labeltype NO_LABEL
       } {
         Fl_Group m_view3D {
@@ -904,7 +922,7 @@ MyTensorConsole->borrarGlifos(2);
 Fl::check();
 ImageViewer3D->redraw();
 Fl::check();
-}} selected
+}}
             xywh {793 32 156 18} box ENGRAVED_BOX down_box ROUND_DOWN_BOX labelfont 1
           }
           Fl_Button {} {
@@ -1675,7 +1693,7 @@ ImageColorViewer->Update();}
         image {logoLPIred30.jpg} xywh {1143 712 67 24}
       }
       Fl_Group {} {
-        label {Type of data} open
+        label {Type of data}
         xywh {2 27 407 63} box EMBOSSED_BOX color 7 labeltype NO_LABEL align 0
       } {
         Fl_Box {} {
@@ -1737,7 +1755,7 @@ m_configIO->hide();}
         }
       }
       Fl_Group {} {
-        label Data
+        label Data open
         xywh {2 92 407 276} box EMBOSSED_BOX color 7 labeltype NO_LABEL align 0
       } {
         Fl_Group {} {
@@ -2320,6 +2338,55 @@ this->m_configIO->show();}
             Fl_Button {} {
               label TPS
               xywh {239 184 120 29} box PLASTIC_DOWN_BOX color 23 labelfont 1 deactivate
+            }
+          }
+          Fl_Group m_StrainTensorDataGroup {
+            label {Strain Tensor Data} open
+            xywh {10 119 394 241} box FLAT_BOX color 7 labelfont 1 align 5 hide
+          } {
+            Fl_Browser m_strainTensorDataBrowser {
+              callback {m_strainTensorDataBrowser->select(o->value());}
+              xywh {20 130 380 195} type Select
+            }
+            Fl_Button {} {
+              label View
+              callback {int dataId = m_strainTensorDataBrowser->value()-1;
+if (dataId >=0) {
+	MyTensorConsole->verGlifosStrain(dataId);
+}}
+              xywh {21 330 60 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
+            }
+            Fl_Button {} {
+              label Delete
+              callback {int dataId = m_strainTensorDataBrowser->value()-1;
+if ( dataId>=0 ){
+	this->DeleteStrainTensor(dataId);
+}}
+              xywh {153 330 55 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
+            }
+            Fl_Button {} {
+              label {@2<}
+              callback {int t = m_strainTensorDataBrowser->value();
+m_strainTensorDataBrowser->select(t-1);}
+              xywh {214 330 55 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label {@2>}
+              callback {int t = m_strainTensorDataBrowser->value();
+m_strainTensorDataBrowser->select(t+1);}
+              xywh {275 330 55 25} box PLASTIC_DOWN_BOX color 0
+            }
+            Fl_Button {} {
+              label Rename
+              callback {int dataId = m_strainTensorDataBrowser->value()-1;
+if ( dataId>=0 ){
+	RenamePosition->value( (double)dataId );
+	RenameWhich->value("E");
+	panelRenameVolumes->show();
+	NewNameEdit->value( m_strainTensorDataBrowser->text(dataId+1) );
+	NewNameEdit->redraw();
+}}
+              xywh {87 330 60 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
             }
           }
         }
@@ -3293,7 +3360,7 @@ this->OnFileInputChange(0);}
     }
     Fl_Window panelTensorInput {
       label {Image Information}
-      xywh {523 222 581 181} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
+      xywh {523 222 580 180} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
     } {
       Fl_Group {} {
         label {Input DTI} open
@@ -3462,7 +3529,7 @@ this->LoadRaw(m_filename);}
       xywh {99 119 515 320} type Double box PLASTIC_DOWN_BOX color 40 hide non_modal
     } {
       Fl_Group {} {
-        label {Image Information:}
+        label {Image Information:} open
         xywh {10 35 495 275} box PLASTIC_DOWN_BOX labeltype EMBOSSED_LABEL labelsize 16 labelcolor 15 align 5
       } {
         Fl_Value_Output DimensionX {
@@ -3569,7 +3636,7 @@ this->LoadRaw(m_filename);}
     }
     Fl_Window panelRenameVolumes {
       label {Volumes Management}
-      xywh {591 106 484 128} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
+      xywh {40 109 480 125} type Double box PLASTIC_DOWN_BOX color 40 hide resizable modal
     } {
       Fl_Group SelectNewName {
         label {Select a New Name} open
@@ -3594,6 +3661,9 @@ case 'T':
 	break;
 case 'M':
 	this->RenameModel( pos, NewNameEdit->value() );
+	break;
+case 'E':
+	this->RenameStrainTensor( pos, NewNameEdit->value() );
 	break;
 default:
 	break;
@@ -3760,6 +3830,8 @@ default:
   } {}
   Function {LoadMeta(void)} {return_type void
   } {}
+  Function {LoadStrainTensor()} {open selected return_type {virtual void}
+  } {}
   Function {ShowImageSrc(int)} {return_type void
   } {}
   Function {Distribuir(InputImageType::Pointer, int, const char*)} {return_type void
@@ -3852,9 +3924,13 @@ default:
   } {}
   Function {DeleteModel(int)} {return_type {virtual void}
   } {}
+  Function {DeleteStrainTensor(int)} {return_type {virtual void}
+  } {}
   Function {SaveTensor()} {return_type {virtual void}
   } {}
   Function {SaveTensorVTK()} {return_type {virtual void}
+  } {}
+  Function {SaveStrainTensor()} {return_type {virtual void}
   } {}
   Function {LoadDWI(void)} {return_type {virtual void}
   } {}
@@ -3876,16 +3952,18 @@ default:
   } {}
   Function {RenameModel(int,const char*)} {open return_type {virtual void}
   } {}
+  Function {RenameStrainTensor(int,const char*)} {open return_type {virtual void}
+  } {}
   Function {SetOverlay(int)} {open return_type {virtual void}
   } {}
   Function {ClearOverlay()} {open return_type {virtual void}
   } {}
-  Function {SaveOverlay()} {return_type {virtual void}
+  Function {SaveOverlay()} {open return_type {virtual void}
   } {}
-  Function {LoadOverlay(int)} {return_type {virtual void}
+  Function {LoadOverlay(int)} {open return_type {virtual void}
   } {}
-  Function {SaveDWI()} {return_type {virtual void}
+  Function {SaveDWI()} {open return_type {virtual void}
   } {}
-  Function {ChangeViewerColorMode()} {return_type {virtual void}
+  Function {ChangeViewerColorMode()} {open return_type {virtual void}
   } {}
 } 

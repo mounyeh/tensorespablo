@@ -30,6 +30,7 @@
 #include <itkSpatialOrientationAdapter.h>
 #include <itkOrientImageFilter.h>
 #include "tensor/itkDTITensorToSymTensorImageFilter.h"
+#include "tensor/itkStrainTensorToSymTensorImageFilter.h"
 #include <itkSymmetricSecondRankTensor.h>
 #include <itkImageToVectorImageFilter.h>
 #include <itkRawImageIO.h>
@@ -62,6 +63,11 @@
 #include <string>
 #include <vector>
 
+
+#include <itkVTKImageIO.h>
+#include <itkImageSeriesWriter.h>
+#include <itkNumericSeriesFileNames.h>
+
 UsimagToolConsole::UsimagToolConsole()
 {	
 	//==========================================================================
@@ -75,6 +81,7 @@ UsimagToolConsole::UsimagToolConsole()
 	m_VectorModelData.addBrowser( m_modeldataBrowser );
 	m_VectorTensorData.addBrowser( m_tensordataBrowser );
 	m_VectorDWIData.addBrowser( m_DWIdataBrowser );
+	m_VectorSTData.addBrowser( m_strainTensorDataBrowser );
 	//==========================================================================
 	
 	
@@ -109,6 +116,7 @@ UsimagToolConsole::UsimagToolConsole()
   MyTensorConsole->SetVectorModelData((void*)&m_VectorModelData); 
   MyTensorConsole->SetVectorTensorData((void*)&m_VectorTensorData); 
   MyTensorConsole->SetVectorDWIData((void*)&m_VectorDWIData); 
+  MyTensorConsole->SetVectorSTData((void*)&m_VectorSTData); 
 	
   MyTensorConsole->SetActiveGroup(ActiveGroup); 
   MyTensorConsole->SetConfigIO(m_configIO); 
@@ -235,6 +243,7 @@ UsimagToolConsole::UsimagToolConsole()
   m_tipoProcesado->add("    Tensor Data",0,NULL,NULL,0);
   m_tipoProcesado->add("    Model Data",0,NULL,NULL,0);
   m_tipoProcesado->add("    DWI Data",0,NULL,NULL,0);
+  m_tipoProcesado->add("    Strain Data",0,NULL,NULL,0);
   m_tipoProcesado->add("    Basic Operations",0,NULL,NULL,0);
   m_tipoProcesado->add("    Filtering",0,NULL,NULL,0);
   m_tipoProcesado->add("    Segmentation",0,NULL,NULL,0);
@@ -324,10 +333,18 @@ UsimagToolConsole::UsimagToolConsole()
 	// Disable "Open Raw" menu, since physicians will not use this:
 	OpenRawMenuItem->flags = ( OpenRawMenuItem->flags | FL_MENU_INACTIVE );
 	// Remove the options which will not be available in the "type of processing" menu:
+
+	m_tipoProcesado->remove( 8 );
+	m_tipoProcesado->remove( 7 );
+	m_tipoProcesado->remove( 6 );
+	m_tipoProcesado->remove( 5 );
+
+/* MODIFICADO AL AÑADIR DATOS DE STRAIN
 	m_tipoProcesado->remove( 7 );
 	m_tipoProcesado->remove( 6 );
 	m_tipoProcesado->remove( 5 );
 	m_tipoProcesado->remove( 4 );
+*/
 	m_tipoProcesado->redraw(); // Force the listbox to update its appearance
 #endif
 	/** *********************************************************************************************************************** */
@@ -479,26 +496,34 @@ void UsimagToolConsole::OnTipoProcesadoChange()
 			m_DWIDataGroup->show();
 			ActiveOptionGroup = m_DWIDataGroup;
 			break;
-		case 4: // Basic Operations
+		case 4:	// Strain Tensor Data
+		    ActiveOptionGroup->hide();
+			m_StrainTensorDataGroup->show();
+			ActiveOptionGroup = m_StrainTensorDataGroup;
+			break;
+
+// MODIFICADOS LOS NÚMEROS AL AÑADIR DATOS DE STRAIN:
+		case 5: // Basic Operations
 			ActiveOptionGroup->hide();
 			m_BasicOperations->show();
 			ActiveOptionGroup = m_BasicOperations;
 			break;
-		case 5: // Filtering
+		case 6: // Filtering
 		    ActiveOptionGroup->hide();
 			m_Filtering->show();
 			ActiveOptionGroup = m_Filtering;
 			break;
-		case 6: // Segmentation
+		case 7: // Segmentation
 		    ActiveOptionGroup->hide();
 			m_Segmentation->show();
 			ActiveOptionGroup = m_Segmentation;
 			break;
-		case 7:	// Registration
+		case 8:	// Registration
 		    ActiveOptionGroup->hide();
 			m_Registration->show();
 			ActiveOptionGroup = m_Registration;
 			break;
+
 	}
 }
 //*** Vero
@@ -864,7 +889,7 @@ void UsimagToolConsole::SaveTensorVTK( ) {
 	CastFilterPointerType	    caster        =  CastFilterType::New();
 	caster->SetInput( m_VectorTensorData[dataId].image );
 	tensorWriter->SetInput( caster->GetOutput() );
-	
+
 	tensorWriter->SetFileName(m_filename);
 	tensorWriter->Modified();
 	try{
@@ -874,8 +899,63 @@ void UsimagToolConsole::SaveTensorVTK( ) {
 		fl_alert( e.GetDescription() );
 		return;
 	}
+
 }
 
+void UsimagToolConsole::SaveStrainTensor( ) {
+
+	m_filename = fl_file_chooser("Image Filename","*","");
+	if( !m_filename ){return;}
+	int dataId = m_strainTensorDataBrowser->value()-1;
+	if( dataId<0 ){return;}
+
+	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+	/** TO DO: Move these definitions to UsimagToolBase.h!!! */
+	typedef itk::Image<itk::CovariantVector<float, 3>, 4>						VectorImage4DType;
+	typedef itk::Image<itk::CovariantVector<float, 3>, 3>						VectorImage3DType;
+	typedef itk::StrainTensorToSymTensorImageFilter<STImageType, VectorImage4DType>			CastFilterType;
+	typedef CastFilterType::Pointer								 	CastFilterPointerType;
+  	typedef itk::ImageSeriesWriter <VectorImage4DType , VectorImage3DType >				STWriterType;
+	typedef itk::NumericSeriesFileNames								NameGeneratorType;
+
+	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+
+
+	STImageType::Pointer strainImage = m_VectorSTData[dataId].image;
+
+	STWriterType::Pointer   strainWriter  =  STWriterType::New();
+	CastFilterPointerType	    caster        =  CastFilterType::New();
+	caster->SetInput( strainImage );
+
+	strainWriter->SetInput( caster->GetOutput() );
+
+	strainWriter->Modified();
+
+	NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
+	std::string format = m_filename;
+	if (format.rfind('.') != format.npos)
+		format.insert(format.rfind('.'),"%02d");
+//		format.replace(format.rfind('.'), 4, "%02d.vtk");
+
+	else format += "%02d.vtk";
+	
+	nameGenerator->SetSeriesFormat(format);
+
+	nameGenerator->SetStartIndex(0);
+	nameGenerator->SetEndIndex(strainImage->GetRequestedRegion().GetSize()[3]-1);
+	nameGenerator->SetIncrementIndex(1);
+
+	strainWriter->SetFileNames(nameGenerator->GetFileNames());
+
+	try{
+		strainWriter->Write();
+	}
+	catch( itk::ExceptionObject & e ){
+		fl_alert( e.GetDescription() );
+		return;
+	}
+
+}
 
 void UsimagToolConsole::Load( void )
 {
@@ -1207,6 +1287,104 @@ void UsimagToolConsole::LoadTensorVTK(  )
 
 	MyTensorConsole->SetHasBeenRegistered(false);
 	MyTensorConsole->SetHasBeenFiberTracked(false);
+}
+
+
+void UsimagToolConsole::LoadStrainTensor(  )
+{
+
+	m_filename = fl_file_chooser("Image Filename","*","");
+	if( !m_filename ){return;}
+
+//	CommandPointer callback = CommandType::New();
+//	callback->SetCallbackFunction( this, &UsimagToolConsole::OnProgress );
+	
+	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+	/** TO DO: Move these definitions to UsimagToolBase.h!!! */
+	typedef itk::Image<itk::SymmetricSecondRankTensor<float, 3>, 3 >			        SymmetricTensorImageType;
+	typedef itk::Image<itk::CovariantVector<float, 3>, 4>						VectorImage4DType;
+	typedef itk::StrainTensorToSymTensorImageFilter<VectorImage4DType, STImageType>	CastFilterType;
+	typedef CastFilterType::Pointer								 	CastFilterPointerType;
+  	typedef itk::ImageSeriesReader< VectorImage4DType >					STReaderType;
+	typedef itk::NumericSeriesFileNames							NameGeneratorType;
+	
+
+	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+
+	STReaderType::Pointer tensorImageReader = STReaderType::New();
+//	tensorImageReader->SetNumberOfThreads(   static_cast<unsigned int>( Threads->value() )   );
+
+
+	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+	/** TO DO: Check if this piece of code is really necessary. */
+//	TensorVTKImageIOType::Pointer VTKReader = TensorVTKImageIOType::New(); 
+//	tensorImageReader->SetImageIO( VTKReader );
+	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
+	
+//	tensorImageReader->SetFileName( m_filename );
+//	tensorImageReader->AddObserver( itk::ProgressEvent(), callback );
+
+	NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
+	std::string format (m_filename);
+	format.replace(format.find("00"), 2, "%02d");
+	nameGenerator->SetSeriesFormat(format);
+
+	nameGenerator->SetStartIndex(0);
+	nameGenerator->SetEndIndex(9);
+	nameGenerator->SetIncrementIndex(1);
+	
+	tensorImageReader->SetFileNames(nameGenerator->GetFileNames());
+
+	
+	try{
+		tensorImageReader->Update();
+	}
+	catch( itk::ExceptionObject & e ) {
+		fl_alert( e.GetDescription() );
+		return;
+	}
+
+	
+	////////////////////////////////////////////////////////////////////////////////////
+	// Si cargamos dos volumenes se ajusta el origen para que tenga el mismo valor en las dos imágenes
+	// y así poder compararlos mejor visualmente. 
+
+	STImageType *tensorImage = STImageType::New();
+	CastFilterPointerType	    caster        =  CastFilterType::New();
+	caster->SetInput(tensorImageReader->GetOutput());
+	tensorImage = caster->GetOutput();
+
+		
+	if(m_VectorSTData.size()>0){
+		tensorImage->SetOrigin(m_VectorSTData[0].image->GetOrigin());
+	}
+
+	tensorImage->Update();
+
+	std::string nombre(m_filename);
+	int pos = nombre.rfind('/');
+	nombre = nombre.substr(nombre.rfind('/') + 1);
+
+	DataSTElementType tensor_data;
+	int dataId = m_VectorSTData.size();
+	char bname[200];
+	tensor_data.Id     = dataId;
+	tensor_data.nombre = nombre;
+	tensor_data.image  = tensorImage;
+
+	m_VectorSTData.push_back(tensor_data);
+
+//	this->DistribuirTensor( tensorImage, m_activeinput, m_filename );
+	//this->DistribuirTensor( tensorImageReader->GetOutput(), m_activeinput, m_filename );
+	////////////////////////////////////////////////////////////////////////////////////////////
+
+	
+	tensorImageReader = NULL;
+
+	MyTensorConsole->verGlifosStrain(dataId);
+
+//	MyTensorConsole->SetHasBeenRegistered(false);
+//	MyTensorConsole->SetHasBeenFiberTracked(false);
 }
 
 
@@ -2600,6 +2778,21 @@ void UsimagToolConsole::RenameModel( int id, const char* name )
 	m_VectorModelData.rename( id, name );
 }
 
+void UsimagToolConsole::DeleteStrainTensor( int dataId )
+{
+	if( dataId<(int)m_VectorSTData.size() ){
+		//m_VectorTensorData[dataId].image = NULL;
+		m_VectorSTData.erase( dataId );
+	}
+}
+
+void UsimagToolConsole::RenameStrainTensor( int id, const char* name )
+{
+	if( id<0 || id>=(int)m_VectorSTData.size() )
+		return;
+	m_VectorSTData.rename( id, name );
+}
+
 void UsimagToolConsole::ViewMode4x2D() {
   // variable m_viewmode para saber en que modo estamos
   m_viewmode = 0;
@@ -2788,135 +2981,7 @@ void UsimagToolConsole::ZoomOut()
 //===========================================================================
 
 
-void UsimagToolConsole::LoadStrainTensor(  )
-{
-	if( !m_filename ){return;}
-	CommandPointer callback = CommandType::New();
-	callback->SetCallbackFunction( this, &UsimagToolConsole::OnProgress );
-	
-	FileSTReaderType::Pointer strainTensorImageReader = FileSTReaderType::New();
-	strainTensorImageReader->SetNumberOfThreads(   static_cast<unsigned int>( Threads->value() )   );
-	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-	/** TO DO: Check if this piece of code is really necessary. */
-/*	TensorVTKImageIOType::Pointer VTKReader = TensorVTKImageIOType::New(); 
-	tensorImageReader->SetImageIO( VTKReader );
-*/	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-	
-	strainTensorImageReader->SetFileName( m_filename );
-	strainTensorImageReader->AddObserver( itk::ProgressEvent(), callback );
-	
-	try{
-		strainTensorImageReader->Update();
-	}
-	catch( itk::ExceptionObject & e ) {
-		fl_alert( e.GetDescription() );
-		return;
-	}
-	
-	////////////////////////////////////////////////////////////////////////////////////
-	// Si cargamos dos volumenes se ajusta el origen para que tenga el mismo valor en las dos imágenes
-	// y así poder compararlos mejor visualmente. 
-	STImageType::Pointer strainTensorImage=STImageType::New();
-	strainTensorImage=strainTensorImageReader->GetOutput();
-	
-	if(m_VectorSTData.size()>0){
-		strainTensorImage->SetOrigin(m_VectorSTData[0].image->GetOrigin());
-	}
-//	this->DistribuirTensor( strainTensorImage, m_activeinput, m_filename );
-	//this->DistribuirTensor( tensorImageReader->GetOutput(), m_activeinput, m_filename );
-	////////////////////////////////////////////////////////////////////////////////////////////
-	
-	strainTensorImageReader = NULL;
 
-	MyTensorConsole->SetHasBeenRegistered(false);
-	MyTensorConsole->SetHasBeenFiberTracked(false);
-}
 
-void UsimagToolConsole::LoadStrainTensorNrrd(  )
-{
-	if( !m_filename ){return;}
-	CommandPointer callback = CommandType::New();
-	callback->SetCallbackFunction(this,&UsimagToolConsole::OnProgress);
-	
-	FileSTReaderType::Pointer strainTensorNrrdReader = FileSTReaderType::New();
-	strainTensorNrrdReader->SetNumberOfThreads(   static_cast<unsigned int>( Threads->value() )   );
-	strainTensorNrrdReader->SetFileName( m_filename );
-	strainTensorNrrdReader->AddObserver( itk::ProgressEvent(), callback );
-	
-	try {
-		strainTensorNrrdReader->Update();
-	}
-	catch( itk::ExceptionObject & e ) {
-		fl_alert( e.GetDescription() );
-		return;
-	}
-	
-//	this->DistribuirTensor( strainTensorNrrdReader->GetOutput(), m_activeinput, m_filename );
-//	tensorNrrdReader = NULL;
-}
-/*
-void UsimagToolConsole::DistribuirStrainTensor( TensorImageType::Pointer aux, int window, const char* filename)
-{
-	char nombre[200];
-	str_nombre( filename, nombre );
-	char nombre_tensor[200];
-	sprintf( nombre_tensor, "TENSOR_%s", nombre );
-	
-	DataSTElementType tensor_data;
-	tensor_data.Id     = m_VectorTensorData.size();
-	tensor_data.nombre = nombre_tensor;
-	tensor_data.image  = aux;
-	
-	m_VectorSTData.push_back(tensor_data);
-	/** This code is no longer necessary:
-	m_tensordataBrowser->add(nombre_tensor);
-	m_tensordataBrowser->select(m_tensordataBrowser->size());
-	m_tensordataBrowser->redraw();
-	*/
-	
-	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-	// TODO: Move this typedef!!!
-/*	typedef itk::ComputeFAFilter<TensorImageType,InputImageType> FAfilterType;
-	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-/*	FAfilterType::Pointer FAfilter = FAfilterType::New();
-	FAfilter->SetInput(aux);
-	try{
-		FAfilter->Update();
-	}
-	catch( itk::ExceptionObject & e ){
-		fl_alert( e.GetDescription() );
-		return;
-	}
 
-	sprintf(nombre,"%s_FA",nombre);
-	DataElementType data;
-	data.Id      = m_VectorData.size();
-	data.nombre  = nombre;
-	data.image   = FAfilter->GetOutput();
-	m_VectorData.push_back(data);
-	
-	/** This code is no longer necessary:
-	m_dataBrowser->add(nombre);
-	m_dataBrowser->select(m_dataBrowser->size());
-	m_dataBrowser->redraw();
-	*/
-	/** This code is no longer necessary:
-	m_destino->add(nombre,0,NULL,NULL,0);
-	m_op1->add(nombre,0,NULL,NULL,0);
-	m_op2->add(nombre,0,NULL,NULL,0);
-	*/
-/*	
-	std::cout << aux->GetDirection() << std::endl;
-	
-	ImageViewer[window]->SetImage( data.image );
-	float v[3][3];
-	for (unsigned int i=0;i<3;i++) {
-	  for (unsigned int j=0;j<3;j++) {
-	    v[i][j] = (float)aux->GetDirection()[i][j];
-	  }
-	}
-	ImageViewer[window]->SetOrientationMatrix( &v[0][0] );
-	ShowImageSrc(m_activeinput);
-}
-*/
 
