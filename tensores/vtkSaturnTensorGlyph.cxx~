@@ -143,10 +143,9 @@ void vtkSaturnTensorGlyph::GetOutput(vtkPolyData *output)
 			break;
 		}
 	}
-cout<<"aqui\n";
 
 	pts = new vtkIdType[source->GetMaxCellSize()];
-cout<<"aqui no\n";
+
 	trans = vtkTransform::New();
 	matrix = vtkMatrix4x4::New();
 
@@ -481,7 +480,7 @@ cout<<"aqui no\n";
 			npts = cellPts->GetNumberOfIds();
 			// This variable may be removed, but that 
 			// will not improve readability
-			subIncr = ptIncr + numSourcePts;
+			subIncr = ptIncr;// + numSourcePts;
 			for (i=0; i < npts; i++)
 			{
 				pts[i] = cellPts->GetId(i) + subIncr;

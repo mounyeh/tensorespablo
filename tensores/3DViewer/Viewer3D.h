@@ -39,6 +39,7 @@ public:
   void SetSliceOpacity(float opacity);
   void SetSliceColor();
   void renderSlice(vtkImageData *image, int orientation);
+  void renderSlice(vtkImageData *image, int orientation, int slice);
   void renderTractsTube(vtkPolyData *tracts, vtkActor* tractsActor);
   void renderTracts(vtkPolyData *tracts, vtkActor* tractsActor, double color[3], double radius);
   void renderTractsNew(vtkStreamLine *tracts, vtkActor* tractsActor);

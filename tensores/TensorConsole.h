@@ -51,7 +51,7 @@
 #include <vtkDataSet.h>
 #include <vtkLODActor.h>
 
-#include <tensor/itkStrainTensor.h>
+#include <strain/itkStrainTensor.h>
 
 class TensorConsole : public TensorGUI
 {
@@ -113,6 +113,7 @@ public:
   //void SetActiveInput(unsigned int &activeinput);
   void SetModelDataBrowser(Fl_Browser *modeldataBrowserIn);
   void SetDWIDataBrowser(Fl_Browser *DWIdataBrowserIn);
+  void SetStrainTensorDataBrowser(Fl_Browser *STDataBrowserIn);
   //void SetImageViewer3D(Viewer3D* ImageViewer3DIn);
   void SetImageColorViewer(MyColorViewerType* ImageColorViewer3DIn);
   void SetImageOverlay(UCharImageType* m_imageOverlayIn);
@@ -191,12 +192,14 @@ public:
   void cambiarOpacidad(float);
   void glifosActivos();
   void imagenActiva(int,bool);
+  void actualizarGlifosDTI();
 
-  void verGlifosStrain(int);
+  void verGlifosStrain(int,int);
+  void borrarGlifosStrain();
+
   void probarEsfuerzo();
   void probarEsfuerzoDeform();
   void tensorEsfuerzo2D();
-  void actualizarGlifosDTI();
 
   FloatImageType::IndexType     m_seedPosition;
   NodeType                      m_node;
@@ -210,6 +213,7 @@ public:
   UCharImageType* m_imageOverlay;
   Fl_Browser *m_modeldataBrowser;
   Fl_Browser *m_DWIdataBrowser;
+  Fl_Browser *m_strainTensorDataBrowser;
   Fl_Value_Slider **sliceNumberSlider;
 	
 	typedef VolumesContainer<DataModelElementType>   VectorOfModelType;
@@ -249,16 +253,18 @@ private:
 
   VectorOfSTDataType*	m_VectorSTData;
 
-  vtkActor*	m_activeActorX;
-  vtkPolyData* 	m_activeGlyphX;
-  vtkActor*	m_activeActorY;
-  vtkPolyData* 	m_activeGlyphY;
-  vtkActor*	m_activeActorZ;
-  vtkPolyData* 	m_activeGlyphZ;
-  vtkScalarBarActor* m_scalarBar;
+  vtkActor		*m_activeActorX;
+  vtkPolyData		*m_activeGlyphX;
+  vtkActor		*m_activeActorY;
+  vtkPolyData		*m_activeGlyphY;
+  vtkActor		*m_activeActorZ;
+  vtkPolyData		*m_activeGlyphZ;
+  vtkScalarBarActor	*m_scalarBar;
 
-  vtkPoints* 	m_puntosTract;
-  vtkActor*	m_tractActor;
+  vtkPoints		*m_puntosTract;
+  vtkActor		*m_tractActor;
+
+  vtkActor		*m_activeActorStrain;
 
   bool m_planoActivoX;
   bool m_planoActivoY;

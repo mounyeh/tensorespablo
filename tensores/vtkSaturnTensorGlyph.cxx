@@ -478,12 +478,9 @@ void vtkSaturnTensorGlyph::GetOutput(vtkPolyData *output)
 			cell = source->GetCell(cellId);
 			cellPts = cell->GetPointIds();
 			npts = cellPts->GetNumberOfIds();
-			// This variable may be removed, but that 
-			// will not improve readability
-			subIncr = ptIncr + numSourcePts;
 			for (i=0; i < npts; i++)
 			{
-				pts[i] = cellPts->GetId(i) + subIncr;
+				pts[i] = cellPts->GetId(i) + ptIncr;
 			}
 			output->InsertNextCell(cell->GetCellType(),npts,pts);
 		}

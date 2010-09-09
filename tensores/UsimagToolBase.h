@@ -46,6 +46,8 @@
 #include <itkImageRegionConstIterator.h>
 #include <itkImageRegionIterator.h>
 #include <itkVTKImageExport.h>
+#include <itkExtractImageFilter.h>
+#include <strain/itkComputeStrainScalars.h>
 
 #include <itkVector.h>
 #include <itkCovariantVector.h>
@@ -76,7 +78,7 @@
 
 #include <itkNiftiImageIO.h>
 
-#include "tensor/itkStrainTensor.h"
+#include "strain/itkStrainTensor.h"
 
 class UsimagToolBase
 {
@@ -182,7 +184,12 @@ public:
   typedef itk::ImageToVTKImageFilter< InputImageType > ConnectorType;  
   typedef itk::VTKImageExport< InputImageType> VTKexportType;
   typedef itk::VTKImageExport< Vector3DImageType> VTKexportVectorType;
+  typedef itk::VTKImageExport< InputImageType > VTKstrainExportType;
   
+  typedef itk::Image< STPixelType, 3 >    				STImageType3D;
+  typedef itk::ExtractImageFilter< STImageType, STImageType3D >		ExtractFilterType;
+  typedef itk::ComputeStrainScalars <STImageType3D,InputImageType>     	ComputeStrainScalarsType;
+  typedef ComputeStrainScalarsType::Pointer                            	ComputeStrainScalarsPointer;
 
 	/*
   struct DataElementType {
@@ -288,7 +295,8 @@ protected:
   VTKImageViewerType::Pointer m_VTKviewer;
   ConnectorType::Pointer      m_connector;
   VTKexportType::Pointer       m_VTKexporter; 
-  VTKexportVectorType::Pointer m_VTKexporterVector; 
+  VTKexportVectorType::Pointer m_VTKexporterVector;
+  VTKexportType::Pointer	m_VTKexporterStrain;
   
 	/*
   // casters

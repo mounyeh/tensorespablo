@@ -86,7 +86,7 @@
 #include "vtkCylinderSource.h"
 #include "vtkConeSource.h"
 #include "vtkStrainTensorGlyph.h"
-#include "tensor/itkStrainTensor.h"
+#include "strain/itkStrainTensor.h"
 
 #include "vtkTensorGlyph2D.h"
 #include "vtkGlyphSource2D.h"
@@ -138,6 +138,11 @@ void TensorConsole::SetModelDataBrowser(Fl_Browser *modeldataBrowserIn)
 void TensorConsole::SetDWIDataBrowser(Fl_Browser *DWIdataBrowserIn)
 {
 	m_DWIdataBrowser = DWIdataBrowserIn;
+}
+
+void TensorConsole::SetStrainTensorDataBrowser(Fl_Browser *STDataBrowserIn)
+{
+	m_strainTensorDataBrowser = STDataBrowserIn;
 }
 
 //void TensorConsole::SetImageViewer3D(Viewer3D* ImageViewer3DIn)
@@ -3944,28 +3949,42 @@ void TensorConsole::verGlifosTract() {
 	glifos->Delete();
 }
 
-void TensorConsole::verGlifosStrain(int dataId) {
+void TensorConsole::borrarGlifosStrain() {
 
-	borrarGlifos(0);
+	if (m_activeActorStrain) {
+		ImageViewer3D->HideModel(m_activeActorStrain);
+		m_activeActorStrain->GetMapper()->Delete();
+		m_activeActorStrain->Delete();
+		m_activeActorStrain=NULL;
+	}
+}
+
+void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
+
+	borrarGlifosStrain();
+
+	int dataId = m_strainTensorDataBrowser->value()-1;
+	if( dataId<0){return;}
 
 	STImageType::Pointer esfuerzo = (*m_VectorSTData)[dataId].image;
 
 	vtkTensorGlyph2D *glifos = new vtkTensorGlyph2D();
 	glifos->SetInput(esfuerzo);
-	glifos->SetPlanoZ(planoZ->value());
-	glifos->SetTiempo(tiempo->value());
+	glifos->SetPlanoZ(planoZ);
+	glifos->SetTiempo(tiempo);
 	glifos->SetScaleFactor(0.004);
-
+//cout<<"plano z: "<<planoZ->value()<<" tiempo: "<<tiempo->value()<<"\n";
+/*
   	vtkGlyphSource2D *glyphsource = vtkGlyphSource2D::New();
   	glyphsource->SetGlyphTypeToDiamond();
   	glyphsource->FilledOn();
   	glyphsource->SetColor(.5,.5,.5);
   	glyphsource->Update();
-
-	m_activeActorX = vtkActor::New();
-	m_activeActorX->GetProperty()->SetColor(1,1,1);
-	ImageViewer3D->ConnectMapper(glifos->GetOutput(), m_activeActorX);
-	ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);
+*/
+	m_activeActorStrain = vtkActor::New();
+	m_activeActorStrain->GetProperty()->SetColor(1,1,1);
+	ImageViewerStrain3D->ConnectMapper(glifos->GetOutput(), m_activeActorStrain);
+	ImageViewerStrain3D->SetScalarRange(m_activeActorStrain, 0, 1000000);
 
 
 }
@@ -4000,13 +4019,13 @@ cout<<"a8\n";
 	STImageType::IndexType indice;
 
 srand ( time(NULL) );
-	for (int ind0=0; ind0<10; ind0++) {
+	for (int ind0=0; ind0<11; ind0++) {
 		indice[0] = ind0;
-		for (int ind1=0; ind1<10; ind1++) {
+		for (int ind1=0; ind1<12; ind1++) {
 			indice[1] = ind1;
-			for (int ind2=0; ind2<10; ind2++) {
+			for (int ind2=0; ind2<13; ind2++) {
 				indice[2] = ind2;
-				for (int ind3=0; ind3<10; ind3++) {
+				for (int ind3=0; ind3<14; ind3++) {
 					indice[3] = ind3;
 					f[0] = rand() % 1000 - 500;
 					f[1] = rand() % 1000 - 500;

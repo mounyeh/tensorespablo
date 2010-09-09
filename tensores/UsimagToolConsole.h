@@ -30,7 +30,7 @@ public:
   typedef itk::MemberCommand<UsimagToolConsole> CommandType;
   typedef itk::SmartPointer<CommandType> CommandPointer;
   typedef itk::ImageToImageFilter<InputImageType,InputImageType> itkFilter;
-  
+
   UsimagToolConsole();
   virtual ~UsimagToolConsole();
   void Save(void);
@@ -84,6 +84,7 @@ public:
   void ShowImageSrc(int window);
   void ShowImageColor(int window);
   void ViewSliceIn3DWindow(InputImageType::Pointer image, int orientation);
+  void ViewStrainSlice3D();
   void DoModel(int value1, int value2, int smooth, InputImageType::Pointer image);
   void OnProgress(itk::Object *source, const itk::EventObject &event);
   void OnFileInputChange(int mode);
@@ -121,6 +122,7 @@ public:
   void ViewMode3D();
   void ViewMode4x2D();
   void ViewMode3_1();
+  void ViewModeStrain3D();
   void InfoImagen( void );
   
 
@@ -150,6 +152,10 @@ private:
   static const int m_TENSOR_FORMAT_COUNT = 2; 
   std::string m_FileTensorFormatPattern[m_FORMAT_COUNT];
   int m_orientation;
+
+  vtkImageData *data_temp;
+//  VTKexportType::Pointer m_VTKstrainExporter; 
+
   
 };
 
