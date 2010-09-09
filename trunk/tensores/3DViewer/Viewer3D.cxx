@@ -212,7 +212,47 @@ void Viewer3D::renderSlice(vtkImageData *image, int orientation) {
 	}
 	
 	
-}	
+}
+
+void Viewer3D::renderSlice(vtkImageData *image, int orientation, int sliceIndex) {
+	//
+	// Add a PlaneWidget to interactively move the slice plane.
+	//
+	if (orientation == 0) {
+        planeWidgetX->DisplayTextOn();
+        planeWidgetX->SetInput((vtkDataSet*)image);
+        planeWidgetX->SetPlaneOrientationToXAxes();
+        planeWidgetX->SetSliceIndex(sliceIndex);
+        //planeWidgetX->SetPicker(picker);
+		planeWidgetX->SetTextureVisibility(20);
+        planeWidgetX->SetKeyPressActivationValue('x');
+	    planeWidgetX->SetInteractor(this->GetInteractor());
+	    planeWidgetX->On();
+	}
+	if (orientation == 1) {
+        planeWidgetY->DisplayTextOn();
+        planeWidgetY->SetInput((vtkDataSet*)image);
+        planeWidgetY->SetPlaneOrientationToYAxes();
+        planeWidgetY->SetSliceIndex(sliceIndex);
+        //planeWidgetY->SetPicker(picker);
+        planeWidgetY->SetKeyPressActivationValue('x');
+	    planeWidgetY->SetInteractor(this->GetInteractor());
+	    planeWidgetY->On();
+	}
+	if (orientation == 2) {
+		planeWidgetZ->DisplayTextOn();
+        planeWidgetZ->SetInput((vtkDataSet*)image);
+        planeWidgetZ->SetPlaneOrientationToZAxes();
+        planeWidgetZ->SetSliceIndex(sliceIndex);
+		//planeWidgetZ->GetMarginProperty()->SetOpacity(0);
+        //planeWidgetZ->SetPicker(picker);
+		planeWidgetZ->SetKeyPressActivationValue('x');
+	    planeWidgetZ->SetInteractor(this->GetInteractor());
+	    planeWidgetZ->On();
+	}
+	
+	
+}
 
 void Viewer3D::renderTractsTube(vtkPolyData *tracts, vtkActor* tractsActor) {
 	double color[3];

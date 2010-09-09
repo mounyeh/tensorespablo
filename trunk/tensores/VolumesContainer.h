@@ -27,9 +27,10 @@
 #include <FL/Fl_Choice.H>
 #include <FL/Fl_Browser.H>
 
-#include "tensor/itkStrainTensor.h"
+#include "strain/itkStrainTensor.h"
 
 typedef itk::Image< float, 3 >           InputImageType;
+typedef itk::Image< float, 4 >           InputImageType4D;
 typedef itk::DTITensor< float >          TensorPixelType;
 typedef itk::Image< TensorPixelType, 3 > TensorImageType;
 typedef itk::DWImages< float, 3 >    DWImagesType;
@@ -134,10 +135,10 @@ public:
 	void DestroyData(){
 		image = NULL;
 	}
-	bool generateNewData( InputImageType::Pointer aux, unsigned int ident, const char* string ){
+	bool generateNewData( InputImageType4D::Pointer aux, unsigned int ident, const char* string ){
 		return false;
 	}
-	bool copyData( InputImageType::Pointer aux ){
+	bool copyData( InputImageType4D::Pointer aux ){
 		return false;
 	}
 	unsigned int             Id;

@@ -30,7 +30,7 @@
 #include <itkSpatialOrientationAdapter.h>
 #include <itkOrientImageFilter.h>
 #include "tensor/itkDTITensorToSymTensorImageFilter.h"
-#include "tensor/itkStrainTensorToSymTensorImageFilter.h"
+#include "strain/itkStrainTensorToSymTensorImageFilter.h"
 #include <itkSymmetricSecondRankTensor.h>
 #include <itkImageToVectorImageFilter.h>
 #include <itkRawImageIO.h>
@@ -67,6 +67,8 @@
 #include <itkVTKImageIO.h>
 #include <itkImageSeriesWriter.h>
 #include <itkNumericSeriesFileNames.h>
+
+#include <strain/itkComputeStrainScalars.h>
 
 UsimagToolConsole::UsimagToolConsole()
 {	
@@ -106,12 +108,14 @@ UsimagToolConsole::UsimagToolConsole()
   MyTensorConsole->SetModelDataBrowser(m_modeldataBrowser);
   MyTensorConsole->SetTensorDataBrowser(m_tensordataBrowser);
   MyTensorConsole->SetDWIDataBrowser(m_DWIdataBrowser);
+  MyTensorConsole->SetStrainTensorDataBrowser(m_strainTensorDataBrowser);
   MyTensorConsole->SetDestino(m_destino);
   MyTensorConsole->SetOp1(m_op1);
   MyTensorConsole->SetOp2(m_op2);
   MyTensorConsole->SetImageViewers(ImageViewer);
   MyTensorConsole->SetSliders(sliceNumberSlider);
   MyTensorConsole->SetImageViewer3D(ImageViewer3D);
+  MyTensorConsole->SetImageViewerStrain3D(ImageViewerStrain3D);
   MyTensorConsole->SetVectorData((void*)&m_VectorData);  
   MyTensorConsole->SetVectorModelData((void*)&m_VectorModelData); 
   MyTensorConsole->SetVectorTensorData((void*)&m_VectorTensorData); 
@@ -365,8 +369,11 @@ UsimagToolConsole::UsimagToolConsole()
     vtkInteractorStyleSwitch::SafeDownCast( ImageViewer3D->GetInteractor()->GetInteractorStyle() );
   if ( interactor != NULL )   
      interactor->SetCurrentStyleToTrackballCamera();
-  //====================================================
 
+  interactor = vtkInteractorStyleSwitch::SafeDownCast( ImageViewerStrain3D->GetInteractor()->GetInteractorStyle() );
+  if ( interactor != NULL )   
+     interactor->SetCurrentStyleToTrackballCamera();
+  //====================================================
 }
 
 UsimagToolConsole::~UsimagToolConsole()
@@ -942,7 +949,7 @@ void UsimagToolConsole::SaveStrainTensor( ) {
 	nameGenerator->SetSeriesFormat(format);
 
 	nameGenerator->SetStartIndex(0);
-	nameGenerator->SetEndIndex(strainImage->GetRequestedRegion().GetSize()[3]);
+	nameGenerator->SetEndIndex(strainImage->GetRequestedRegion().GetSize()[3]-1);
 	nameGenerator->SetIncrementIndex(1);
 
 	strainWriter->SetFileNames(nameGenerator->GetFileNames());
@@ -1296,15 +1303,15 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	m_filename = fl_file_chooser("Image Filename","*","");
 	if( !m_filename ){return;}
 
-//	CommandPointer callback = CommandType::New();
-//	callback->SetCallbackFunction( this, &UsimagToolConsole::OnProgress );
+	CommandPointer callback = CommandType::New();
+	callback->SetCallbackFunction( this, &UsimagToolConsole::OnProgress );
 	
 	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 	/** TO DO: Move these definitions to UsimagToolBase.h!!! */
-	typedef itk::Image<itk::SymmetricSecondRankTensor<float, 3>, 3 >			        SymmetricTensorImageType;
-	typedef itk::Image<itk::CovariantVector<float, 3>, 4>						VectorImage4DType;
-	typedef itk::StrainTensorToSymTensorImageFilter<VectorImage4DType, STImageType>	CastFilterType;
-	typedef CastFilterType::Pointer								 	CastFilterPointerType;
+//	typedef itk::Image<itk::SymmetricSecondRankTensor<float, 3>, 3 >			        SymmetricTensorImageType;
+	typedef itk::Image<itk::CovariantVector<float, 3>, 4>					VectorImage4DType;
+	typedef itk::StrainTensorToSymTensorImageFilter<VectorImage4DType, STImageType>		CastFilterType;
+	typedef CastFilterType::Pointer								CastFilterPointerType;
   	typedef itk::ImageSeriesReader< VectorImage4DType >					STReaderType;
 	typedef itk::NumericSeriesFileNames							NameGeneratorType;
 	
@@ -1312,17 +1319,12 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 
 	STReaderType::Pointer tensorImageReader = STReaderType::New();
-//	tensorImageReader->SetNumberOfThreads(   static_cast<unsigned int>( Threads->value() )   );
+	tensorImageReader->SetNumberOfThreads(   static_cast<unsigned int>( Threads->value() )   );
 
 
-	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
-	/** TO DO: Check if this piece of code is really necessary. */
-//	TensorVTKImageIOType::Pointer VTKReader = TensorVTKImageIOType::New(); 
-//	tensorImageReader->SetImageIO( VTKReader );
-	/** $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 	
 //	tensorImageReader->SetFileName( m_filename );
-//	tensorImageReader->AddObserver( itk::ProgressEvent(), callback );
+	tensorImageReader->AddObserver( itk::ProgressEvent(), callback );
 
 	NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
 	std::string format (m_filename);
@@ -1381,7 +1383,17 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	
 	tensorImageReader = NULL;
 
-	MyTensorConsole->verGlifosStrain(dataId);
+	this->ViewModeStrain3D();
+
+//	MyTensorConsole->verGlifosStrain(0,0);
+//	this->ViewStrainSlice3D();
+//	MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
+//	strainSlice->range( 0.0f, m_VectorSTData[dataId].image->GetLargestPossibleRegion().GetSize()[2]-1 );
+//	strainSlice->redraw();
+//	strainTime->range( 0.0f, m_VectorSTData[dataId].image->GetLargestPossibleRegion().GetSize()[3]-1 );
+//	strainTime->redraw();
+
+
 
 //	MyTensorConsole->SetHasBeenRegistered(false);
 //	MyTensorConsole->SetHasBeenFiberTracked(false);
@@ -2411,6 +2423,68 @@ void UsimagToolConsole::ViewSliceIn3DWindow(InputImageType::Pointer image, int o
   ImageViewer3D->redraw();
   Fl::check();
 }
+
+
+void UsimagToolConsole::ViewStrainSlice3D() {
+
+/***************************************************************************************/
+	
+	int dataId = m_strainTensorDataBrowser->value()-1;
+	if( dataId<0){return;}
+
+	STImageType::Pointer image = (m_VectorSTData)[dataId].image;
+	ExtractFilterType::Pointer extract = ExtractFilterType::New();
+	extract->SetInput( image );
+	STImageType::RegionType inputRegion = image->GetLargestPossibleRegion();
+	STImageType::SizeType inputSize = inputRegion.GetSize();
+	inputSize[3] = 0;
+	STImageType::IndexType inputIndex = inputRegion.GetIndex();
+	inputIndex[3] = strainTime->value(); // Instante temporal
+	STImageType::RegionType desiredRegion;
+	desiredRegion.SetSize( inputSize );
+	desiredRegion.SetIndex( inputIndex );
+	extract->SetExtractionRegion( desiredRegion );
+
+	ComputeStrainScalarsType::Pointer filter = ComputeStrainScalarsType::New();
+	filter->SetInput( extract->GetOutput() );
+
+	filter->SetComputeInvariant();
+
+	try{
+		filter->Update();
+	}
+	catch( itk::ExceptionObject & e ){
+		fl_alert( e.GetDescription() );
+		return;
+	}
+
+	char nombre[200];
+	sprintf( nombre, "INV" );
+	
+  vtkImageImport* vtkImporter = vtkImageImport::New();
+
+
+  m_VTKexporter->SetInput(filter->GetOutput());
+  ConnectPipelines(m_VTKexporter, vtkImporter);
+
+  try{
+	  vtkImporter->GetOutput()->Update();
+  }
+  catch(itk::ExceptionObject &excp){
+	  fl_alert( excp.GetDescription() );
+	  return;
+  }
+
+  this->data_temp = vtkImporter->GetOutput();
+
+  this->data_temp->Update();
+
+  ImageViewerStrain3D->renderSlice( this->data_temp, 2, strainSlice->value() );
+  
+  Fl::check();
+  ImageViewerStrain3D->redraw();
+  Fl::check();
+}
   
 void UsimagToolConsole::DoModel(int value1, int value2, int smooth_iter, InputImageType::Pointer image) {
   vtkImageData* data;
@@ -2797,6 +2871,7 @@ void UsimagToolConsole::ViewMode4x2D() {
   // variable m_viewmode para saber en que modo estamos
   m_viewmode = 0;
   m_view3D->hide();
+  m_viewStrain3D->hide();
   m_viewSplit->show();
   ImageViewer[0]->Show();
   ImageViewer[1]->Show();
@@ -2823,6 +2898,7 @@ void UsimagToolConsole::ViewMode3D() {
   ImageViewer[2]->Hide();
   //ImageViewer[3]->Hide();
   ImageColorViewer->Hide();
+  m_viewStrain3D->hide();
   ImageViewer3D->ResetView();
   m_view3D->resize(410,25,800,682);
   m_view3D->show();
@@ -2841,6 +2917,7 @@ void UsimagToolConsole::ViewMode3_1() {
   ImageViewer[2]->Show();
   glWindowGroup[3]->hide();
   Botones[3]->hide();
+  m_viewStrain3D->hide();
   m_view3D->show();
   /// Ponemos modo axial, sagital, coronal
   int Id = m_dataBrowser->value()-1;
@@ -2862,6 +2939,24 @@ void UsimagToolConsole::ViewMode3_1() {
   ImageViewer[1]->redraw();
   ImageViewer[2]->redraw();
   ImageViewer3D->redraw();
+  Fl::check();
+}
+
+void UsimagToolConsole::ViewModeStrain3D() {
+  // variable m_viewmode para saber en que modo estamos
+  m_viewmode = 3;
+  m_viewSplit->hide();
+  m_view3D->hide();
+  ImageViewer[0]->Hide();
+  ImageViewer[1]->Hide();
+  ImageViewer[2]->Hide();
+  //ImageViewer[3]->Hide();
+  ImageColorViewer->Hide();
+  ImageViewerStrain3D->ResetView();
+  m_viewStrain3D->resize(410,25,800,682);
+  m_viewStrain3D->show();
+  Fl::check();
+  ImageViewerStrain3D->redraw();
   Fl::check();
 }
 
@@ -2952,6 +3047,10 @@ void UsimagToolConsole::ZoomIn()
     case 1: //3D window
       ImageViewer3D->GetDefaultCamera()->Zoom(1.41);  //Value arbitrarily chosen
       ImageViewer3D->Update();
+      break;
+    case 3: //3D strain window
+      ImageViewerStrain3D->GetDefaultCamera()->Zoom(1.41);  //Value arbitrarily chosen
+      ImageViewerStrain3D->Update();
       break;
     default: //other options not yet implemented
       return;

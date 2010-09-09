@@ -8,12 +8,12 @@ class UsimagToolGUI {open : {public UsimagToolBase}
   } {
     Fl_Window panel {
       label {--- Saturn ---} open
-      xywh {63 49 1210 680} type Double color 0 selection_color 48 labelfont 1 labelcolor 255 hide resizable
-      code0 {\#include "UsimagToolBase.h"}
+      xywh {63 49 1210 680} type Double color 0 selection_color 48 labelfont 1 labelcolor 255 resizable
+      code0 {\#include "UsimagToolBase.h"} visible
     } {
       Fl_Group {} {
         label {Visualization modes}
-        xywh {1126 0 154 747} labeltype NO_LABEL
+        xywh {1090 0 190 747} labeltype NO_LABEL
       } {
         Fl_Box {} {
           xywh {1244 22 36 725} box PLASTIC_DOWN_BOX color 225 labeltype SHADOW_LABEL align 65 hide
@@ -33,10 +33,15 @@ class UsimagToolGUI {open : {public UsimagToolBase}
           callback {ViewMode3_1();}
           xywh {1154 0 27 25} box PLASTIC_DOWN_BOX color 4 selection_color 3 labeltype ENGRAVED_LABEL labelfont 14 labelsize 10
         }
+        Fl_Button {} {
+          label Strain
+          callback {ViewModeStrain3D();}
+          xywh {1090 0 37 25} box PLASTIC_DOWN_BOX color 4 selection_color 3 labelfont 14 labelsize 10
+        }
       }
       Fl_Menu_Bar UsimagToolMainMenu {
         label Menu
-        xywh {-1 0 1128 25} box PLASTIC_THIN_DOWN_BOX color 225 selection_color 32
+        xywh {-1 0 1091 25} box PLASTIC_THIN_DOWN_BOX color 225 selection_color 32
       } {
         Submenu UsimagToolSubmenu {
           label Saturn open
@@ -135,13 +140,17 @@ this->LoadRaw();}
             label {Load Strain Tensor VTK}
             callback {LoadStrainTensor();
 
+m_tipoProcesado->value(4);
+
 ActiveOptionGroup->hide();
 m_StrainTensorDataGroup->show();
 ActiveOptionGroup = m_StrainTensorDataGroup;
 
 ActiveGroup->hide();
 MyTensorConsole->STGroup->show();
-ActiveGroup = MyTensorConsole->STGroup;}
+ActiveGroup = MyTensorConsole->STGroup;
+
+ViewModeStrain3D();} selected
             xywh {0 0 30 20}
           }
         }
@@ -706,11 +715,11 @@ ActiveGroup = MyTensorConsole->STGroup;}
         }
       }
       Fl_Group {} {
-        label Views
-        xywh {410 24 809 717} color 0 labeltype NO_LABEL
+        label Views open
+        xywh {400 23 819 718} color 0 labeltype NO_LABEL
       } {
         Fl_Group m_view3D {
-          label {View 3D} open
+          label {View 3D}
           xywh {410 25 800 682} box PLASTIC_UP_BOX color 136 labeltype NO_LABEL align 0 hide
         } {
           Fl_Box ImageViewer3D {
@@ -1674,6 +1683,230 @@ ImageColorViewer->Update();}
             }
           }
         }
+        Fl_Group m_viewStrain3D {
+          label {View Strain 3D} open
+          xywh {410 25 800 683} box PLASTIC_UP_BOX color 136 labeltype NO_LABEL align 0 hide
+        } {
+          Fl_Box ImageViewerStrain3D {
+            label ImageViewerStrain3D
+            xywh {413 76 795 632} box EMBOSSED_BOX color 0 selection_color 80 when 8
+            code0 {\#include "Viewer3D.h"}
+            class Viewer3D
+          }
+          Fl_Button {} {
+            label {Load Model}
+            callback {ImageViewer3D->Load();}
+            xywh {420 33 85 19} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 10 labelfont 1 labelsize 12 hide deactivate
+          }
+          Fl_Button {} {
+            label Center
+            callback {ImageViewerStrain3D->ResetView();
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {1105 55 100 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 4 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            label Color
+            callback {ImageViewerStrain3D->SetSliceColor();
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {805 33 50 18} box PLASTIC_THIN_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1 labelsize 12
+          }
+          Fl_Button {} {
+            label Gray
+            callback {ImageViewerStrain3D->SetSliceColorDefault();
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {857 33 50 18} box PLASTIC_THIN_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1 labelsize 12
+          }
+          Fl_Value_Slider {} {
+            label opacity
+            callback {ImageViewerStrain3D->SetSliceOpacity(o->value());
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {1105 33 100 18} type Horizontal box PLASTIC_UP_BOX color 8 selection_color 4 labelfont 1 labelsize 12 align 4 step 0.1 value 1
+          }
+          Fl_Button {} {
+            label {+}
+            callback {ImageViewerStrain3D->SetZoom(1.2);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {857 55 100 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 16 labelfont 1
+          }
+          Fl_Button {} {
+            label {-}
+            callback {ImageViewerStrain3D->SetZoom(0.8);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {958 55 94 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 16 labelfont 1
+          }
+          Fl_Text_Display {} {
+            label Zoom
+            xywh {855 55 17 18} box NO_BOX labelfont 1 labelsize 12 align 4
+          }
+          Fl_Value_Slider strainSlice {
+            label Slice
+            callback {ImageViewerStrain3D->SelectSlice(2,(unsigned int)o->value());
+MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();
+//MyTensorConsole->borrarGlifos(1);
+//MyTensorConsole->verGlifos(1);}
+            xywh {550 34 216 18} type Horizontal box PLASTIC_UP_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 4 step 1
+          }
+          Fl_Button {} {
+            label {@<}
+            callback {int t = strainSlice->value();
+if (t>0) {
+ strainSlice->value(t-1);
+ ImageViewerStrain3D->SelectSlice(2,t-1);
+ MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
+ Fl::check();
+ ImageViewerStrain3D->redraw();
+ Fl::check();
+ // MyTensorConsole->verGlifos(2);
+}}
+            xywh {766 34 18 18} box PLASTIC_UP_BOX color 16
+          }
+          Fl_Button {} {
+            label {@>}
+            callback {int t = strainSlice->value();
+
+if (t<strainSlice->maximum()) {
+ strainSlice->value(t+1);
+ ImageViewerStrain3D->SelectSlice(2,t+1);
+ MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
+ Fl::check();
+ ImageViewerStrain3D->redraw();
+ Fl::check();
+ ImageViewerStrain3D->Update();
+ //MyTensorConsole->verGlifos(1);
+}}
+            xywh {783 34 18 18} box PLASTIC_UP_BOX color 16
+          }
+          Fl_Value_Slider strainTime {
+            label Time
+            callback {this->ViewStrainSlice3D();
+MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();
+//ImageViewer3D->SelectSlice(0,(unsigned int)o->value());
+//MyTensorConsole->borrarGlifos(0);
+//MyTensorConsole->verGlifos(0);}
+            xywh {550 54 216 18} type Horizontal box PLASTIC_UP_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 4 step 1
+          }
+          Fl_Button {} {
+            label {@>}
+            callback {int t = strainTime->value();
+
+if (t<strainTime->maximum()) {
+ strainTime->value(t+1);
+ this->ViewStrainSlice3D();
+ MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
+ Fl::check();
+ ImageViewerStrain3D->redraw();
+ Fl::check();
+//  MyTensorConsole->verGlifos(0);
+}}
+            xywh {783 54 18 18} box PLASTIC_UP_BOX color 16
+          }
+          Fl_Button {} {
+            label {@<}
+            callback {int t = strainTime->value();
+if (t>0) {
+ strainTime->value(t-1);
+ this->ViewStrainSlice3D();
+ MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
+ Fl::check();
+ ImageViewerStrain3D->redraw();
+ Fl::check();
+// MyTensorConsole->verGlifos(0);
+}}
+            xywh {766 54 18 18} box PLASTIC_UP_BOX color 16
+          }
+          Fl_Round_Button {} {
+            label { Mostrar}
+            callback {int dataId = m_strainTensorDataBrowser->value()-1;
+if (o->value() == true) {
+  this->ViewStrainSlice3D();
+MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
+strainSlice->range( 0.0f, m_VectorSTData[dataId].image->GetLargestPossibleRegion().GetSize()[2]-1 );
+strainSlice->redraw();
+strainTime->range( 0.0f, m_VectorSTData[dataId].image->GetLargestPossibleRegion().GetSize()[3]-1 );
+strainTime->redraw();
+//MyTensorConsole->imagenActiva(1,true);
+//MyTensorConsole->verGlifos(2);
+ImageViewerStrain3D->ResetView();
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();
+}  else {
+ImageViewerStrain3D->HideSlice(2);
+//MyTensorConsole->imagenActiva(1,false);
+//MyTensorConsole->borrarGlifos(1);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();
+}}
+            xywh {415 39 90 27} box PLASTIC_THIN_UP_BOX down_box PLASTIC_THIN_UP_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label A
+            callback {ImageViewerStrain3D->SetView(0);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {910 33 22 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label P
+            callback {ImageViewerStrain3D->SetView(1);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {934 33 22 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label L
+            callback {ImageViewerStrain3D->SetView(2);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {958 33 22 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label R
+            callback {ImageViewerStrain3D->SetView(3);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {982 33 22 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label I
+            callback {ImageViewerStrain3D->SetView(4);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {1006 33 22 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+          Fl_Button {} {
+            label S
+            callback {ImageViewerStrain3D->SetView(5);
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+            xywh {1030 33 22 18} box PLASTIC_UP_BOX down_box PLASTIC_DOWN_BOX color 8 labelfont 1
+          }
+        }
       }
       Fl_Group {} {
         label Progress
@@ -1755,11 +1988,11 @@ m_configIO->hide();}
         }
       }
       Fl_Group {} {
-        label Data open
+        label Data
         xywh {2 92 407 276} box EMBOSSED_BOX color 7 labeltype NO_LABEL align 0
       } {
         Fl_Group {} {
-          label Data open
+          label Data
           xywh {2 93 407 275} labeltype NO_LABEL align 0
         } {
           Fl_Group m_DataGroup {
@@ -2341,7 +2574,7 @@ this->m_configIO->show();}
             }
           }
           Fl_Group m_StrainTensorDataGroup {
-            label {Strain Tensor Data} open
+            label {Strain Tensor Data}
             xywh {10 119 394 241} box FLAT_BOX color 7 labelfont 1 align 5 hide
           } {
             Fl_Browser m_strainTensorDataBrowser {
@@ -2352,7 +2585,7 @@ this->m_configIO->show();}
               label View
               callback {int dataId = m_strainTensorDataBrowser->value()-1;
 if (dataId >=0) {
-	MyTensorConsole->verGlifosStrain(dataId);
+	MyTensorConsole->verGlifosStrain(0,0);
 }}
               xywh {21 330 60 25} box PLASTIC_DOWN_BOX color 0 labelfont 1
             }
@@ -3830,7 +4063,7 @@ default:
   } {}
   Function {LoadMeta(void)} {return_type void
   } {}
-  Function {LoadStrainTensor()} {open selected return_type {virtual void}
+  Function {LoadStrainTensor()} {open return_type {virtual void}
   } {}
   Function {ShowImageSrc(int)} {return_type void
   } {}
@@ -3904,6 +4137,8 @@ default:
   } {}
   Function {ViewMode3_1(void)} {return_type {virtual void}
   } {}
+  Function {ViewModeStrain3D(void)} {return_type {virtual void}
+  } {}
   Function {DoModel(int,int,int,InputImageType::Pointer)} {return_type {virtual void}
   } {}
   Function {UpdateIntensityW(int,float)} {return_type {virtual void}
@@ -3915,6 +4150,8 @@ default:
   Function {WriteFibers(vtkPolyData*)} {return_type {virtual void}
   } {}
   Function {ViewSliceIn3DWindow(InputImageType::Pointer,int)} {return_type {virtual void}
+  } {}
+  Function {ViewStrainSlice3D()} {return_type {virtual void}
   } {}
   Function {Save()} {return_type {virtual void}
   } {}

@@ -1059,6 +1059,8 @@ configDTIMeasures->hide();}
   }
   decl {Viewer3D* ImageViewer3D;} {public
   }
+  decl {Viewer3D* ImageViewerStrain3D;} {public
+  }
   decl {Fl_Group* m_configIO;} {public
   }
   decl {Fl_Group* ActiveGroup;} {public
@@ -1117,9 +1119,13 @@ configDTIMeasures->hide();}
   } {
     code {ImageViewer = a;} {}
   }
-  Function {SetImageViewer3D(Viewer3D* a)} {return_type void
+  Function {SetImageViewer3D(Viewer3D* a)} {open return_type void
   } {
     code {ImageViewer3D = a;} {}
+  }
+  Function {SetImageViewerStrain3D(Viewer3D* a)} {open return_type void
+  } {
+    code {ImageViewerStrain3D = a;} {}
   }
   Function {SetActiveGroup(Fl_Group *a)} {return_type void
   } {
@@ -1346,7 +1352,7 @@ m_configIO->hide();}
   Function {probarEsfuerzoDeform()} {open return_type {virtual void}
   } {}
   Fl_Group STGroup {
-    label {Tensor de esfuerzo} open
+    label {Tensor de esfuerzo} selected
     xywh {5 387 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
@@ -1386,6 +1392,9 @@ m_configIO->hide();}
 if (t>0) {
  tiempo->value(t-1);
  verGlifosStrain();
+ Fl::check();
+ ImageViewerStrain3D->redraw();
+ Fl::check();
 }
 else (tiempo->value(tiempo->maximum()))}
           xywh {248 528 18 17} box ENGRAVED_BOX color 16
@@ -1406,6 +1415,9 @@ else (tiempo->value(tiempo->minimum()))}
 if (t>0) {
  planoZ->value(t-1);
  verGlifosStrain();
+ Fl::check();
+ ImageViewerStrain3D->redraw();
+ Fl::check();
 }}
           xywh {248 508 18 17} box ENGRAVED_BOX color 16
         }
@@ -1415,7 +1427,10 @@ if (t>0) {
 if (t<10) {
  planoZ->value(t+1);
  verGlifosStrain();
-}} selected
+ Fl::check();
+ ImageViewerStrain3D->redraw();
+ Fl::check();
+}}
           xywh {375 508 18 17} box ENGRAVED_BOX color 16
         }
         Fl_Button {} {

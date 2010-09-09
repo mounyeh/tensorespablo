@@ -9,7 +9,7 @@
 #include "tensor/itkDTITensor.h"
 #include "tensor/itkDWImages.h"
 
-#include "tensor/itkStrainTensor.h"
+#include "strain/itkStrainTensor.h"
 
 #include "vtkPolyData.h"
 
@@ -38,6 +38,7 @@ public:
   typedef itk::Matrix<RealType,2,2>                         EigenVectorsMatrixType;
   typedef itk::FixedArray<RealType,2>                       EigenVectorType;
 
+  typedef enum ColorModes{INV,EIG0,EIG1,ST0,ST1,ST2} ColorModes;
 
   static vtkTensorGlyph2D *New();
   vtkTensorGlyph2D();
@@ -73,16 +74,6 @@ public:
     {this->ColorMode = value;};
   int GetColorMode()
     {return this->ColorMode;};
-
-  void SetClampScaling(int value)
-    {this->ClampScaling = value;};
-  int GetClampScaling()
-    {return this->ClampScaling;};
-
-  void SetMaxScaleFactor(double value)
-    {this->MaxScaleFactor = value;};
-  double GetMaxScaleFactor()
-    {return this->MaxScaleFactor;};
 
   void SetPhiResolution(int value)
     {this->PhiResolution = value;};
@@ -126,12 +117,6 @@ public:
   int *GetBounds()
     {return this->Bounds;};
 
-  enum
-  {
-      COLOR_BY_SCALARS,
-      COLOR_BY_EIGENVALUES
-  };
-
 protected:
 
   StrainImageType::Pointer input;
@@ -142,8 +127,6 @@ protected:
   int Scaling; // Determine whether scaling of geometry is performed
   double ScaleFactor; // Scale factor to use to scale geometry
   int ColorMode; // The coloring mode to use for the glyphs.
-  int ClampScaling; // Boolean controls whether scaling is clamped.
-  double MaxScaleFactor; // Maximum scale factor (ScaleFactor*eigenvalue)
 
   int PlanoZ, Tiempo;
 
