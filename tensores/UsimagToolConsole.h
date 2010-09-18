@@ -153,7 +153,7 @@ private:
   std::string m_FileTensorFormatPattern[m_FORMAT_COUNT];
   int m_orientation;
 
-  vtkImageData *data_temp;
+  vtkImageData *m_activeStrainImage;
 //  VTKexportType::Pointer m_VTKstrainExporter; 
 
   

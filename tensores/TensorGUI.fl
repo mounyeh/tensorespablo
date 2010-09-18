@@ -695,7 +695,7 @@ m_configIO->hide();}
     xywh {5 388 400 350} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "MyfltkImageViewer/MyfltkImageViewer.h"}
   } {
-    Fl_Group {} {
+    Fl_Group {} {open
       xywh {14 410 385 291} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
     } {
       Fl_Text_Display {} {
@@ -1225,6 +1225,8 @@ m_ROIsText->buffer(m_bufferROIsText);} {}
   } {}
   Function {actualizarGlifosDTI()} {open return_type {virtual void}
   } {}
+  Function {ViewStrainSlice3D()} {open return_type {virtual void}
+  } {}
   Fl_Group CylinderGroup {
     label {Modelo cilíndrico}
     xywh {5 382 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
@@ -1352,91 +1354,184 @@ m_configIO->hide();}
   Function {probarEsfuerzoDeform()} {open return_type {virtual void}
   } {}
   Fl_Group STGroup {
-    label {Tensor de esfuerzo} selected
-    xywh {5 387 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
+    label {Tensor de esfuerzo} open
+    xywh {5 387 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
   } {
     Fl_Group {} {
-      label {Options:} open
+      label Glifos open
       xywh {8 408 396 300} box FLAT_BOX color 7 labelfont 1 labelsize 12 align 5
     } {
-      Fl_Group {} {
-        label Execution open
-        xywh {12 420 388 267} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
+      Fl_Group {} {open
+        xywh {12 418 388 267} box PLASTIC_DOWN_BOX labelfont 1 labelsize 12 align 21
       } {
+        Fl_Value_Slider strainEscala {
+          label Escala
+          xywh {68 593 315 17} type Horizontal box PLASTIC_DOWN_BOX color 22 labelfont 1 align 4 minimum 0.5 maximum 2 step 0.1 value 1 textsize 14
+        }
+        Fl_Group {} {
+          label Color open
+          xywh {18 425 365 158} box PLASTIC_DOWN_BOX color 15 labelfont 1 align 21
+        } {
+          Fl_Group {} {
+            label {Elementos del tensor} open
+            xywh {28 450 350 50} box PLASTIC_DOWN_BOX color 12 labelfont 1 labelsize 12 align 21
+          } {
+            Fl_Check_Button strainST0 {
+              label {1º elem. diagonal}
+              callback {strainST0->value(true);
+strainST1->value(false);
+strainST2->value(false);
+strainEIG0->value(false);
+strainEIG1->value(false);
+strainDef->value(false);
+SetScalarRangeStrain(-2,2);
+verGlifosStrain();
+SetScalarRangeStrain(-2,2);
+
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+              xywh {43 475 64 15} down_box DOWN_BOX labelfont 1 labelsize 11
+            }
+            Fl_Check_Button strainST2 {
+              label {2º elem. diagonal}
+              callback {strainST0->value(false);
+strainST1->value(false);
+strainST2->value(true);
+strainEIG0->value(false);
+strainEIG1->value(false);
+strainDef->value(false);
+SetScalarRangeStrain(-1,1);
+verGlifosStrain();
+SetScalarRangeStrain(-1,1);
+
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+              xywh {258 475 64 15} down_box DOWN_BOX labelfont 1 labelsize 11
+            }
+            Fl_Check_Button strainST1 {
+              label {Elem. simétrico}
+              callback {strainST0->value(false);
+strainST1->value(true);
+strainST2->value(false);
+strainEIG0->value(false);
+strainEIG1->value(false);
+strainDef->value(false);
+SetScalarRangeStrain(-0.5,0.5);
+verGlifosStrain();
+SetScalarRangeStrain(-0.5,0.5);
+
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+              xywh {153 475 95 15} down_box DOWN_BOX labelfont 1 labelsize 11
+            }
+          }
+          Fl_Check_Button strainDef {
+            label {Deformación}
+            callback {strainST0->value(false);
+strainST1->value(false);
+strainST2->value(false);
+strainEIG0->value(false);
+strainEIG1->value(false);
+strainDef->value(true);
+SetScalarRangeStrain(0,3);
+verGlifosStrain();
+SetScalarRangeStrain(0,3);
+
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();} selected
+            xywh {43 562 64 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
+          }
+          Fl_Group {} {
+            label Autovalores open
+            xywh {28 505 245 50} box PLASTIC_DOWN_BOX color 12 labelfont 1 labelsize 12 align 21
+          } {
+            Fl_Check_Button strainEIG0 {
+              label {Primer autovalor}
+              callback {strainST0->value(false);
+strainST1->value(false);
+strainST2->value(false);
+strainEIG0->value(true);
+strainEIG1->value(false);
+strainDef->value(false);
+SetScalarRangeStrain(-2,2);
+verGlifosStrain();
+SetScalarRangeStrain(-2,2);
+
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+              xywh {43 530 64 15} down_box DOWN_BOX labelfont 1 labelsize 11
+            }
+            Fl_Check_Button strainEIG1 {
+              label {Segundo autovalor}
+              callback {strainST0->value(false);
+strainST1->value(false);
+strainST2->value(false);
+strainEIG0->value(false);
+strainEIG1->value(true);
+strainDef->value(false);
+SetScalarRangeStrain(-2,2);
+verGlifosStrain();
+SetScalarRangeStrain(-2,2);
+
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+              xywh {153 530 64 15} down_box DOWN_BOX labelfont 1 labelsize 11
+            }
+          }
+        }
+        Fl_Group {} {
+          label {Densidad de glifos} open
+          xywh {20 622 220 54} box PLASTIC_DOWN_BOX color 15 labelfont 1 align 21
+        } {
+          Fl_Check_Button strainMuestreo1 {
+            label 1x
+            callback {strainMuestreo1->value(true);
+strainMuestreo2->value(false);
+strainMuestreo3->value(false);
+strainMuestreo4->value(false);}
+            xywh {35 645 45 20} box PLASTIC_DOWN_BOX down_box PLASTIC_DOWN_BOX value 1 color 22
+          }
+          Fl_Check_Button strainMuestreo2 {
+            label 2x
+            callback {strainMuestreo1->value(false);
+strainMuestreo2->value(true);
+strainMuestreo3->value(false);
+strainMuestreo4->value(false);}
+            xywh {85 645 45 20} box PLASTIC_DOWN_BOX down_box PLASTIC_DOWN_BOX
+          }
+          Fl_Check_Button strainMuestreo3 {
+            label 3x
+            callback {strainMuestreo1->value(false);
+strainMuestreo2->value(false);
+strainMuestreo3->value(true);
+strainMuestreo4->value(false);}
+            xywh {135 645 45 20} box PLASTIC_DOWN_BOX down_box PLASTIC_DOWN_BOX
+          }
+          Fl_Check_Button strainMuestreo4 {
+            label 4x
+            callback {strainMuestreo1->value(false);
+strainMuestreo2->value(false);
+strainMuestreo3->value(false);
+strainMuestreo4->value(true);}
+            xywh {185 645 45 20} box PLASTIC_DOWN_BOX down_box PLASTIC_DOWN_BOX
+          }
+        }
         Fl_Button {} {
-          label verGlifos
-          callback {tensorEsfuerzo2D();}
-          xywh {275 438 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
-        }
-        Fl_Value_Slider {} {
-          label numero1
-          xywh {265 468 110 17} type Horizontal labelfont 1 align 4 maximum 30 step 1 textsize 14
-        }
-        Fl_Value_Slider {} {
-          label numero2
-          xywh {265 488 110 17} type Horizontal labelfont 1 align 4 maximum 30 step 1 textsize 14
-        }
-        Fl_Value_Slider planoZ {
-          label {Plano Z}
-          xywh {265 508 110 17} type Horizontal labelfont 1 align 4 maximum 10 step 1 textsize 14
-        }
-        Fl_Value_Slider tiempo {
-          label {Tiempo     }
-          xywh {265 528 110 17} type Horizontal labelfont 1 align 4 maximum 10 step 1 textsize 14
-        }
-        Fl_Button {} {
-          label {@<}
-          callback {int t = tiempo->value();
-if (t>0) {
- tiempo->value(t-1);
- verGlifosStrain();
- Fl::check();
- ImageViewerStrain3D->redraw();
- Fl::check();
-}
-else (tiempo->value(tiempo->maximum()))}
-          xywh {248 528 18 17} box ENGRAVED_BOX color 16
-        }
-        Fl_Button {} {
-          label {@>}
-          callback {int t = tiempo->value();
-if (t<10) {
- tiempo->value(t+1);
- verGlifosStrain();
-}
-else (tiempo->value(tiempo->minimum()))}
-          xywh {375 528 18 17} box ENGRAVED_BOX color 16
-        }
-        Fl_Button {} {
-          label {@<}
-          callback {int t = planoZ->value();
-if (t>0) {
- planoZ->value(t-1);
- verGlifosStrain();
- Fl::check();
- ImageViewerStrain3D->redraw();
- Fl::check();
-}}
-          xywh {248 508 18 17} box ENGRAVED_BOX color 16
-        }
-        Fl_Button {} {
-          label {@>}
-          callback {int t = planoZ->value();
-if (t<10) {
- planoZ->value(t+1);
- verGlifosStrain();
- Fl::check();
- ImageViewerStrain3D->redraw();
- Fl::check();
-}}
-          xywh {375 508 18 17} box ENGRAVED_BOX color 16
-        }
-        Fl_Button {} {
-          label verGlifos
-          callback {verGlifosStrain();}
-          xywh {275 554 103 21} box PLASTIC_DOWN_BOX color 22 labelfont 1 labelsize 12
+          label Actualizar
+          callback {verGlifosStrain();
+
+Fl::check();
+ImageViewerStrain3D->redraw();
+Fl::check();}
+          xywh {255 630 130 40} box PLASTIC_DOWN_BOX color 62 labelfont 1
         }
       }
     }
@@ -1452,6 +1547,11 @@ m_configIO->hide();}
       callback {m_configGeodesicPath->hide();
 m_configIO->hide();}
       image {Images/Close.png} xywh {310 710 85 30} box PLASTIC_DOWN_BOX color 7 labelfont 1 labelsize 12
+    }
+    Fl_Button {} {
+      label button
+      callback {generarTensoresCilindro();}
+      xywh {295 610 64 20} hide
     }
   }
   Function {tensorEsfuerzo2D()} {open return_type {virtual void}
@@ -1776,5 +1876,9 @@ m_configIO->hide();}
     }
   }
   Function {verGlifosStrain()} {open return_type {virtual void}
+  } {}
+  Function {generarTensoresCilindro()} {open return_type {virtual void}
+  } {}
+  Function {SetScalarRangeStrain(double,double)} {open return_type {virtual void}
   } {}
 } 

@@ -109,12 +109,6 @@ public:
 	/** Get Trace value */
 	RealType GetTrace() const;
 
-	/** Get the value of Fractional Anisotropy from the Tensor. */
-	RealType GetFractionalAnisotropy() const;
-	
-	/** Get the value of Relative Anisotropy from the Tensor. */
-	RealType GetRelativeAnisotropy() const;
-	
 	/** Get the value of the determinant */
 	RealType GetDeterminant() const;
 	
@@ -124,17 +118,12 @@ public:
 	/** Get the deviatoric of the tensor. */
 	Self GetDeviatoric() const;
 
-	/** Get the mean diffusivity.	*/
-	RealType GetMeanDiffusivity() const;
-
 	/** Get the invariant (as described in Selskog et al.)	*/
 	RealType GetInvariant() const;
 	
-	/** Compute the geometric parameters of the tensor that describes its shape */
-	void ComputeShapeCoefficients( RealType& cl, RealType& cp, RealType& cs );
-	
 	/** Compute the eigenvalues of the tensor */
 	void ComputeEigenValues( EigenValuesArrayType& eig ) const;
+
 	/** Compute one single eigenvector associated to a given eigen-vector */
 	void ComputeEigenVector( RealType eigval, RealType* eigvec ) const;
 	

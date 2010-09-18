@@ -30,7 +30,7 @@ public:
   typedef itk::MemberCommand<UsimagToolConsole> CommandType;
   typedef itk::SmartPointer<CommandType> CommandPointer;
   typedef itk::ImageToImageFilter<InputImageType,InputImageType> itkFilter;
-  
+
   UsimagToolConsole();
   virtual ~UsimagToolConsole();
   void Save(void);
@@ -153,7 +153,7 @@ private:
   std::string m_FileTensorFormatPattern[m_FORMAT_COUNT];
   int m_orientation;
 
-  vtkImageData *data_temp;
+//  vtkImageData *data_temp;
 //  VTKexportType::Pointer m_VTKstrainExporter; 
 
   

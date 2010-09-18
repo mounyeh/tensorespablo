@@ -1,5 +1,5 @@
-#ifndef __vtkTensorGlyph2D_h
-#define __vtkTensorGlyph2D_h
+#ifndef __vtkTensorGlyphStrain_h
+#define __vtkTensorGlyphStrain_h
 
 #include "tensor/itkDTITensor.h"
 #include <itkFixedArray.h>
@@ -12,8 +12,9 @@
 #include "strain/itkStrainTensor.h"
 
 #include "vtkPolyData.h"
+#include "vtkFloatArray.h"
 
-class vtkTensorGlyph2D
+class vtkTensorGlyphStrain
 {
 
 /*TODO
@@ -31,24 +32,34 @@ public:
   enum { Dimension =  4 };
 
   typedef itk::NumericTraits<float>::RealType 		RealType;
-  typedef itk::StrainTensor<float>			StrainPixelType;
-  typedef itk::Image<StrainPixelType, Dimension>	StrainImageType;
+  typedef itk::StrainTensor<float>			STPixelType;
+  typedef itk::Image<STPixelType, Dimension>	STImageType;
   typedef itk::FixedArray<RealType,2>                   EigenValuesArrayType;
   typedef itk::Matrix<RealType,2,2>                     EigenVectorsMatrixType;
   typedef itk::FixedArray<RealType,2>                   EigenVectorType;
+  typedef itk::FixedArray<float,2>			DeformPixelType;
+  typedef itk::Image<DeformPixelType,4>			DeformImageType;
 
-  typedef enum ColorModes{INV,EIG0,EIG1,ST0,ST1,ST2} ColorModes;
+  typedef enum ColorModes{DEF,EIG0,EIG1,ST0,ST1,ST2} ColorModes;
 
-  static vtkTensorGlyph2D *New();
-  vtkTensorGlyph2D();
-  ~vtkTensorGlyph2D();
+  static vtkTensorGlyphStrain *New();
+  vtkTensorGlyphStrain();
+  ~vtkTensorGlyphStrain();
 
 
-  void SetInput(StrainImageType::Pointer entrada)
+  void SetInput(STImageType::Pointer entrada)
     {this->input = entrada;};
+
+  void SetDeformImage(DeformImageType::Pointer entrada)
+    {this->deformImage = entrada;};
 
   vtkPolyData *GetOutput();
   vtkPolyData *GetDeformOutput();
+
+  void SetInputPoints(vtkPoints *points)
+    {this->inputPoints = points;};
+  vtkPoints* GetInputPoints()
+    {return this->inputPoints;};
 
   void SetGlyphType(int type)
     {this->GlyphType = type;};
@@ -80,12 +91,17 @@ public:
   int GetTiempo()
     {return this->Tiempo;};
 
+  void SetDeformArray(vtkFloatArray *array)
+    {this->deformArray = array;};
+  vtkFloatArray* GetDeformArray()
+    {return this->deformArray;};
 
-  void ComputeEigenSystem(vtkIdType,double*[2],double[2]);
+  void interpolarTensor (double x[3], double eigval_out[2], double *angulo, double deform_values[2]);
 
 protected:
 
-  StrainImageType::Pointer input;
+  STImageType::Pointer input;
+  DeformImageType::Pointer deformImage;
   vtkPoints *inputPoints;
   int GlyphType;
 
@@ -95,6 +111,7 @@ protected:
 
   int PlanoZ, Tiempo;
 
+  vtkFloatArray *deformArray;
 };
 
 #endif

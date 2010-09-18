@@ -36,6 +36,8 @@ typedef itk::Image< TensorPixelType, 3 > TensorImageType;
 typedef itk::DWImages< float, 3 >    DWImagesType;
 typedef itk::StrainTensor<float> STPixelType;
 typedef itk::Image<STPixelType, 4> STImageType;
+typedef itk::FixedArray<float,2>	DeformPixelType;
+typedef itk::Image<DeformPixelType,4>	DeformImageType;
 
 
 class DataElementType
@@ -143,7 +145,8 @@ public:
 	}
 	unsigned int             Id;
 	std::string              nombre;
-	STImageType::Pointer image;
+	STImageType::Pointer 	 image;
+	DeformImageType::Pointer deform_image;	
 };
 
 template < class DataType >

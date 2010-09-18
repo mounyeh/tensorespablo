@@ -214,6 +214,7 @@ knn-1canal/voronoiFilter.cxx
 3DViewer/Viewer3D.cxx
 vtkSaturnTensorGlyph.cxx
 vtkStrainTensorGlyph.cxx
+strain/vtkTensorGlyphStrain.cxx
 )
 
 #Variable for choosing development or reduced interface
