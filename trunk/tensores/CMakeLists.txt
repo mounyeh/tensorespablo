@@ -212,9 +212,9 @@ wiener/itkWienerFilter.txx
 knn-1canal/classifyKNNCore.txx
 knn-1canal/voronoiFilter.cxx
 3DViewer/Viewer3D.cxx
-vtkSaturnTensorGlyph.cxx
+vtkTensorGlyphDTI.cxx
 vtkStrainTensorGlyph.cxx
-vtkTensorGlyph2D.cxx
+strain/vtkTensorGlyphStrain.cxx
 )
 
 #Variable for choosing development or reduced interface

@@ -52,6 +52,10 @@
 #include <vtkLODActor.h>
 
 #include <strain/itkStrainTensor.h>
+#include <strain/itkComputeStrainScalars.h>
+#include <strain/itkComputeDeformFilter.h>
+#include <itkVTKImageExport.h>
+#include <itkExtractImageFilter.h>
 
 class TensorConsole : public TensorGUI
 {
@@ -64,6 +68,11 @@ public:
   //typedef itk::DWImages< InputPixelType, 3 >         DWImagesType;
   typedef itk::FastMarchingImageFilter<FloatImageType, FloatImageType >   FastMarchingFilter3DType;
   typedef itk::DTITensor<float>								TensorPixelType;
+
+  typedef itk::FixedArray<float,2>	DeformPixelType;
+  typedef itk::Image<DeformPixelType,4>	DeformImageType;
+  typedef itk::Image<itk::FixedArray<float,2>, 3>	DeformImage3DType;
+
   // Usando clase de tensores de ITK:
   //typedef itk::DiffusionTensor3D<float> TensorPixelType;
   typedef InputImageType::PointType                           InputPointType;
@@ -92,9 +101,9 @@ public:
 	
   typedef itk::ComputeDTIScalars<TensorImageType,InputImageType>     ComputeScalarsType;
   typedef ComputeScalarsType::Pointer                                ComputeScalarsPointer;
-  
+
   typedef itk::ComputeMeasuresInRegions<TensorImageType, UCharImageType, FloatImageType>     ComputeMeasuresType;
-  typedef ComputeMeasuresType::Pointer														ComputeMeasuresPointer;
+  typedef ComputeMeasuresType::Pointer					ComputeMeasuresPointer;
   
   typedef itk::FaDTIRegistration<TensorImageType,TensorImageType,UCharImageType>		FaTensorRegistrationType;
   
@@ -104,6 +113,15 @@ public:
   enum { StrainDimension =  4 };
   typedef itk::StrainTensor<float> 		STPixelType;
   typedef itk::Image<STPixelType, StrainDimension> 	STImageType;
+  typedef itk::Image< STPixelType, 3 >    				STImageType3D;
+  typedef itk::ComputeStrainScalars <STImageType3D,InputImageType>     	ComputeStrainScalarsType;
+  typedef ComputeStrainScalarsType::Pointer                            	ComputeStrainScalarsPointer;
+  typedef itk::ComputeDeformFilter <DeformImage3DType3D,InputImageType>	ComputeDeformFilterType;
+  typedef ComputeDeformFilterType::Pointer				ComputeDeformFilterPointer;
+  typedef itk::VTKImageExport< InputImageType> VTKexportType;
+  VTKexportType::Pointer       m_VTKexporter; 
+  typedef itk::ExtractImageFilter< DeformImageType, DeformImage3DType >		ExtractFilterType;
+  typedef enum StrainScalars{INV,EIG0,EIG1,ST0,ST1,ST2} StrainScalars;
 
 
   // Funciones para tensores
@@ -123,6 +141,7 @@ public:
   void SetOriginText(Fl_Text_Display *originTextIn);
   void SetMinScalarRange(Fl_Value_Slider *min_scalar_range_In);
   void SetMaxScalarRange(Fl_Value_Slider *max_scalar_range_In);
+  void SetActiveStrainImage(vtkImageData *image);
 		
 	void InfoImagen();
 	void InitializePoints();
@@ -192,12 +211,19 @@ public:
   void cambiarOpacidad(float);
   void glifosActivos();
   void imagenActiva(int,bool);
+  void actualizarGlifosDTI();
 
+  void verGlifosStrain();
   void verGlifosStrain(int,int);
+  void borrarGlifosStrain();
+  void ViewStrainSlice3D();
+  void ViewStrainSlice3D(int);
+
+  void SetScalarRangeStrain(double,double);
+  void generarTensoresCilindro();
   void probarEsfuerzo();
   void probarEsfuerzoDeform();
   void tensorEsfuerzo2D();
-  void actualizarGlifosDTI();
 
   FloatImageType::IndexType     m_seedPosition;
   NodeType                      m_node;
@@ -263,11 +289,21 @@ private:
   vtkActor		*m_tractActor;
 
   vtkActor		*m_activeActorStrain;
+  vtkScalarBarActor	*m_scalarBarStrain;
+
+  double rangeStrainMin;
+  double rangeStrainMax;
+  vtkFloatArray		*m_deformValues;
+
+
+  vtkImageData 		*m_activeStrainImage;
 
   bool m_planoActivoX;
   bool m_planoActivoY;
   bool m_planoActivoZ;
   bool m_tractActiva;
+
+  int tiempo;
 
   UCharImageType::Pointer	m_SeedRegionsImage;
   UCharImageType::Pointer	m_TractRegionsImage;

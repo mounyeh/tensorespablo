@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    $RCSfile: vtkTensorGlyph2D.cxx,v $
+  Module:    $RCSfile: vtkTensorGlyphStrain.cxx,v $
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,7 +12,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkTensorGlyph2D.h"
+#include "vtkTensorGlyphStrain.h"
 
 #include "vtkCell.h"
 #include "vtkCellArray.h"
@@ -33,13 +33,13 @@
 
 #include <algorithm>
 
-//vtkCxxRevisionMacro(vtkTensorGlyph2D, "$Revision: 1.57.12.1 $");
-//vtkStandardNewMacro(vtkTensorGlyph2D);
+//vtkCxxRevisionMacro(vtkTensorGlyphStrain, "$Revision: 1.57.12.1 $");
+//vtkStandardNewMacro(vtkTensorGlyphStrain);
 
 // Construct object with scaling on and scale factor 1.0. Eigenvalues are 
 // extracted, glyphs are colored with input scalar data, and logarithmic
 // scaling is turned off.
-vtkTensorGlyph2D::vtkTensorGlyph2D()
+vtkTensorGlyphStrain::vtkTensorGlyphStrain()
 {
   this->inputPoints = NULL;
 
@@ -47,49 +47,19 @@ vtkTensorGlyph2D::vtkTensorGlyph2D()
   this->ScaleFactor = 1.0;
   this->ColorMode = INV;
 
-  this->PhiResolution = 8;
-  this->ThetaResolution = 8;
-
-  this->Bounds[0] = 0;
-  this->Bounds[1] = 0;
-  this->Bounds[2] = 0;
-  this->Bounds[3] = 0;
-  this->Bounds[4] = 0;
-  this->Bounds[5] = 0;
-
-  this->csThreshold = 1;
-
-  vtkGlyphSource2D *glyphsource = vtkGlyphSource2D::New();
-  glyphsource->SetGlyphTypeToDiamond();
-  glyphsource->SetScale(100);
-  glyphsource->FilledOff();
-  glyphsource->Update();
-  this->source = glyphsource->GetOutput();
 //  glyphsource->Delete();
 }
 
-vtkTensorGlyph2D::~vtkTensorGlyph2D()
+vtkTensorGlyphStrain::~vtkTensorGlyphStrain()
 {
 }
 
-vtkPolyData *vtkTensorGlyph2D::GetOutput()
+vtkPolyData *vtkTensorGlyphStrain::GetOutput()
 {
 
-/*  // get the input and ouptut
-  vtkDataSet *input = vtkDataSet::SafeDownCast(
-    inInfo->Get(vtkDataObject::DATA_OBJECT()));
-  vtkPolyData *source = vtkPolyData::SafeDownCast(
-    sourceInfo->Get(vtkDataObject::DATA_OBJECT()));
-  vtkPolyData *output = vtkPolyData::SafeDownCast(
-    outInfo->Get(vtkDataObject::DATA_OBJECT()));
-*/
-  vtkPolyData *source = this->source;
+  vtkPolyData *source;
   vtkPolyData *output = vtkPolyData::New();
-  source->Update();
-//  input->Update();
-  vtkDataArray *inTensors;
-  double tensor[4];
-  vtkDataArray *inScalars;
+
   vtkIdType numPts, numSourcePts, numSourceCells, inPtId;
   vtkPoints *sourcePts;
   vtkDataArray *sourceNormals;
@@ -97,20 +67,14 @@ vtkPolyData *vtkTensorGlyph2D::GetOutput()
   vtkPoints *newPts;
   vtkFloatArray *newScalars=NULL;
   vtkFloatArray *newNormals=NULL;
-  double x[3], s;
+  double x[3];
   vtkTransform *trans;
   vtkCell *cell;
   vtkIdList *cellPts;
   int npts;
   vtkIdType *pts;
   vtkIdType ptIncr, cellId;
-  vtkIdType subIncr;
-  int numDirs, dir, eigen_dir, symmetric_dir;
   vtkMatrix4x4 *matrix;
-  double *m[2], w[2], *v[2];
-  double m0[2], m1[2];
-  double v0[2], v1[2];
-  double xv[2], yv[2];
   double maxScale;
   vtkPointData *pd, *outPD;
 
@@ -120,39 +84,37 @@ vtkPolyData *vtkTensorGlyph2D::GetOutput()
   EigenVectorsMatrixType eigvec;
   double factor;
   float scalarValue;
-  float scalar2;
   int i,j,k;
-  int xSize, ySize, zSize;
-  RealType cl, cp, cs;
+  int xSize, ySize;
   int cont=0;
-  double def;
   double angulo;
 
-  double tensor1[4],tensor2[4],tensor3[4],tensor4[4];
-  double info1[3],info2[3],info3[3],info4[3];
+  double tensor1[3],tensor2[3],tensor3[3],tensor4[3];
 
   RealType t1,t2;
 
   StrainImageType::PointType origin = this->input->GetOrigin();
   StrainImageType::SpacingType spacing = this->input->GetSpacing();
 
+  vtkGlyphSource2D *glyphsource = vtkGlyphSource2D::New();
+  glyphsource->SetGlyphTypeToDiamond();
+  glyphsource->SetScale(100);
+  glyphsource->FilledOff();
+  glyphsource->Update();
+  source = glyphsource->GetOutput();
+  source->Update();
+
+//  vtkDebugMacro(<<"Generating tensor glyphs");
+
   pts = new vtkIdType[source->GetMaxCellSize()];
   trans = vtkTransform::New();
   matrix = vtkMatrix4x4::New();
-
-  // set up working matrices
-  m[0] = m0; m[1] = m1; //m[2] = m2; 
-  v[0] = v0; v[1] = v1; //v[2] = v2; 
-
-//  vtkDebugMacro(<<"Generating tensor glyphs");
 
   outPD = output->GetPointData();
 
   xSize = this->input->GetRequestedRegion().GetSize()[0];
   ySize = this->input->GetRequestedRegion().GetSize()[1];
   numPts = xSize * ySize;
-
-  source->Update();
 
   //
   // Allocate storage for output PolyData
@@ -316,29 +278,29 @@ vtkPolyData *vtkTensorGlyph2D::GetOutput()
     pixel = input->GetPixel(pixelIndex);
 
     pixel.ComputeEigenSystem(eigval,eigvec);
-    info1[0]=eigval[0]; info1[1]=eigval[1]; info1[2]=atan(eigvec[1][0]/eigvec[0][0]);
+    tensor1[0]=eigval[0]; tensor1[1]=eigval[1]; tensor1[2]=atan(eigvec[1][0]/eigvec[0][0]);
 // OJO!! A VER SI CALCULO BIEN EL ANGULO
-//info1[2]=atan2(yv[1],xv[1]);
+//tensor1[2]=atan2(yv[1],xv[1]);
 
     pixelIndex[0] += 1;
     pixel = input->GetPixel(pixelIndex);
     pixel.ComputeEigenSystem(eigval,eigvec);
-    info2[0]=eigval[0]; info2[1]=eigval[1]; info2[2]=atan(eigvec[1][0]/eigvec[0][0]);
+    tensor2[0]=eigval[0]; tensor2[1]=eigval[1]; tensor2[2]=atan(eigvec[1][0]/eigvec[0][0]);
 
     pixelIndex[0] -= 1;
     pixelIndex[1] += 1;
     pixel = input->GetPixel(pixelIndex);
     pixel.ComputeEigenSystem(eigval,eigvec);
-    info3[0]=eigval[0]; info3[1]=eigval[1]; info3[2]=atan(eigvec[1][0]/eigvec[0][0]);
+    tensor3[0]=eigval[0]; tensor3[1]=eigval[1]; tensor3[2]=atan(eigvec[1][0]/eigvec[0][0]);
 
     pixelIndex[0] += 1;
     pixel = input->GetPixel(pixelIndex);
     pixel.ComputeEigenSystem(eigval,eigvec);
-    info4[0]=eigval[0]; info4[1]=eigval[1]; info4[2]=atan(eigvec[1][0]/eigvec[0][0]);
+    tensor4[0]=eigval[0]; tensor4[1]=eigval[1]; tensor4[2]=atan(eigvec[1][0]/eigvec[0][0]);
 
-    eigval[0] = t2 * (t1*info1[0] + (1-t1)*info2[0]) + (1-t2) * (t1*info3[0] + (1-t1)*info4[0]);
-    eigval[1] = t2 * (t1*info1[1] + (1-t1)*info2[1]) + (1-t2) * (t1*info3[1] + (1-t1)*info4[1]);
-    angulo = ( t2 * (t1*info1[0] + (1-t1)*info2[0]) + (1-t2) * (t1*info3[0] + (1-t1)*info4[0]) ) * 180 / 3.1415;
+    eigval[0] = t2 * (t1*tensor1[0] + (1-t1)*tensor2[0]) + (1-t2) * (t1*tensor3[0] + (1-t1)*tensor4[0]);
+    eigval[1] = t2 * (t1*tensor1[1] + (1-t1)*tensor2[1]) + (1-t2) * (t1*tensor3[1] + (1-t1)*tensor4[1]);
+    angulo = ( t2 * (t1*tensor1[0] + (1-t1)*tensor2[0]) + (1-t2) * (t1*tensor3[0] + (1-t1)*tensor4[0]) ) * 180 / 3.1415;
 
     if (fabs(eigval[0])>fabs(eigval[2]))
       factor = 1 / eigval[0];
@@ -503,7 +465,7 @@ vtkPolyData *vtkTensorGlyph2D::GetOutput()
   return output;
 }
 
-void vtkTensorGlyph2D::ComputeEigenSystem (vtkIdType index, double *v[2], double w[2]) {
+void vtkTensorGlyphStrain::ComputeEigenSystem (vtkIdType index, double *v[2], double w[2]) {
 
   double tensor[9];
 

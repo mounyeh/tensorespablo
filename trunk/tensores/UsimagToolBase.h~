@@ -41,13 +41,15 @@
 #include <itkDICOMSeriesFileNames.h>
 //#include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
+#include <itkImageSeriesWriter.h>
 #include <itkCastImageFilter.h>
 #include <itkBinaryThresholdImageFilter.h>
 #include <itkImageRegionConstIterator.h>
 #include <itkImageRegionIterator.h>
 #include <itkVTKImageExport.h>
 #include <itkExtractImageFilter.h>
-#include <itkComputeStrainScalars.h>
+#include <strain/itkComputeStrainScalars.h>
+#include <itkNumericSeriesFileNames.h>
 
 #include <itkVector.h>
 #include <itkCovariantVector.h>
@@ -104,6 +106,11 @@ public:
   typedef itk::Image< Vector3DPixelType, 3 >    Vector3DImageType;
   typedef itk::DWImages< InputPixelType, 3 >    DWImagesType;
 
+  // Tipos auxiliares para lectura y escritura de tensor de esfuerzo
+  typedef itk::Image<itk::CovariantVector<float, 3>, 3>	VectorImage3DType;
+  typedef itk::Image<itk::CovariantVector<float, 3>, 4>	VectorImage4DType;
+  typedef itk::Image<itk::FixedArray<float,2>, 3>	DeformImage3DType;
+
   typedef InputImageType::RegionType                 InputRegionType;
   typedef InputImageType::RegionType::SizeType       SizeType;
   typedef InputImageType::IndexType                  InputIndexType;
@@ -116,6 +123,8 @@ public:
 
   typedef itk::StrainTensor<float> STPixelType;
   typedef itk::Image<STPixelType, 4> STImageType;
+  typedef itk::FixedArray<float,2>	DeformPixelType;
+  typedef itk::Image<DeformPixelType,4>	DeformImageType;
 
   // Readers: 
   typedef itk::ImageFileReader< InputImageType >     FileReaderType;
@@ -126,7 +135,8 @@ public:
   typedef itk::ImageFileReader< VectorImageType >    FileVectorReaderType;
   typedef itk::ImageFileReader< TensorImageType >    FileTensorReaderType;
   typedef itk::ImageFileReader< UCharImageType >     FileUCharReaderType;
-  typedef itk::ImageFileReader< STImageType >        FileSTReaderType;
+//  typedef itk::ImageFileReader< STImageType >        FileSTReaderType;
+  typedef itk::ImageSeriesReader< VectorImage4DType >STReaderType;
   
   // Readers IO
   typedef itk::MetaImageIO MetaImageIOType;
@@ -150,7 +160,10 @@ public:
   typedef itk::ImageFileWriter< FloatImageType >     FloatWriterType;
   typedef itk::ImageFileWriter< TensorImageType >    TensorWriterType;
   typedef itk::ImageFileWriter< DWImagesType >       DWIWriterType;
-  typedef itk::ImageFileWriter< STImageType >       STWriterType;
+  typedef itk::ImageSeriesWriter <VectorImage4DType , VectorImage3DType >	STWriterType;
+  typedef itk::ImageSeriesWriter <DeformImageType , DeformImage3DType >	DeformWriterType;
+
+//  typedef itk::ImageFileWriter< STImageType >       STWriterType;
 
   // Viewers 
   typedef fltk::VTKImageViewer<InputImageType::PixelType>  VTKImageViewerType;
@@ -190,6 +203,8 @@ public:
   typedef itk::ExtractImageFilter< STImageType, STImageType3D >		ExtractFilterType;
   typedef itk::ComputeStrainScalars <STImageType3D,InputImageType>     	ComputeStrainScalarsType;
   typedef ComputeStrainScalarsType::Pointer                            	ComputeStrainScalarsPointer;
+  typedef itk::NumericSeriesFileNames					NameGeneratorType;
+
 
 	/*
   struct DataElementType {
@@ -252,6 +267,8 @@ public:
 
   virtual void Quit(void){};
   
+  vtkImageData *m_activeStrainImage;
+
   unsigned int m_activeinput;
   unsigned int m_NAuxWindows;
   

@@ -1,7 +1,7 @@
 /*=========================================================================
 
 	Program:   Visualization Toolkit
-  Module:    $RCSfile: vtkSaturnTensorGlyph.cxx,v $
+  Module:    $RCSfile: vtkTensorGlyphDTI.cxx,v $
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,7 +12,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkSaturnTensorGlyph.h"
+#include "vtkTensorGlyphDTI.h"
 
 #include "vtkCell.h"
 #include "vtkCellArray.h"
@@ -33,7 +33,7 @@
 // Construct object with scaling on and scale factor 1.0. Eigenvalues are 
 // extracted, glyphs are colored with input scalar data, and logarithmic
 // scaling is turned off.
-vtkSaturnTensorGlyph::vtkSaturnTensorGlyph()
+vtkTensorGlyphDTI::vtkTensorGlyphDTI()
 {
 
 	this->input = NULL;
@@ -60,11 +60,11 @@ vtkSaturnTensorGlyph::vtkSaturnTensorGlyph()
 	this->FilterThreshold = 0.0;
 }
 
-vtkSaturnTensorGlyph::~vtkSaturnTensorGlyph()
+vtkTensorGlyphDTI::~vtkTensorGlyphDTI()
 {
 }
 
-void vtkSaturnTensorGlyph::GetOutput(vtkPolyData *output)
+void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 {
 
 //	vtkPolyData *output = vtkPolyData::New();
@@ -506,6 +506,8 @@ void vtkSaturnTensorGlyph::GetOutput(vtkPolyData *output)
 		newNormals->Delete();
 	}
 
+cout<<"contador "<<cont<<"\n";
+
 
 	trans->Delete();
 	matrix->Delete();
@@ -514,7 +516,7 @@ void vtkSaturnTensorGlyph::GetOutput(vtkPolyData *output)
 	return;
 }
 
-void vtkSaturnTensorGlyph::interpolacionLineal (double x[3],TensorPixelType *pixel) {
+void vtkTensorGlyphDTI::interpolacionLineal (double x[3],TensorPixelType *pixel) {
 
 		TensorPixelType *puntero;
 		TensorPixelType pixel1, pixel2, pixel3, pixel4, pixel5, pixel6, pixel7, pixel8;
@@ -562,7 +564,7 @@ void vtkSaturnTensorGlyph::interpolacionLineal (double x[3],TensorPixelType *pix
 	 
 }
 
-void vtkSaturnTensorGlyph::interpolacionLogEuclidea (double x[3],TensorPixelType *pixel) {
+void vtkTensorGlyphDTI::interpolacionLogEuclidea (double x[3],TensorPixelType *pixel) {
 
 		TensorPixelType puntero;
 		TensorPixelType pixel1, pixel2, pixel3, pixel4, pixel5, pixel6, pixel7, pixel8;

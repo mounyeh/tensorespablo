@@ -44,7 +44,7 @@ class UsimagToolGUI {open : {public UsimagToolBase}
         xywh {-1 0 1091 25} box PLASTIC_THIN_DOWN_BOX color 225 selection_color 32
       } {
         Submenu UsimagToolSubmenu {
-          label Saturn open
+          label Saturn
           xywh {5 5 66 24} labelfont 1 labelcolor 56
         } {
           MenuItem PreferencesMenuItem {
@@ -131,13 +131,8 @@ this->LoadRaw();}
             callback {this->SaveDWI();}
             xywh {65 65 30 20} shortcut 0x40077
           }
-          MenuItem SaveStrainTensorVTKMenuItem {
-            label {Save Strain Tensor}
-            callback {this->SaveStrainTensor();}
-            xywh {0 0 30 20}
-          }
           MenuItem LoadStrainTensorVTKMenuItem {
-            label {Load Strain Tensor VTK}
+            label {Open Strain Tensor...}
             callback {LoadStrainTensor();
 
 m_tipoProcesado->value(4);
@@ -150,7 +145,12 @@ ActiveGroup->hide();
 MyTensorConsole->STGroup->show();
 ActiveGroup = MyTensorConsole->STGroup;
 
-ViewModeStrain3D();} selected
+ViewModeStrain3D();}
+            xywh {0 0 30 20}
+          }
+          MenuItem SaveStrainTensorVTKMenuItem {
+            label {Save Strain Tensor...}
+            callback {this->SaveStrainTensor();}
             xywh {0 0 30 20}
           }
         }
@@ -241,7 +241,7 @@ ViewModeStrain3D();} selected
           }
         }
         Submenu ViewSubMenu {
-          label View
+          label View open
           xywh {25 25 66 24}
         } {
           MenuItem {} {
@@ -257,7 +257,12 @@ ViewModeStrain3D();} selected
           MenuItem {} {
             label 3D
             callback {ViewMode3D();}
-            xywh {45 45 34 24} deactivate
+            xywh {45 45 34 24}
+          }
+          MenuItem {} {
+            label {Strain Tensor}
+            callback {ViewModeStrain3D();}
+            xywh {55 55 34 24}
           }
         }
         Submenu BasicOpSubMenu {
@@ -697,6 +702,20 @@ ActiveGroup = MyTensorConsole->DTIGlyphsGroup;}
 MyTensorConsole->STGroup->show();
 ActiveGroup = MyTensorConsole->STGroup;}
             xywh {0 0 100 20}
+          }
+        }
+        Submenu StrainSubMenu {
+          label Strain open
+          xywh {85 85 66 24} labelcolor 56
+        } {
+          MenuItem STScalarsMenuItem {
+            label Scalars
+            callback {ViewModeStrain3D();
+
+ActiveGroup->hide();
+MyTensorConsole->STGroup->show();
+ActiveGroup = MyTensorConsole->STGroup;}
+            xywh {10 10 100 20}
           }
         }
         Submenu HelpSubMenu {
@@ -1759,7 +1778,7 @@ ImageViewerStrain3D->redraw();
 Fl::check();
 //MyTensorConsole->borrarGlifos(1);
 //MyTensorConsole->verGlifos(1);}
-            xywh {550 34 216 18} type Horizontal box PLASTIC_UP_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 4 step 1
+            xywh {550 34 216 18} type Horizontal box PLASTIC_UP_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 4 maximum 0 step 1
           }
           Fl_Button {} {
             label {@<}
@@ -1793,7 +1812,7 @@ if (t<strainSlice->maximum()) {
           }
           Fl_Value_Slider strainTime {
             label Time
-            callback {this->ViewStrainSlice3D();
+            callback {MyTensorConsole->ViewStrainSlice3D(strainTime->value());
 MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
 Fl::check();
 ImageViewerStrain3D->redraw();
@@ -1801,7 +1820,7 @@ Fl::check();
 //ImageViewer3D->SelectSlice(0,(unsigned int)o->value());
 //MyTensorConsole->borrarGlifos(0);
 //MyTensorConsole->verGlifos(0);}
-            xywh {550 54 216 18} type Horizontal box PLASTIC_UP_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 4 step 1
+            xywh {550 54 216 18} type Horizontal box PLASTIC_UP_BOX color 16 selection_color 21 labelfont 1 labelsize 12 align 4 maximum 0 step 1
           }
           Fl_Button {} {
             label {@>}
@@ -1809,7 +1828,7 @@ Fl::check();
 
 if (t<strainTime->maximum()) {
  strainTime->value(t+1);
- this->ViewStrainSlice3D();
+ MyTensorConsole->ViewStrainSlice3D(strainTime->value());
  MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
  Fl::check();
  ImageViewerStrain3D->redraw();
@@ -1823,20 +1842,20 @@ if (t<strainTime->maximum()) {
             callback {int t = strainTime->value();
 if (t>0) {
  strainTime->value(t-1);
- this->ViewStrainSlice3D();
+ MyTensorConsole->ViewStrainSlice3D(strainTime->value());
  MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
  Fl::check();
  ImageViewerStrain3D->redraw();
  Fl::check();
 // MyTensorConsole->verGlifos(0);
-}}
+}} selected
             xywh {766 54 18 18} box PLASTIC_UP_BOX color 16
           }
           Fl_Round_Button {} {
             label { Mostrar}
             callback {int dataId = m_strainTensorDataBrowser->value()-1;
 if (o->value() == true) {
-  this->ViewStrainSlice3D();
+  MyTensorConsole->ViewStrainSlice3D();
 MyTensorConsole->verGlifosStrain(strainSlice->value(),strainTime->value());
 strainSlice->range( 0.0f, m_VectorSTData[dataId].image->GetLargestPossibleRegion().GetSize()[2]-1 );
 strainSlice->redraw();
@@ -1850,6 +1869,7 @@ ImageViewerStrain3D->redraw();
 Fl::check();
 }  else {
 ImageViewerStrain3D->HideSlice(2);
+MyTensorConsole->borrarGlifosStrain();
 //MyTensorConsole->imagenActiva(1,false);
 //MyTensorConsole->borrarGlifos(1);
 Fl::check();
