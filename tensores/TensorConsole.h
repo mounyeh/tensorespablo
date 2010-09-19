@@ -291,8 +291,8 @@ private:
   vtkActor		*m_activeActorStrain;
   vtkScalarBarActor	*m_scalarBarStrain;
 
-  double rangeStrainMin;
-  double rangeStrainMax;
+  double 		rangeStrainMin;
+  double 		rangeStrainMax;
   vtkFloatArray		*m_deformValues;
 
 

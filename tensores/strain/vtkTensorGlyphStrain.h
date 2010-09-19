@@ -66,9 +66,9 @@ public:
   int GetGlyphType()
     {return this->GlyphType;};
 
-  void SetScaling(int value)
+  void SetScaling(bool value)
     {this->Scaling = value;};
-  int GetScaling()
+  bool GetScaling()
     {return this->Scaling;};
 
   void SetScaleFactor(double value)
@@ -105,7 +105,7 @@ protected:
   vtkPoints *inputPoints;
   int GlyphType;
 
-  int Scaling; // Determine whether scaling of geometry is performed
+  bool Scaling; // Determine whether scaling of geometry is performed
   double ScaleFactor; // Scale factor to use to scale geometry
   int ColorMode; // The coloring mode to use for the glyphs.
 

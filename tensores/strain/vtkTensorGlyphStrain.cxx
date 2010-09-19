@@ -43,7 +43,7 @@ vtkTensorGlyphStrain::vtkTensorGlyphStrain()
 {
   this->inputPoints = NULL;
 
-  this->Scaling = 1;
+  this->Scaling = true;
   this->ScaleFactor = 1.0;
   this->ColorMode = DEF;
 
@@ -77,16 +77,17 @@ vtkPolyData *vtkTensorGlyphStrain::GetOutput()
   double maxScale;
   vtkPointData *pd, *outPD;
 
-  STImageType::IndexType pixelIndex;
   STPixelType pixel;
+  DeformPixelType deformPixel;
+
   EigenValuesArrayType eigval;
   EigenVectorsMatrixType eigvec;
-  double factor;
+
   float scalarValue;
   int i,j,k;
   int xSize, ySize;
   int cont=0;
-  double angulo;
+  double angulo, deform;
 
   double tensor1[3],tensor2[3],tensor3[3],tensor4[3];
 
@@ -94,6 +95,10 @@ vtkPolyData *vtkTensorGlyphStrain::GetOutput()
 
   STImageType::PointType origin = this->input->GetOrigin();
   STImageType::SpacingType spacing = this->input->GetSpacing();
+
+  STImageType::IndexType pixelIndex;
+  pixelIndex[2] = this->PlanoZ;
+  pixelIndex[3] = this->Tiempo;
 
   vtkGlyphSource2D *glyphsource = vtkGlyphSource2D::New();
   glyphsource->SetGlyphTypeToDiamond();
@@ -111,10 +116,6 @@ vtkPolyData *vtkTensorGlyphStrain::GetOutput()
   xSize = this->input->GetRequestedRegion().GetSize()[0];
   ySize = this->input->GetRequestedRegion().GetSize()[1];
   numPts = xSize * ySize;
-
-  //
-  // Allocate storage for output PolyData
-  //
 
   sourcePts = source->GetPoints();
   numSourcePts = sourcePts->GetNumberOfPoints();
@@ -144,33 +145,29 @@ vtkPolyData *vtkTensorGlyphStrain::GetOutput()
     newNormals->Delete();
     }
 
-//double factor = 0;
-factor = 0;
-double deform_max = 0;
+  double eigval_max = 0;
+  double deform_max = 0;
+  
   for (inPtId=0; inPtId<numPts; inPtId++)
     {
-    ptIncr = inPtId * numSourcePts;
 
-    // Translation is postponed
     pixelIndex[0] = inPtId % xSize;
     pixelIndex[1] = inPtId / xSize;
-    pixelIndex[2] = this->PlanoZ;
-    pixelIndex[3] = this->Tiempo;
     pixel = input->GetPixel(pixelIndex);
 
     pixel.ComputeEigenSystem(eigval,eigvec);
 
     if (eigval[0]==0) continue;
-    if (fabs(eigval[0])>factor) factor = fabs(eigval[0]);
-    if (fabs(eigval[1])>factor) factor = fabs(eigval[1]);
+    if (fabs(eigval[0])>eigval_max) eigval_max = fabs(eigval[0]);
+    if (fabs(eigval[1])>eigval_max) eigval_max = fabs(eigval[1]);
 
-    int indice = inPtId + PlanoZ*56*56*16 + Tiempo*56*56;
-//    double deform = sqrt (deformArray->GetTuple(indice)[0]*deformArray->GetTuple(indice)[0] + deformArray->GetTuple(indice)[1]*deformArray->GetTuple(indice)[1] );
-    double deform = sqrt (deformImage->GetPixel(pixelIndex)[0]*deformImage->GetPixel(pixelIndex)[0] + deformImage->GetPixel(pixelIndex)[1]*deformImage->GetPixel(pixelIndex)[1] );
+    deformPixel = deformImage->GetPixel(pixelIndex);
+
+    deform = sqrt (deformPixel[0]*deformPixel[0] + deformPixel[1]*deformPixel[1] );
     if (deform>deform_max) deform_max = deform;
   }
 
-factor = 1/factor;
+eigval_max = 1/eigval_max;
 
   //
   // Traverse all Input points, transforming glyph at Source points
@@ -179,20 +176,14 @@ factor = 1/factor;
 
   for (inPtId=0; inPtId<numPts; inPtId++)
     {
-    ptIncr = inPtId * numSourcePts;
 
-    // Translation is postponed
     pixelIndex[0] = inPtId % xSize;
     pixelIndex[1] = inPtId / xSize;
-    pixelIndex[2] = this->PlanoZ;
-    pixelIndex[3] = this->Tiempo;
     pixel = input->GetPixel(pixelIndex);
 
     pixel.ComputeEigenSystem(eigval,eigvec);
 
     if (eigval[0]==0) continue;
-
-    // Now do the real work for each "direction"
 
     // Remove previous scales ...
     trans->Identity();
@@ -201,35 +192,24 @@ factor = 1/factor;
     x[0] = origin[0] + spacing[0] * pixelIndex[0];
     x[1] = origin[1] + spacing[1] * pixelIndex[1];
     x[2] = origin[2] + spacing[2] * pixelIndex[2];
-//    trans->Translate(x[0], x[1], x[2]);
+
     trans->Translate(x[0]+spacing[0]/2, x[1]+spacing[1]/2, x[2]);
 
     angulo = atan(eigvec[1][0]/eigvec[0][0]) * 180 / 3.1415;
     trans->RotateZ(angulo);
 
-//    if (fabs(eigval[0])>fabs(eigval[1])) factor = fabs(1 / eigval[0]);
-//      else factor = fabs(1 / eigval[1]);
+    deformPixel = deformImage->GetPixel(pixelIndex);
 
-//    double factor1 = sqrt(2)*(0.25 + 0.25*0.5*(eigval[0]*factor+1) + 0.5*sqrt(eigval[0]*eigval[0]*factor*factor+eigval[1]*eigval[1]*factor*factor));
-//    double factor2 = sqrt(2)*(0.25 + 0.25*0.5*(eigval[1]*factor+1) + 0.5*sqrt(eigval[0]*eigval[0]*factor*factor+eigval[1]*eigval[1]*factor*factor));
-
-//    int indice = inPtId + PlanoZ*56*56*16 + Tiempo*56*56;
-//    double deform = sqrt (deformArray->GetTuple(indice)[0]*deformArray->GetTuple(indice)[0] + deformArray->GetTuple(indice)[1]*deformArray->GetTuple(indice)[1] );
-
-//if (inPtId == 11954) {
-//cout<<pixelIndex<<" deform1 "<<deform<<" deform_max "<<deform_max<<"\n";
-//cout<<"deform viejo "<<deformArray->GetTuple(indice)[0]<<" deform_max "<<deformArray->GetTuple(indice)[1]<<"\n";
-//cout<<"deform nuevo "<<deformImage->GetPixel(pixelIndex)[0]<<" deform_max "<<deformImage->GetPixel(pixelIndex)[1]<<"\n";
-//}
-//cout<<"deform final "<<deform<<"\n";
-
-    double deform = sqrt (deformImage->GetPixel(pixelIndex)[0]*deformImage->GetPixel(pixelIndex)[0] + deformImage->GetPixel(pixelIndex)[1]*deformImage->GetPixel(pixelIndex)[1] );
+    deform = sqrt (deformPixel[0]*deformPixel[0] + deformPixel[1]*deformPixel[1] );
     deform = deform / deform_max;
 
-    double factor1 = sqrt(2)*(0.25 + 0.25*0.5*(eigval[0]*factor+1) + 0.5*deform);
-    double factor2 = sqrt(2)*(0.25 + 0.25*0.5*(eigval[1]*factor+1) + 0.5*deform);
+    double factor1 = sqrt(2)*(0.25 + 0.25*0.5*(eigval[0]*eigval_max+1) + 0.5*deform);
+    double factor2 = sqrt(2)*(0.25 + 0.25*0.5*(eigval[1]*eigval_max+1) + 0.5*deform);
 
-    trans->Scale(this->ScaleFactor*factor1,this->ScaleFactor*factor2,1);
+    if (this->Scaling) 
+      trans->Scale(this->ScaleFactor*factor1,this->ScaleFactor*factor2,1);
+
+    else trans->Scale(factor1,factor2,1);
 
     // multiply points (and normals if available) by resulting matrix
     trans->TransformPoints(sourcePts,newPts);
@@ -241,16 +221,10 @@ factor = 1/factor;
       trans->TransformNormals(sourceNormals,newNormals);
       }
 
-//    if (pixelIndex[0]==28) cout<<pixelIndex<<" pixel "<<pixel<<" eigval "<<eigval<<" invariante "<<pixel.GetInvariant()<<" deform "<<deformImage->GetPixel(pixelIndex)[0]<<" "<<deformImage->GetPixel(pixelIndex)[1]<<" "<<deform<<" max_def "<<deform_max<<"\n";
-
-//    if (fabs(eigval[0])>fabs(eigval[1])) scalarValue = eigval[0];
-//      else scalarValue = eigval[1];
-
     switch (this->ColorMode)
     {
         case DEF: 
           scalarValue = deform * deform_max;
-//          scalarValue = pixel.GetInvariant();
           break;
 
         case EIG0: 
@@ -297,7 +271,6 @@ factor = 1/factor;
 
   for (inPtId=0; inPtId<numPts; inPtId++)
   {
-    ptIncr = inPtId * numSourcePts;
 
     this->inputPoints->GetPoint(inPtId,x);
 
@@ -315,28 +288,20 @@ factor = 1/factor;
     // Remove previous scales ...
     trans->Identity();
 
-//    trans->Translate(x[0], x[1], x[2]);
     trans->Translate(x[0]+spacing[0]/2, x[1]+spacing[1]/2, x[2]);
 
     trans->RotateZ(angulo);
 
-//    if (fabs(eigval[0])>fabs(eigval[1])) factor = fabs(1 / eigval[0]);
-//      else factor = fabs(1 / eigval[1]);
-
-//    eigval[0] *= factor;
-//    eigval[1] *= factor;
-
-//    double factor1 = sqrt(2)*(0.25 + 0.25*0.5*(eigval[0]*factor+1) + 0.5*sqrt(eigval[0]*eigval[0]*factor*factor+eigval[1]*eigval[1]*factor*factor));
-//    double factor2 = sqrt(2)*(0.25 + 0.25*0.5*(eigval[1]*factor+1) + 0.5*sqrt(eigval[0]*eigval[0]*factor*factor+eigval[1]*eigval[1]*factor*factor));
-
-    double deform = sqrt (deform_values[0]*deform_values[0] + deform_values[1]*deform_values[1] );
+    deform = sqrt (deform_values[0]*deform_values[0] + deform_values[1]*deform_values[1] );
     deform = deform / deform_max;
 
-    double factor1 = sqrt(2)*(0.25 + 0.25*0.5*(eigvalues[0]*factor+1) + 0.5*deform);
-    double factor2 = sqrt(2)*(0.25 + 0.25*0.5*(eigvalues[1]*factor+1) + 0.5*deform);
+    double factor1 = sqrt(2)*(0.25 + 0.25*0.5*(eigvalues[0]*eigval_max+1) + 0.5*deform);
+    double factor2 = sqrt(2)*(0.25 + 0.25*0.5*(eigvalues[1]*eigval_max+1) + 0.5*deform);
 
-    trans->Scale(this->ScaleFactor*factor1,this->ScaleFactor*factor2,1);
-//  trans->Scale(this->ScaleFactor*factor*eigval[0],this->ScaleFactor*factor*eigval[1],1);
+    if (this->Scaling) 
+      trans->Scale(this->ScaleFactor*factor1,this->ScaleFactor*factor2,1);
+
+    else trans->Scale(factor1,factor2,1);
 
     // multiply points (and normals if available) by resulting matrix
     trans->TransformPoints(sourcePts,newPts);
@@ -348,14 +313,10 @@ factor = 1/factor;
       trans->TransformNormals(sourceNormals,newNormals);
       }
 
-//    if (fabs(eigval[0])>fabs(eigval[1])) scalarValue = eigval[0];
-//      else scalarValue = eigval[1];
-
     switch (this->ColorMode)
     {
         case DEF: 
           scalarValue = deform * deform_max;
-//          scalarValue = eigvalues[0]*eigvalues[0] + eigvalues[1]*eigvalues[1]; //pixel.GetInvariant();
           break;
 
         case EIG0: 
@@ -389,10 +350,6 @@ factor = 1/factor;
     cont++;
     }
   }
-//  vtkDebugMacro(<<"Generated " << numPts <<" tensor glyphs");
-
-
-
 
 
 
@@ -489,11 +446,9 @@ void vtkTensorGlyphStrain::interpolarTensor (double x[3], double eigval_out[2], 
     pixelIndex[0] = (int) ((x[0]-origin[0]) / spacing[0]);
     pixelIndex[1] = (int) ((x[1]-origin[1]) / spacing[1]);
 
-    t1 = ( (x[0]-origin[0]) / spacing[0] - pixelIndex[0] );// / spacing[0];
-    t2 = ( (x[1]-origin[1]) / spacing[1] - pixelIndex[1] );// / spacing[1];
+    t1 = ( (x[0]-origin[0]) / spacing[0] - pixelIndex[0] );
+    t2 = ( (x[1]-origin[1]) / spacing[1] - pixelIndex[1] );
 
-//    pixelIndex[0] = round( (x[0]-origin[0]) / spacing[0] ); //inPtId % xSize;
-//    pixelIndex[1] = round( (x[1]-origin[1]) / spacing[1] ); //inPtId / xSize;
     pixelIndex[2] = this->PlanoZ;
     pixelIndex[3] = this->Tiempo;
     pixel = input->GetPixel(pixelIndex);
@@ -536,10 +491,6 @@ void vtkTensorGlyphStrain::interpolarTensor (double x[3], double eigval_out[2], 
     if (angulo4 < 0) angulo4 += 3.1415;
     deformPixel = deformImage->GetPixel(pixelIndex);
     deform0_4 = deformPixel[0]; deform1_4 = deformPixel[1];
-
-// VER QUÉ PASA SI ALGUNO ES CERO
-//    if ( (tensor1[0]==0) || (tensor2[0]==0) || (tensor3[0]==0) || (tensor4[0]==0) ) continue;
-//    if ( (tensor1[1]==0) || (tensor2[1]==0) || (tensor3[1]==0) || (tensor4[1]==0) ) continue;
 
     eigval_out[0] = 0;
     eigval_out[1] = 0;

@@ -114,6 +114,9 @@ TensorConsole::TensorConsole(int X, int Y, int W, int H, const char *label)
 
 	m_VTKexporter = VTKexportType::New();
 	
+	rangeStrainMin = 0.0;
+	rangeStrainMax = 3.0;
+
 	//==========================================================================
 	/** *********************************************************************************************************************** */
 	/** *********************************************************************************************************************** */
@@ -4170,6 +4173,7 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 
 	vtkTensorGlyphStrain *glifos = new vtkTensorGlyphStrain();
 	glifos->SetInput(imagen);
+	glifos->SetDeformImage(deform);
 	glifos->SetPlanoZ(planoZ);
 	glifos->SetTiempo(tiempo);
 	glifos->SetInputPoints(puntos);
@@ -4190,8 +4194,6 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 
 	glifos->SetScaleFactor(escala * strainEscala->value());
 
-	glifos->SetDeformImage(deform);
-	glifos->SetDeformArray(m_deformValues);
 
 	m_activeActorStrain = vtkActor::New();
 //	m_activeActorStrain->GetProperty()->SetColor(1,1,1);
