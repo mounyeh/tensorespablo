@@ -1354,8 +1354,8 @@ m_configIO->hide();}
   Function {probarEsfuerzoDeform()} {open return_type {virtual void}
   } {}
   Fl_Group STGroup {
-    label {Tensor de esfuerzo} open
-    xywh {5 387 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5
+    label {Tensor de esfuerzo} open selected
+    xywh {5 387 400 353} box FLAT_BOX color 23 selection_color 7 labelfont 1 align 5 hide
     code0 {\#include "tensor/itkDWImages.h"}
     code1 {\#include "Viewer3D.h"}
   } {
@@ -1444,7 +1444,7 @@ SetScalarRangeStrain(0,3);
 
 Fl::check();
 ImageViewerStrain3D->redraw();
-Fl::check();} selected
+Fl::check();}
             xywh {43 562 64 15} down_box DOWN_BOX value 1 labelfont 1 labelsize 12
           }
           Fl_Group {} {

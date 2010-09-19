@@ -4170,11 +4170,12 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 
 	vtkTensorGlyphStrain *glifos = new vtkTensorGlyphStrain();
 	glifos->SetInput(imagen);
+	glifos->SetDeformImage(deform);
 	glifos->SetPlanoZ(planoZ);
 	glifos->SetTiempo(tiempo);
 	glifos->SetInputPoints(puntos);
 
-	glifos->SetColorMode(vtkTensorGlyphStrain::INV);
+	glifos->SetColorMode(vtkTensorGlyphStrain::DEF);
 
 	if (strainST0->value())
 		glifos->SetColorMode(vtkTensorGlyphStrain::ST0);
@@ -4186,12 +4187,10 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 		glifos->SetColorMode(vtkTensorGlyphStrain::EIG0);
 	else if (strainEIG1->value())
 		glifos->SetColorMode(vtkTensorGlyphStrain::EIG1);
-	else glifos->SetColorMode(vtkTensorGlyphStrain::INV);
+	else glifos->SetColorMode(vtkTensorGlyphStrain::DEF);
 
 	glifos->SetScaleFactor(escala * strainEscala->value());
 
-	glifos->SetDeformImage(deform);
-	glifos->SetDeformArray(m_deformValues);
 
 	m_activeActorStrain = vtkActor::New();
 //	m_activeActorStrain->GetProperty()->SetColor(1,1,1);

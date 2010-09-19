@@ -116,7 +116,7 @@ public:
   typedef itk::Image< STPixelType, 3 >    				STImageType3D;
   typedef itk::ComputeStrainScalars <STImageType3D,InputImageType>     	ComputeStrainScalarsType;
   typedef ComputeStrainScalarsType::Pointer                            	ComputeStrainScalarsPointer;
-  typedef itk::ComputeDeformFilter <DeformImage3DType3D,InputImageType>	ComputeDeformFilterType;
+  typedef itk::ComputeDeformFilter <DeformImage3DType,InputImageType>	ComputeDeformFilterType;
   typedef ComputeDeformFilterType::Pointer				ComputeDeformFilterPointer;
   typedef itk::VTKImageExport< InputImageType> VTKexportType;
   VTKexportType::Pointer       m_VTKexporter; 
