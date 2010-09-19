@@ -14,10 +14,6 @@
 class vtkTensorGlyphDTI
 {
 
-/*TODO
-Probar los set/get con macros
-*/
-
 public:
 
 	enum { Dimension = 3 };
@@ -35,18 +31,21 @@ public:
 	~vtkTensorGlyphDTI();
 
 
+	void GetOutput(vtkPolyData*);
+
+	void interpolacionLineal (double x[3],TensorPixelType *pixel);
+	void interpolacionLogEuclidea (double x[3],TensorPixelType *pixel);
+
+
 	void SetInput(TensorImageType::Pointer image)
 		{this->input = image;};
 	TensorImageType::Pointer SetInput()
 		{return this->input;};
 
 	void SetInputPoints(vtkPoints *points)
-		{this->inputPoints = points;
-		 this->useInputPoints = true;};
+		{this->inputPoints = points;};
 	vtkPoints *GetInputPoints()
 		{return this->inputPoints;};
-
-	void GetOutput(vtkPolyData*);
 
 	void SetGlyphType(int type)
 		{this->GlyphType = type;};
@@ -93,9 +92,6 @@ public:
 	double GetcsThreshold()
 		{return this->FilterThreshold;};
 
-	void interpolacionLineal (double x[3],TensorPixelType *pixel);
-	void interpolacionLogEuclidea (double x[3],TensorPixelType *pixel);
-
 	void SetBounds(int v1,int v2,int v3,int v4,int v5,int v6)
 	{
 		Bounds[0]=v1;
@@ -106,7 +102,7 @@ public:
 		Bounds[5]=v6;
 	};
 	int *GetBounds()
-		{return this->Bounds;};
+	{return this->Bounds;};
 
 	enum
 	{
@@ -131,25 +127,24 @@ public:
 
 protected:
 
-	TensorImageType::Pointer input;
+	TensorImageType::Pointer input;	// Imagen tensorial de entrada
 	vtkPolyData *source;
-	vtkPoints *inputPoints;
-	bool useInputPoints;
+	vtkPoints *inputPoints;		// Puntos de entrada donde mostrar glifos
 	int GlyphType;
 
-	int Scaling; // Determine whether scaling of geometry is performed
-	double ScaleFactor; // Scale factor to use to scale geometry
-	int ColorMode; // The coloring mode to use for the glyphs.
+	int Scaling; 			// Determina si se aplica la escala
+	double ScaleFactor; 
+	int ColorMode; 			// Tipo de coloreado para los glifos
 
-	int Bounds[6];
+	int Bounds[6];			// Límites de la imagen en los que representar glifos
 
 	int PhiResolution;
 	int ThetaResolution;
 
-	double Gamma;
+	double Gamma;			// Parámetro gamma para supercuádricas
 
-	int FilterMode;
-	double FilterThreshold;
+	int FilterMode;			// Magnitud a considerar para la discriminación de glifos
+	double FilterThreshold;		// Umbral para la discriminación
 
 };
 

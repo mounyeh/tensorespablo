@@ -206,7 +206,6 @@ public:
 
   void verGlifos(int);
   void verGlifosTract();
-//  void verGlifos(int,int,int,int,int,int,int);
   void borrarGlifos(int);
   void cambiarOpacidad(float);
   void glifosActivos();
@@ -218,12 +217,7 @@ public:
   void borrarGlifosStrain();
   void ViewStrainSlice3D();
   void ViewStrainSlice3D(int);
-
   void SetScalarRangeStrain(double,double);
-  void generarTensoresCilindro();
-  void probarEsfuerzo();
-  void probarEsfuerzoDeform();
-  void tensorEsfuerzo2D();
 
   FloatImageType::IndexType     m_seedPosition;
   NodeType                      m_node;
@@ -233,7 +227,6 @@ public:
 
   geodesicPath3DType::Pointer        m_geodesicPath3D;
   MyColorViewerType* ImageColorViewer;
-  //Viewer3D* ImageViewer3D;
   UCharImageType* m_imageOverlay;
   Fl_Browser *m_modeldataBrowser;
   Fl_Browser *m_DWIdataBrowser;
@@ -291,10 +284,9 @@ private:
   vtkActor		*m_activeActorStrain;
   vtkScalarBarActor	*m_scalarBarStrain;
 
+  int 			tiempo;
   double 		rangeStrainMin;
   double 		rangeStrainMax;
-  vtkFloatArray		*m_deformValues;
-
 
   vtkImageData 		*m_activeStrainImage;
 
@@ -303,7 +295,7 @@ private:
   bool m_planoActivoZ;
   bool m_tractActiva;
 
-  int tiempo;
+
 
   UCharImageType::Pointer	m_SeedRegionsImage;
   UCharImageType::Pointer	m_TractRegionsImage;

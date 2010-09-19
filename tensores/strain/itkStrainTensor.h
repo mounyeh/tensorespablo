@@ -11,13 +11,8 @@
 #include <itkNumericTraits.h>
 #include <itkRGBPixel.h>
 
-//#define TOL 1e-10
 #define TOL 1e-10
 
-/*
-Revisar: FA, RA, Mode, Deviatoric, mean diffusivity, shape coefficients, computelogvector, computefromlogvector, getrgbcolorcode
-Hacer: eigenvalues, eigenvector, eigensystem, computetensor
-*/
 namespace itk
 {
 
@@ -37,8 +32,6 @@ public:
 	typedef itk::Matrix<RealType,2,2>                         EigenVectorsMatrixType;
 	typedef itk::FixedArray<RealType,2>                       EigenVectorType;
 
-	typedef itk::RGBPixel<TComponent>						  RGBPixelType;
-	
 	/** Default Constructor. */
 	StrainTensor();
 
@@ -112,44 +105,19 @@ public:
 	/** Get the value of the determinant */
 	RealType GetDeterminant() const;
 	
-	/** Get the mode of the tensor */
-	RealType GetMode() const;
-	
-	/** Get the deviatoric of the tensor. */
-	Self GetDeviatoric() const;
-
-	/** Get the invariant (as described in Selskog et al.)	*/
+	/** Compute the invariant (the Frobenius norm, as described in Selskog et al.) */
 	RealType GetInvariant() const;
 	
 	/** Compute the eigenvalues of the tensor */
 	void ComputeEigenValues( EigenValuesArrayType& eig ) const;
 
-	/** Compute one single eigenvector associated to a given eigen-vector */
-	void ComputeEigenVector( RealType eigval, RealType* eigvec ) const;
-	
 	/** Compute the whole eigen-system */
 	void ComputeEigenSystem( EigenValuesArrayType& eigval, EigenVectorsMatrixType& eigvec );
-	
-	/** Get the color code for RGB */ 
-	RGBPixelType GetRGBColorCode();
-
 	
 	/** Compute the tensor from its eigen-system. Eigenvectors are arranged in columns */
 	void ComputeTensor( EigenVectorsMatrixType eigvec, EigenValuesArrayType eigval );
 	
-	/** Compute the vector in the Log-Euclidean space */
-	Self ComputeLogVector() const;
-	/** Compute the vector in the Log-Euclidean space with weigthing factors*/
-	Self ComputeLogVector(Vector<TComponent,6>) const;
 	
-	/** Compute the tensor from vector in the Log-Euclidean space */
-	Self ComputeTensorFromLogVector() const;
-	/** Compute the tensor from vector in the Log-Euclidean space with weighting factors  */
-	Self ComputeTensorFromLogVector(Vector<TComponent,6>) const;
-
-	
-//public:
-//	static const RealType m_Tolerance=1e-5;
 };
 
 } // end namespace itk

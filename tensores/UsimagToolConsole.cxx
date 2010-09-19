@@ -917,24 +917,25 @@ void UsimagToolConsole::SaveStrainTensor( ) {
 
 	m_filename = fl_file_chooser("Image Filename","*","");
 	if( !m_filename ){return;}
+
 	int dataId = m_strainTensorDataBrowser->value()-1;
 	if( dataId<0 ){return;}
 
 	STImageType::Pointer strainImage = m_VectorSTData[dataId].image;
 
-	STWriterType::Pointer   strainWriter  =  STWriterType::New();
-	CastFilterPointerType	    caster        =  CastFilterType::New();
+	STWriterType::Pointer strainWriter = STWriterType::New();
+	CastFilterPointerType caster = CastFilterType::New();
 	caster->SetInput( strainImage );
 
 	strainWriter->SetInput( caster->GetOutput() );
 
 	strainWriter->Modified();
 
+	// Se generan los nombres de ficheros, añadiendo número y extensión al indicado
 	NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
 	std::string format = m_filename;
 	if (format.rfind('.') != format.npos)
 		format.insert(format.rfind('.'),"%02d");
-//		format.replace(format.rfind('.'), 4, "%02d.vtk");
 
 	else format += "%02d.vtk";
 	
@@ -946,6 +947,7 @@ void UsimagToolConsole::SaveStrainTensor( ) {
 
 	strainWriter->SetFileNames(nameGenerator->GetFileNames());
 
+	// En primer lugar se escriben los datos de tensor de esfuerzo
 	try{
 		strainWriter->Write();
 	}
@@ -967,6 +969,7 @@ void UsimagToolConsole::SaveStrainTensor( ) {
 
 	deformWriter->SetFileNames(nameGenerator->GetFileNames());
 
+	// En segundo lugar se escriben los datos de deformación
 	try{
 		deformWriter->Write();
 	}
@@ -1328,6 +1331,7 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	
 	tensorImageReader->AddObserver( itk::ProgressEvent(), callback );
 
+	// Se generan los nombres sustituyendo el "00" por un número de la serie
 	NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
 	std::string format (m_filename);
 	format.replace(format.find("00"), 2, "%02d");
@@ -1337,16 +1341,17 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	nameGenerator->SetEndIndex(100);
 	nameGenerator->SetIncrementIndex(1);
 
+	// Se obtiene el número de ficheros de la serie
 	int numFiles = 0;
 	while ( itksys::SystemTools::FileExists( nameGenerator->GetFileNames()[numFiles].c_str() ) ) {
 		numFiles++;
 	}
 
+	// Se abren los ficheros de tensor de esfuerzo en primer lugar
 	nameGenerator->SetStartIndex(0);
 	nameGenerator->SetEndIndex((numFiles-1)/2);
 	tensorImageReader->SetFileNames(nameGenerator->GetFileNames());
 
-	
 	try{
 		tensorImageReader->Update();
 	}
@@ -1356,11 +1361,14 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	}
 
 	STImageType *tensorImage = STImageType::New();
-	CastFilterPointerType	    caster        =  CastFilterType::New();
+
+	// Se convierten los píxeles de tipo Vector a StrainTensor
+	CastFilterPointerType caster = CastFilterType::New();
 	caster->SetInput(tensorImageReader->GetOutput());
 	tensorImage = caster->GetOutput();
 
 
+	// En segundo lugar se leen los datos de deformación
 	DeformReaderType::Pointer deformImageReader = DeformReaderType::New();
 	deformImageReader->SetNumberOfThreads(   static_cast<unsigned int>( Threads->value() )   );
 	
@@ -1384,9 +1392,9 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	DeformImageType *deformImage = DeformImageType::New();
 	deformImage = deformImageReader->GetOutput();
 
+
 	// Si cargamos dos volumenes se ajusta el origen para que tenga el mismo valor en las dos imágenes
 	// y así poder compararlos mejor visualmente. 
-		
 	if(m_VectorSTData.size()>0){
 		tensorImage->SetOrigin(m_VectorSTData[0].image->GetOrigin());
 		tensorImage->SetSpacing(m_VectorSTData[0].image->GetSpacing());
@@ -1395,11 +1403,13 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	}
 
 	tensorImage->Update();
-cout<<"tam "<<tensorImage->GetLargestPossibleRegion().GetSize()<<"\n";
+
+	// El nombre se obtiene del nombre del fichero
 	std::string nombre(m_filename);
 	int pos = nombre.rfind('/');
 	nombre = nombre.substr(nombre.rfind('/') + 1);
 
+	// Se añade la nueva imagen al vector
 	DataSTElementType tensor_data;
 	int dataId = m_VectorSTData.size();
 	char bname[200];
@@ -1412,6 +1422,7 @@ cout<<"tam "<<tensorImage->GetLargestPossibleRegion().GetSize()<<"\n";
 
 	tensorImageReader = NULL;
 
+	// Se cambia la vista para mostrar la interfaz de tensor de esfuerzo
 	this->ViewModeStrain3D();
 
 }
