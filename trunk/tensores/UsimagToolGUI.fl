@@ -40,7 +40,7 @@ class UsimagToolGUI {open : {public UsimagToolBase}
         }
       }
       Fl_Menu_Bar UsimagToolMainMenu {
-        label Menu
+        label Menu open
         xywh {-1 0 1091 25} box PLASTIC_THIN_DOWN_BOX color 225 selection_color 32
       } {
         Submenu UsimagToolSubmenu {
@@ -696,25 +696,18 @@ MyTensorConsole->DTIGlyphsGroup->show();
 ActiveGroup = MyTensorConsole->DTIGlyphsGroup;}
             xywh {0 0 30 20}
           }
-          MenuItem STMenuItem {
-            label {Tensor de esfuerzo}
-            callback {ActiveGroup->hide();
-MyTensorConsole->STGroup->show();
-ActiveGroup = MyTensorConsole->STGroup;}
-            xywh {0 0 100 20}
-          }
         }
         Submenu StrainSubMenu {
           label Strain open
           xywh {85 85 66 24} labelcolor 56
         } {
-          MenuItem STScalarsMenuItem {
-            label Scalars
+          MenuItem STGlyphsMenuItem {
+            label {Glyph Config}
             callback {ViewModeStrain3D();
 
 ActiveGroup->hide();
 MyTensorConsole->STGroup->show();
-ActiveGroup = MyTensorConsole->STGroup;}
+ActiveGroup = MyTensorConsole->STGroup;} selected
             xywh {10 10 100 20}
           }
         }
@@ -734,7 +727,7 @@ ActiveGroup = MyTensorConsole->STGroup;}
         }
       }
       Fl_Group {} {
-        label Views open
+        label Views
         xywh {400 23 819 718} color 0 labeltype NO_LABEL
       } {
         Fl_Group m_view3D {
@@ -1848,7 +1841,7 @@ if (t>0) {
  ImageViewerStrain3D->redraw();
  Fl::check();
 // MyTensorConsole->verGlifos(0);
-}} selected
+}}
             xywh {766 54 18 18} box PLASTIC_UP_BOX color 16
           }
           Fl_Round_Button {} {

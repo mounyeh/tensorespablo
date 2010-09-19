@@ -30,9 +30,7 @@
 #include "vtkCubeSource.h"
 #include "vtkSuperquadricSource.h"
 
-// Construct object with scaling on and scale factor 1.0. Eigenvalues are 
-// extracted, glyphs are colored with input scalar data, and logarithmic
-// scaling is turned off.
+// Por defecto, los glifos son elipsoidales con resolución 8, y el color se obtiene de la FA
 vtkTensorGlyphDTI::vtkTensorGlyphDTI()
 {
 
@@ -67,12 +65,6 @@ vtkTensorGlyphDTI::~vtkTensorGlyphDTI()
 void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 {
 
-//	vtkPolyData *output = vtkPolyData::New();
-//	output = vtkPolyData::New();
-
-	vtkDataArray *inTensors;
-	double tensor[9];
-	vtkDataArray *inScalars;
 	vtkIdType numPts, numSourcePts, numSourceCells, inPtId;
 	vtkPoints *sourcePts;
 	vtkDataArray *sourceNormals;
@@ -87,27 +79,21 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 	int npts;
 	vtkIdType *pts;
 	vtkIdType ptIncr, cellId;
-	vtkIdType subIncr;
-	int numDirs, dir, eigen_dir, symmetric_dir;
 	vtkMatrix4x4 *matrix;
-	float *m[3], w[3], *v[3];
-	float m0[3], m1[3], m2[3];
-	float v0[3], v1[3], v2[3];
-	float xv[3], yv[3], zv[3];
-	float maxScale;
 	vtkPointData *pd, *outPD;
 
 	TensorImageType::IndexType pixelIndex;
-	TensorPixelType pixel, pixel1, pixel2, pixel3, pixel4, pixel5, pixel6, pixel7, pixel8;
-	const TensorPixelType pixel_prueba;
+	TensorPixelType pixel;
+
 	EigenValuesArrayType eigval;
 	EigenVectorsMatrixType eigvec;
+
 	double factor, norm_factor;
 	float scalarValue;
 	int i,j,k,p;
 	int xSize, ySize, zSize;
-	RealType cl, cp, cs, t1, t2, t3, num;
-	int cont=0;
+	RealType cl, cp, cs;
+	int numGlyphs = 0;
 	double alpha, beta;
 
 	vtkSuperquadricSource *superquadric;
@@ -115,6 +101,8 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 	TensorImageType::PointType origin = this->input->GetOrigin();
 	TensorImageType::SpacingType spacing = this->input->GetSpacing();
 
+
+	// Generar la fuente de glifo escogida
 	switch (this->GlyphType)
 	{
 		case ELLIPSOID: { 
@@ -123,7 +111,6 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 			sphere->SetThetaResolution(this->ThetaResolution);
 			this->source = sphere->GetOutput();
 			this->source->Update();
-//			sphere->Delete();
 			break;
 		}
 
@@ -149,27 +136,20 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 	trans = vtkTransform::New();
 	matrix = vtkMatrix4x4::New();
 
-	// set up working matrices
-	m[0] = m0; m[1] = m1; m[2] = m2; 
-	v[0] = v0; v[1] = v1; v[2] = v2; 
-
 	outPD = output->GetPointData();
 
+	// Calcular el tamaño de la región a mostrar, limitada por los "Bounds"
 	xSize = Bounds[1]-Bounds[0] + 1;
 	ySize = Bounds[3]-Bounds[2] + 1;
 	zSize = Bounds[5]-Bounds[4] + 1;
 	numPts = xSize * ySize * zSize;
 
-	//
-	// Allocate storage for output PolyData
-	//
 	sourcePts = source->GetPoints();
 	numSourcePts = sourcePts->GetNumberOfPoints();
 	numSourceCells = source->GetNumberOfCells();
 
 	newPts = vtkPoints::New();
 
-	// only copy scalar data through
 	pd = source->GetPointData();
 
 	newScalars = vtkFloatArray::New();
@@ -180,17 +160,14 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 		newNormals->SetNumberOfComponents(3);
 	}
 
-
-	//
-	// Traverse all Input points, transforming glyph at Source points
-	//
 	trans->PreMultiply();
 
+	// Bucle principal, recorre la cuadrícula de la image
+	// Se genera un glifo o ninguno en cada iteración
 	for (i=this->Bounds[0]; i<=this->Bounds[1]; i++)
 	for (j=this->Bounds[2]; j<=this->Bounds[3]; j++)
 	for (k=this->Bounds[4]; k<=this->Bounds[5]; k++)
 	{
-		ptIncr = inPtId * numSourcePts;
 
 		pixelIndex[0] = i;
 		pixelIndex[1] = j;
@@ -199,11 +176,12 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 
 		pixel.ComputeEigenSystem(eigval,eigvec);
 
+		// Si el tensor es nulo, no se representa
 		if (eigval[0]==0) continue;
 
-//		if ( (this->GlyphType==SUPERQUADRIC) || (this->ColorMode==COLOR_BY_CL) )
 		pixel.ComputeShapeCoefficients(cl,cp,cs);
 
+		// Discriminación de glifos
 		switch (this->FilterMode)
 		{
 			case FILTER_BY_FA: 
@@ -220,19 +198,19 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 
 		}
 
-		// Now do the real work for each "direction"
+		// Comienza la transformación geométrica...
 
-		// Remove previous scales ...
 		trans->Identity();
 
-		// translate Source to Input point
+		// Traslación del glifo a la posición adecuada
 		x[0] = origin[0] + spacing[0] * pixelIndex[0];
 		x[1] = origin[1] + spacing[1] * pixelIndex[1];
 		x[2] = origin[2] + spacing[2] * pixelIndex[2];
 		trans->Translate(x[0], x[1], x[2]);
 
 
-		// normalized eigenvectors rotate object for eigen direction 0
+		// Rotación del objeto en función de los autovectores
+		// El factor signo evita la orientación incorrecta de las normales
 		float signo = 1.0;
 		if ( (eigvec[0][1]*eigvec[1][2]-eigvec[0][2]*eigvec[1][1]) * eigvec[2][0] < 0) signo = -1.0; 
 
@@ -248,7 +226,7 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 
 		trans->Concatenate(matrix);
 
-
+		// Cálculo del factor de normalización, el inverso del mayor autovalor
 		if (fabs(eigval[0])>fabs(eigval[2]))
 			norm_factor = 1 / eigval[0];
 
@@ -259,9 +237,11 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 		if (this->Scaling)
 			factor *= this->ScaleFactor;
 
+		// Transformación del glifo en función de los autovalores
 		trans->Scale(factor*eigval[0],factor*eigval[1],factor*eigval[2]);
 
  
+		// Si el glifo es supercuádrico se modifican sus parámetros alfa y beta
 		if (this->GlyphType==SUPERQUADRIC) 
 		{
 			if (cl<=cp) 
@@ -285,17 +265,15 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 			sourceNormals = source->GetPointData()->GetNormals();
 	 	}
 
-		// multiply points (and normals if available) by resulting
-		// matrix
+		// Se aplica la transformación a los puntos y las normales
 		trans->TransformPoints(sourcePts,newPts);
 
-		// Apply the transformation to a series of points, 
-		// and append the results to outPts.
 		if ( newNormals )
 		{
 			trans->TransformNormals(sourceNormals,newNormals);
 		}
 
+		// Cálculo del escalar para el coloreado
 		switch (this->ColorMode)
 		{
 			case COLOR_BY_FA: 
@@ -312,22 +290,25 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 
 		}
 
-		// Copy point data from source
 		for (p=0; p < numSourcePts; p++) 
 		{
 			newScalars->InsertNextValue(scalarValue);
 		}
 
-		cont++;
+		// Se lleva la cuenta del número de glifos creado
+		numGlyphs++;
 	}
+
 
 	if (this->inputPoints) numPts = this->inputPoints->GetNumberOfPoints();
 
+
+	// Segundo bucle, para puntos de entrada específicos
+	// El tensor se interpola, y el resto del proceso es idéntico
 	if (this->inputPoints)
 
 	for (inPtId=0; inPtId < numPts; inPtId++)
 	{
-		ptIncr = inPtId * numSourcePts;
 
 		this->inputPoints->GetPoint(inPtId,x);
 		interpolacionLogEuclidea(x,&pixel);
@@ -338,19 +319,13 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 
 		pixel.ComputeShapeCoefficients(cl,cp,cs);
 
-		// Now do the real work for each "direction"
-
-		// Remove previous scales ...
 		trans->Identity();
 
-		// translate Source to Input point
 		trans->Translate(x[0], x[1], x[2]);
-
 
 		float signo = 1.0;
 		if ( (eigvec[0][1]*eigvec[1][2]-eigvec[0][2]*eigvec[1][1]) * eigvec[2][0] < 0) signo = -1.0; 
 
-		// normalized eigenvectors rotate object for eigen direction 0
 		matrix->Element[0][0] = eigvec[0][0];
 		matrix->Element[0][1] = eigvec[1][0];
 		matrix->Element[0][2] = signo*eigvec[2][0];
@@ -400,11 +375,8 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 			sourceNormals = source->GetPointData()->GetNormals();
 	 	}
 
-		// multiply points (and normals if available) by resulting
-		// matrix
 		trans->TransformPoints(sourcePts,newPts);
-		// Apply the transformation to a series of points, 
-		// and append the results to outPts.
+
 		if ( newNormals )
 		{
 			trans->TransformNormals(sourceNormals,newNormals);
@@ -427,50 +399,47 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 
 		}
 
-			// Copy point data from source
 		for (i=0; i < numSourcePts; i++) 
 		{
 			newScalars->InsertNextValue(scalarValue);
 		}
 
-		cont++;
+		numGlyphs++;
 
 	}
 
-	// Setting up for calls to PolyData::InsertNextCell()
+	// Se preparan las celdas del objeto de salida
 	if ( (sourceCells=source->GetVerts())->GetNumberOfCells() > 0 )
 	{
 		cells = vtkCellArray::New();
-		cells->Allocate(cont*sourceCells->GetSize());
+		cells->Allocate(numGlyphs*sourceCells->GetSize());
 		output->SetVerts(cells);
 		cells->Delete();
 	}
 	if ( (sourceCells=source->GetLines())->GetNumberOfCells() > 0 )
 	{
 		cells = vtkCellArray::New();
-		cells->Allocate(cont*sourceCells->GetSize());
+		cells->Allocate(numGlyphs*sourceCells->GetSize());
 		output->SetLines(cells);
 		cells->Delete();
 	}
 	if ( (sourceCells=source->GetPolys())->GetNumberOfCells() > 0 )
 	{
 		cells = vtkCellArray::New();
-		cells->Allocate(cont*sourceCells->GetSize());
+		cells->Allocate(numGlyphs*sourceCells->GetSize());
 		output->SetPolys(cells);
 		cells->Delete();
 	}
 	if ( (sourceCells=source->GetStrips())->GetNumberOfCells() > 0 )
 	{
 		cells = vtkCellArray::New();
-		cells->Allocate(cont*sourceCells->GetSize());
+		cells->Allocate(numGlyphs*sourceCells->GetSize());
 		output->SetStrips(cells);
 		cells->Delete();
 	}
 
-	//
-	// First copy all topology (transformation independent)
-	//
-	for (inPtId=0; inPtId < cont; inPtId++)
+	// Se copia la topología en el objeto de salida
+	for (inPtId=0; inPtId < numGlyphs; inPtId++)
 	{
 		ptIncr = inPtId * numSourcePts;
 		for (cellId=0; cellId < numSourceCells; cellId++)
@@ -486,9 +455,8 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 		}
 	}
 
-	//
-	// Update output and release memory
-	//
+	// Se actualizan la salida y se eliminan los objetos creados	
+
 	delete [] pts;
 
 	output->SetPoints(newPts);
@@ -506,128 +474,115 @@ void vtkTensorGlyphDTI::GetOutput(vtkPolyData *output)
 		newNormals->Delete();
 	}
 
-cout<<"contador "<<cont<<"\n";
-
-
 	trans->Delete();
 	matrix->Delete();
-//	source->Delete();
-//	return output;
+
 	return;
 }
 
 void vtkTensorGlyphDTI::interpolacionLineal (double x[3],TensorPixelType *pixel) {
 
-		TensorPixelType *puntero;
-		TensorPixelType pixel1, pixel2, pixel3, pixel4, pixel5, pixel6, pixel7, pixel8;
-		TensorImageType::IndexType pixelIndex;
-		TensorImageType::PointType origin = this->input->GetOrigin();
-		TensorImageType::SpacingType spacing = this->input->GetSpacing();
-		RealType t1,t2,t3;
-		
-		pixelIndex[0] = (int) ((x[0]-origin[0]) / spacing[0]);
-		pixelIndex[1] = (int) ((x[1]-origin[1]) / spacing[1]);
-		pixelIndex[2] = (int) ((x[2]-origin[2]) / spacing[2]);
+	TensorPixelType *puntero;
+	TensorPixelType pixel1, pixel2, pixel3, pixel4, pixel5, pixel6, pixel7, pixel8;
+	TensorImageType::IndexType pixelIndex;
+	TensorImageType::PointType origin = this->input->GetOrigin();
+	TensorImageType::SpacingType spacing = this->input->GetSpacing();
+	RealType t1,t2,t3;
+	
+	pixelIndex[0] = (int) ((x[0]-origin[0]) / spacing[0]);
+	pixelIndex[1] = (int) ((x[1]-origin[1]) / spacing[1]);
+	pixelIndex[2] = (int) ((x[2]-origin[2]) / spacing[2]);
 
-		t1 = ( (x[0]-origin[0]) / spacing[0] - pixelIndex[0] ) / spacing[0];
-		t2 = ( (x[1]-origin[1]) / spacing[1] - pixelIndex[1] ) / spacing[1];
-		t3 = ( (x[2]-origin[2]) / spacing[2] - pixelIndex[2] ) / spacing[2];
+	t1 = ( (x[0]-origin[0]) / spacing[0] - pixelIndex[0] ) / spacing[0];
+	t2 = ( (x[1]-origin[1]) / spacing[1] - pixelIndex[1] ) / spacing[1];
+	t3 = ( (x[2]-origin[2]) / spacing[2] - pixelIndex[2] ) / spacing[2];
 
-		pixel1 = (input->GetPixel(pixelIndex));
+	pixel1 = (input->GetPixel(pixelIndex));
 
-		pixelIndex[0] = pixelIndex[0] + 1;
-		pixel2 = (input->GetPixel(pixelIndex));
+	pixelIndex[0] = pixelIndex[0] + 1;
+	pixel2 = (input->GetPixel(pixelIndex));
 
-		pixelIndex[0] = pixelIndex[0] - 1;
-		pixelIndex[1] = pixelIndex[1] + 1;
-		pixel3 = (input->GetPixel(pixelIndex));
+	pixelIndex[0] = pixelIndex[0] - 1;
+	pixelIndex[1] = pixelIndex[1] + 1;
+	pixel3 = (input->GetPixel(pixelIndex));
 
-		pixelIndex[0] = pixelIndex[0] + 1;
-		pixel4 = (input->GetPixel(pixelIndex));
+	pixelIndex[0] = pixelIndex[0] + 1;
+	pixel4 = (input->GetPixel(pixelIndex));
 
-		pixelIndex[0] = pixelIndex[0] - 1;
-		pixelIndex[1] = pixelIndex[1] - 1;
-		pixelIndex[2] = pixelIndex[2] + 1;
-		pixel5 = (input->GetPixel(pixelIndex));
+	pixelIndex[0] = pixelIndex[0] - 1;
+	pixelIndex[1] = pixelIndex[1] - 1;
+	pixelIndex[2] = pixelIndex[2] + 1;
+	pixel5 = (input->GetPixel(pixelIndex));
 
-		pixelIndex[0] = pixelIndex[0] + 1;
-		pixel6 = (input->GetPixel(pixelIndex));
+	pixelIndex[0] = pixelIndex[0] + 1;
+	pixel6 = (input->GetPixel(pixelIndex));
 
-		pixelIndex[0] = pixelIndex[0] - 1;
-		pixelIndex[1] = pixelIndex[1] + 1;
-		pixel7 = (input->GetPixel(pixelIndex));
+	pixelIndex[0] = pixelIndex[0] - 1;
+	pixelIndex[1] = pixelIndex[1] + 1;
+	pixel7 = (input->GetPixel(pixelIndex));
 
-		pixelIndex[0] = pixelIndex[0] + 1;
-		pixel8 = (input->GetPixel(pixelIndex));
+	pixelIndex[0] = pixelIndex[0] + 1;
+	pixel8 = (input->GetPixel(pixelIndex));
 
-		*pixel = ((pixel1*(1-t1) + pixel2*t1) * (1-t2) + (pixel3*(1-t1) + pixel4*t1) * t2) * (1-t3) + ((pixel5*(1-t1) + pixel6*t1) * (1-t2) + (pixel7*(1-t1) + pixel8*t1) * t2) * t3;
+	*pixel = ((pixel1*(1-t1) + pixel2*t1) * (1-t2) + (pixel3*(1-t1) + pixel4*t1) * t2) * (1-t3) + ((pixel5*(1-t1) + pixel6*t1) * (1-t2) + (pixel7*(1-t1) + pixel8*t1) * t2) * t3;
 	 
 }
 
 void vtkTensorGlyphDTI::interpolacionLogEuclidea (double x[3],TensorPixelType *pixel) {
 
-		TensorPixelType puntero;
-		TensorPixelType pixel1, pixel2, pixel3, pixel4, pixel5, pixel6, pixel7, pixel8;
-		TensorImageType::IndexType pixelIndex;
-		TensorImageType::PointType origin = this->input->GetOrigin();
-		TensorImageType::SpacingType spacing = this->input->GetSpacing();
-		RealType t1,t2,t3;
+	TensorPixelType puntero;
+	TensorPixelType pixel1, pixel2, pixel3, pixel4, pixel5, pixel6, pixel7, pixel8;
+	TensorImageType::IndexType pixelIndex;
+	TensorImageType::PointType origin = this->input->GetOrigin();
+	TensorImageType::SpacingType spacing = this->input->GetSpacing();
+	RealType t1,t2,t3;
 
-		pixelIndex[0] = (int) ((x[0]-origin[0]) / spacing[0]);
-		pixelIndex[1] = (int) ((x[1]-origin[1]) / spacing[1]);
-		pixelIndex[2] = (int) ((x[2]-origin[2]) / spacing[2]);
+	pixelIndex[0] = (int) ((x[0]-origin[0]) / spacing[0]);
+	pixelIndex[1] = (int) ((x[1]-origin[1]) / spacing[1]);
+	pixelIndex[2] = (int) ((x[2]-origin[2]) / spacing[2]);
 
-		t1 = ( (x[0]-origin[0]) / spacing[0] - pixelIndex[0] ) / spacing[0];
-		t2 = ( (x[1]-origin[1]) / spacing[1] - pixelIndex[1] ) / spacing[1];
-		t3 = ( (x[2]-origin[2]) / spacing[2] - pixelIndex[2] ) / spacing[2];
+	t1 = ( (x[0]-origin[0]) / spacing[0] - pixelIndex[0] );
+	t2 = ( (x[1]-origin[1]) / spacing[1] - pixelIndex[1] );
+	t3 = ( (x[2]-origin[2]) / spacing[2] - pixelIndex[2] );
 
-		pixel1 = (input->GetPixel(pixelIndex));
-		pixel1 = pixel1.ComputeTensorFromLogVector();
+	pixel1 = (input->GetPixel(pixelIndex));
+	pixel1 = pixel1.ComputeTensorFromLogVector();
 
-		pixelIndex[0] = pixelIndex[0] + 1;
-		pixel2 = (input->GetPixel(pixelIndex));
-		pixel2 = pixel2.ComputeTensorFromLogVector();
+	pixelIndex[0] = pixelIndex[0] + 1;
+	pixel2 = (input->GetPixel(pixelIndex));
+	pixel2 = pixel2.ComputeTensorFromLogVector();
 
-		pixelIndex[0] = pixelIndex[0] - 1;
-		pixelIndex[1] = pixelIndex[1] + 1;
-		pixel3 = (input->GetPixel(pixelIndex));
-		pixel3 = pixel3.ComputeTensorFromLogVector();
+	pixelIndex[0] = pixelIndex[0] - 1;
+	pixelIndex[1] = pixelIndex[1] + 1;
+	pixel3 = (input->GetPixel(pixelIndex));
+	pixel3 = pixel3.ComputeTensorFromLogVector();
 
-		pixelIndex[0] = pixelIndex[0] + 1;
-		pixel4 = (input->GetPixel(pixelIndex));
-		pixel4 = pixel4.ComputeTensorFromLogVector();
+	pixelIndex[0] = pixelIndex[0] + 1;
+	pixel4 = (input->GetPixel(pixelIndex));
+	pixel4 = pixel4.ComputeTensorFromLogVector();
 
-		pixelIndex[0] = pixelIndex[0] - 1;
-		pixelIndex[1] = pixelIndex[1] - 1;
-		pixelIndex[2] = pixelIndex[2] + 1;
-		pixel5 = (input->GetPixel(pixelIndex));
-		pixel5 = pixel5.ComputeTensorFromLogVector();
+	pixelIndex[0] = pixelIndex[0] - 1;
+	pixelIndex[1] = pixelIndex[1] - 1;
+	pixelIndex[2] = pixelIndex[2] + 1;
+	pixel5 = (input->GetPixel(pixelIndex));
+	pixel5 = pixel5.ComputeTensorFromLogVector();
 
-		pixelIndex[0] = pixelIndex[0] + 1;
-		pixel6 = (input->GetPixel(pixelIndex));
-		pixel6 = pixel6.ComputeTensorFromLogVector();
+	pixelIndex[0] = pixelIndex[0] + 1;
+	pixel6 = (input->GetPixel(pixelIndex));
+	pixel6 = pixel6.ComputeTensorFromLogVector();
 
-		pixelIndex[0] = pixelIndex[0] - 1;
-		pixelIndex[1] = pixelIndex[1] + 1;
-		pixel7 = (input->GetPixel(pixelIndex));
-		pixel7 = pixel7.ComputeTensorFromLogVector();
+	pixelIndex[0] = pixelIndex[0] - 1;
+	pixelIndex[1] = pixelIndex[1] + 1;
+	pixel7 = (input->GetPixel(pixelIndex));
+	pixel7 = pixel7.ComputeTensorFromLogVector();
 
-		pixelIndex[0] = pixelIndex[0] + 1;
-		pixel8 = (input->GetPixel(pixelIndex));
-		pixel8 = pixel8.ComputeTensorFromLogVector();
+	pixelIndex[0] = pixelIndex[0] + 1;
+	pixel8 = (input->GetPixel(pixelIndex));
+	pixel8 = pixel8.ComputeTensorFromLogVector();
 
-		*pixel = ((pixel1*(1-t1) + pixel2*t1) * (1-t2) + (pixel3*(1-t1) + pixel4*t1) * t2) * (1-t3) + ((pixel5*(1-t1) + pixel6*t1) * (1-t2) + (pixel7*(1-t1) + pixel8*t1) * t2) * t3;
+	*pixel = ((pixel1*(1-t1) + pixel2*t1) * (1-t2) + (pixel3*(1-t1) + pixel4*t1) * t2) * (1-t3) + ((pixel5*(1-t1) + pixel6*t1) * (1-t2) + (pixel7*(1-t1) + pixel8*t1) * t2) * t3;
 
-		*pixel = pixel->ComputeLogVector();
+	*pixel = pixel->ComputeLogVector();
 
 }
-
-
-
-
-
-
-
-
-
 

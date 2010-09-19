@@ -61,11 +61,6 @@ public:
   vtkPoints* GetInputPoints()
     {return this->inputPoints;};
 
-  void SetGlyphType(int type)
-    {this->GlyphType = type;};
-  int GetGlyphType()
-    {return this->GlyphType;};
-
   void SetScaling(bool value)
     {this->Scaling = value;};
   bool GetScaling()
@@ -91,27 +86,21 @@ public:
   int GetTiempo()
     {return this->Tiempo;};
 
-  void SetDeformArray(vtkFloatArray *array)
-    {this->deformArray = array;};
-  vtkFloatArray* GetDeformArray()
-    {return this->deformArray;};
-
   void interpolarTensor (double x[3], double eigval_out[2], double *angulo, double deform_values[2]);
 
 protected:
 
-  STImageType::Pointer input;
-  DeformImageType::Pointer deformImage;
-  vtkPoints *inputPoints;
-  int GlyphType;
+  STImageType::Pointer input;		// Imagen tensorial de entrada
+  DeformImageType::Pointer deformImage;	// Campo de deformaciones de entrada
+  vtkPoints *inputPoints;		// Puntos de entrada, para mostrar glifos en puntos que no pertenecen a la imagen
 
-  bool Scaling; // Determine whether scaling of geometry is performed
-  double ScaleFactor; // Scale factor to use to scale geometry
-  int ColorMode; // The coloring mode to use for the glyphs.
+  bool Scaling; 			// Determina si se aplica la escala
+  double ScaleFactor;
+  int ColorMode; 			// Tipo de coloreado para los glifos
 
-  int PlanoZ, Tiempo;
+  int PlanoZ;				// Corte a visualizar
+  int Tiempo;				// Instante de tiempo a visualizar
 
-  vtkFloatArray *deformArray;
 };
 
 #endif

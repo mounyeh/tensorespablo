@@ -1339,7 +1339,7 @@ void UsimagToolConsole::LoadStrainTensor(  )
 
 	int numFiles = 0;
 	while ( itksys::SystemTools::FileExists( nameGenerator->GetFileNames()[numFiles].c_str() ) ) {
-		i++;
+		numFiles++;
 	}
 
 	nameGenerator->SetStartIndex(0);
@@ -1395,7 +1395,7 @@ void UsimagToolConsole::LoadStrainTensor(  )
 	}
 
 	tensorImage->Update();
-cout<<"tam "<<tensorImage->GetLargestPossibleRegion().GetSize()<<"\n";
+
 	std::string nombre(m_filename);
 	int pos = nombre.rfind('/');
 	nombre = nombre.substr(nombre.rfind('/') + 1);

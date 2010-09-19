@@ -213,7 +213,6 @@ knn-1canal/classifyKNNCore.txx
 knn-1canal/voronoiFilter.cxx
 3DViewer/Viewer3D.cxx
 vtkTensorGlyphDTI.cxx
-vtkStrainTensorGlyph.cxx
 strain/vtkTensorGlyphStrain.cxx
 )
 

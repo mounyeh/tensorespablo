@@ -85,7 +85,6 @@
 
 #include "vtkCylinderSource.h"
 #include "vtkConeSource.h"
-#include "vtkStrainTensorGlyph.h"
 #include "strain/itkStrainTensor.h"
 
 #include "strain/vtkTensorGlyphStrain.h"
@@ -343,34 +342,27 @@ void TensorConsole::ViewStrainSlice3D(int tiempo)
 	if( dataId<0){return;}
 
 	DeformImageType::Pointer image = (*m_VectorSTData)[dataId].deform_image;
+
 	ExtractFilterType::Pointer extract = ExtractFilterType::New();
 	extract->SetInput( image );
+
 	DeformImageType::RegionType inputRegion = image->GetLargestPossibleRegion();
+
 	DeformImageType::SizeType inputSize = inputRegion.GetSize();
 	inputSize[3] = 0;
+
 	DeformImageType::IndexType inputIndex = inputRegion.GetIndex();
-	inputIndex[3] = tiempo; // Instante temporal
+	inputIndex[3] = tiempo;
+
 	DeformImageType::RegionType desiredRegion;
 	desiredRegion.SetSize( inputSize );
 	desiredRegion.SetIndex( inputIndex );
+
 	extract->SetExtractionRegion( desiredRegion );
 
-//	ComputeStrainScalarsType::Pointer filter = ComputeStrainScalarsType::New();
 	ComputeDeformFilterPointer filter = ComputeDeformFilterType::New();
 	filter->SetInput( extract->GetOutput() );
-/*
-	if (strainST0->value())
-		filter->SetComputeST(0);
-	else if (strainST1->value())
-		filter->SetComputeST(1);
-	else if (strainST2->value())
-		filter->SetComputeST(2);
-	else if (strainEIG0->value())
-		filter->SetComputeEigVal(0);
-	else if (strainEIG1->value())
-		filter->SetComputeEigVal(1);
-	else filter->SetComputeInvariant();
-*/
+
 	try{
 		filter->Update();
 	}
@@ -379,8 +371,9 @@ void TensorConsole::ViewStrainSlice3D(int tiempo)
 		return;
 	}
 	
-  	vtkImageImport* vtkImporter = vtkImageImport::New();
   	m_VTKexporter->SetInput(filter->GetOutput());
+
+  	vtkImageImport* vtkImporter = vtkImageImport::New();
   	ConnectPipelines(m_VTKexporter, vtkImporter);
 
   	try{
@@ -4076,6 +4069,7 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 
 	float escala = 1.0;
 
+	// Si se aumenta la resolución de glifos, se calculan los puntos adicionales donde mostrarlos
 	if(strainMuestreo2->value()) {
 
 		escala = 0.5;
@@ -4101,6 +4095,7 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 			}
 		}
 	}
+
 	if(strainMuestreo3->value()) {
 	
 		escala = 0.33;
@@ -4170,7 +4165,6 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 		}
 	}
 
-
 	vtkTensorGlyphStrain *glifos = new vtkTensorGlyphStrain();
 	glifos->SetInput(imagen);
 	glifos->SetDeformImage(deform);
@@ -4194,9 +4188,7 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 
 	glifos->SetScaleFactor(escala * strainEscala->value());
 
-
 	m_activeActorStrain = vtkActor::New();
-//	m_activeActorStrain->GetProperty()->SetColor(1,1,1);
 	ImageViewerStrain3D->ConnectMapper(glifos->GetOutput(), m_activeActorStrain);
 	ImageViewerStrain3D->SetScalarRange(m_activeActorStrain, rangeStrainMin, rangeStrainMax);
 
@@ -4204,9 +4196,6 @@ void TensorConsole::verGlifosStrain(int planoZ, int tiempo) {
 		m_scalarBarStrain = vtkScalarBarActor::New();
 		m_scalarBarStrain->SetHeight(0.3);
 		m_scalarBarStrain->SetWidth(0.06);
-//		ImageViewerStrain3D->RemovePropA(m_scalarBarStrain);
-//		m_scalarBarStrain->Delete();
-//		m_scalarBarStrain=NULL;
 	}
 
 	vtkLookupTable *lut = vtkLookupTable::New();
@@ -4226,188 +4215,6 @@ void TensorConsole::SetScalarRangeStrain(double min, double max) {
 	rangeStrainMax = max;
 	ImageViewerStrain3D->SetScalarRange(m_activeActorStrain, min, max);
 }
-
-void TensorConsole::tensorEsfuerzo2D() {
-
-cout<<"a1\n";
-
-	STImageType::Pointer esfuerzo = STImageType::New();
-	STImageType::IndexType start;
-	STImageType::SizeType size;
-	unsigned int a;
-cout<<"a2\n";
-cout<<"a3\n";
-	start.Fill(0);
-//	size.Fill(10);
-	size[0] = 11;
-	size[1] = 12;
-	size[2] = 13;
-	size[3] = 14;
-cout<<"a4\n";
-	STImageType::RegionType region;
-cout<<"a5\n";
-	region.SetSize( size );
-	region.SetIndex( start );
-cout<<"a6\n";
-	esfuerzo->SetRegions( region );
-cout<<"a7\n";
-	esfuerzo->Allocate();
-cout<<"a8\n";
-	STPixelType f;
-	STImageType::IndexType indice;
-
-srand ( time(NULL) );
-	for (int ind0=0; ind0<11; ind0++) {
-		indice[0] = ind0;
-		for (int ind1=0; ind1<12; ind1++) {
-			indice[1] = ind1;
-			for (int ind2=0; ind2<13; ind2++) {
-				indice[2] = ind2;
-				for (int ind3=0; ind3<14; ind3++) {
-					indice[3] = ind3;
-					f[0] = rand() % 1000 - 500;
-					f[1] = rand() % 1000 - 500;
-					f[2] = rand() % 1000 - 500;
-					esfuerzo->SetPixel(indice,f);
-				}
-			}
-		}
-	}
-
-//	for (unsigned int i=0; i<3; i++) { f[a] = a; }
-//	esfuerzo->FillBuffer( f );
-cout<<"a9\n";
-
-
-
-	STPixelType pix;
-	indice[0] = 0;
-	indice[1] = 0;
-	indice[2] = 0;
-	indice[3] = 0;
-cout<<"a\n";
-	pix = esfuerzo->GetPixel(indice);
-cout<<"b\n";
-cout<<"Pixel: "<<pix[0]<<" "<<pix[1]<<" "<<pix[2]<<"\n";
-
-	int tam1, tam2, tam3, tam4;
-	tam1 = esfuerzo->GetRequestedRegion().GetSize()[0];
-	tam2 = esfuerzo->GetRequestedRegion().GetSize()[1];
-	tam3 = esfuerzo->GetRequestedRegion().GetSize()[2];
-	tam4 = esfuerzo->GetRequestedRegion().GetSize()[3];
-cout<<tam1<<" "<<tam2<<" "<<tam3<<" "<<tam4<<"\n";
-
-
-	DataSTElementType tensor_data;
-	char bname[200];
-	tensor_data.Id     = m_VectorSTData->size();
-	tensor_data.nombre = "Nombre";
-	tensor_data.image  = esfuerzo;
-
-	m_VectorSTData->push_back(tensor_data);
-
-return;
-
-	if (m_activeActorX) {
-		ImageViewer3D->HideModel(m_activeActorX);
-		m_activeActorX->GetMapper()->Delete();
-		m_activeActorX->Delete();
-		m_activeActorX=NULL;
-	}
-/*
-	TensorImageType::Pointer image = (*m_VectorTensorData)[0].image;
-	TensorPixelType pixel;
-	TensorImageType::IndexType pixelIndex;;
-
-	vtkStructuredPoints *vol = vtkStructuredPoints::New();
-	vol->SetDimensions (10,10,100);
-	vol->SetOrigin(0,0,0);
-	vol->SetSpacing(150,150,100);
-
-	vtkFloatArray *scalars = vtkFloatArray::New();
-	scalars->SetNumberOfComponents(1);
-	scalars->SetNumberOfTuples(10000);
-
-	vtkFloatArray *tensors = vtkFloatArray::New();
-	tensors->SetNumberOfComponents(9);
-	tensors->SetNumberOfTuples(10000);
-*/
-/*
-//cout<<"1\n";
-int offset = 0;
-	for (int i=80; i<180; i++) {
-		for (int j=15; j<25; j++) {
-			for (int k=10; k<20; k++) {
-
-				pixelIndex[0] = i;
-				pixelIndex[1] = 7*j;
-				pixelIndex[2] = k;
-				pixel = image->GetPixel(pixelIndex);
-
-//				tensors->InsertTuple9(offset,.2,.1,.1,.2,0,0,0,0,0);
-				tensors->InsertTuple9(offset,4*pixel[0],4*pixel[1],4*pixel[1],4*pixel[2],0,0,0,0,0);
-				scalars->InsertTuple1(offset,1);
-				offset++;
-			}
-		}
-	}
-*/
-/*
-	vol->GetPointData()->SetTensors(tensors);
-	vol->GetPointData()->SetScalars(scalars);
-	vol->Update();
-*/
-	vtkTensorGlyphStrain *glifos = new vtkTensorGlyphStrain();
-	glifos->SetInput(esfuerzo);
-	glifos->SetPlanoZ(0);
-	glifos->SetTiempo(0);
-	glifos->SetScaleFactor(0.004);
-
-//	vtkPolyData *output = glifos->GetOutput();
-
-  vtkGlyphSource2D *glyphsource = vtkGlyphSource2D::New();
-  glyphsource->SetGlyphTypeToDiamond();
-  glyphsource->FilledOn();
-//  glyphsource->CrossOn();
-//  glyphsource->SetScale(10);
-  glyphsource->SetColor(.5,.5,.5);
-//  glyphsource->SetCenter(100,100,0);
-  glyphsource->Update();
-
-
-	m_activeActorX = vtkActor::New();
-	m_activeActorX->GetProperty()->SetColor(1,1,1);
-	ImageViewer3D->ConnectMapper(glifos->GetOutput(), m_activeActorX);
-	ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);
-
-
-	Fl::check();
-	ImageViewer3D->redraw();
-	Fl::check();
-
-
-/*
-	vtkPolyDataMapper2D *mapper = vtkPolyDataMapper2D::New();
-	mapper->SetInput(glifos->GetOutput());
-
-	vtkActor2D *actor = vtkActor2D::New();
-	actor->SetMapper(mapper);
-	actor->VisibilityOn();
-	
-	vtkRenderer *irenderer = vtkRenderer::New();
-	vtkRenderWindow *iwindow = vtkRenderWindow::New();
-	iwindow->AddRenderer(irenderer);
-	iwindow->SetSize(800,600);
-	vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
-	iren->SetRenderWindow(iwindow);
-
-	irenderer->AddViewProp(actor);
-
-	iwindow->Render(); 
-*/
-
-}
-
 
 void TensorConsole::actualizarGlifosDTI() {
 
@@ -4440,7 +4247,6 @@ void TensorConsole::imagenActiva(int numPlano,bool activo) {
 
 }
 
-
 void TensorConsole::glifosActivos() {
 
 	if (m_planoActivoX) verGlifos(0);
@@ -4472,40 +4278,7 @@ void TensorConsole::glifosActivos() {
 
 
 }
-/*
-void TensorConsole::verGlifos(int orientation) {
 
-	int i,j,k;
-	int xMin, xMax, yMin, yMax, zMin, zMax;
-
-	xMin = xMinimo->value();
-	xMax = xMaximo->value();
-	yMin = yMinimo->value();
-	yMax = yMaximo->value();
-	zMin = zMinimo->value();
-	zMax = zMaximo->value();
-
-	switch (orientation) {
-	
-		case 0:	borrarGlifos(0);
-			i=ImageViewer3D->planeWidgetX->GetSliceIndex();
-			verGlifos(0, i,i, yMin,yMax, zMin,zMax);
-			break;
-
-		case 1:	borrarGlifos(1);
-			j=ImageViewer3D->planeWidgetY->GetSliceIndex();
-			verGlifos(1, xMin,xMax, j,j, zMin,zMax);
-			break;
-
-		case 2:	borrarGlifos(2);
-			k=ImageViewer3D->planeWidgetZ->GetSliceIndex();
-			verGlifos(2, xMin,xMax, yMin,yMax, k,k);
-			break;
-
-	}
-
-}
-*/
 void TensorConsole::cambiarOpacidad(float value) {
 	
 	if (m_activeActorX)
@@ -4573,10 +4346,7 @@ void TensorConsole::borrarGlifos(int numImagen) {
 
 void TensorConsole::verGlifos(int numImagen) {
 
-if (!mostrarGlifos->value()) return;
-
-	clock_t t_inicial, t_final, t_diff;
-	t_inicial = clock();
+	if (!mostrarGlifos->value()) return;
 
 	int dataId = m_tensordataBrowser->value()-1;
 
@@ -4626,7 +4396,6 @@ if (!mostrarGlifos->value()) return;
 			gen->SetBounds(i,i, yMin,yMax, zMin,zMax);
 			gen->GetOutput(glifos);
 			m_activeActorX = vtkActor::New();
-m_activeActorX->GetProperty()->BackfaceCullingOn();
 			ImageViewer3D->ConnectMapper(glifos, m_activeActorX);
 			ImageViewer3D->SetScalarRange(m_activeActorX, 0, 1);
 			break;
@@ -4636,7 +4405,6 @@ m_activeActorX->GetProperty()->BackfaceCullingOn();
 			gen->SetBounds(xMin,xMax, j,j, zMin,zMax);
 			gen->GetOutput(glifos);
 			m_activeActorY = vtkActor::New();
-m_activeActorY->GetProperty()->BackfaceCullingOn();
 			ImageViewer3D->ConnectMapper(glifos, m_activeActorY);
 			ImageViewer3D->SetScalarRange(m_activeActorY, 0, 1);
 			break;
@@ -4646,7 +4414,6 @@ m_activeActorY->GetProperty()->BackfaceCullingOn();
 			gen->SetBounds(xMin,xMax, yMin,yMax, k,k);
 			gen->GetOutput(glifos);
 			m_activeActorZ = vtkActor::New();
-m_activeActorZ->GetProperty()->BackfaceCullingOn();
 			ImageViewer3D->ConnectMapper(glifos, m_activeActorZ);
 			ImageViewer3D->SetScalarRange(m_activeActorZ, 0, 1);
 			break;
@@ -4659,809 +4426,6 @@ m_activeActorZ->GetProperty()->BackfaceCullingOn();
 
 	glifos->Delete();
 
-//	cout<<m_activeActor->GetBounds()[0]<<" "<<m_activeActor->GetBounds()[1]<<" "<<m_activeActor->GetBounds()[2]<<" "<<m_activeActor->GetBounds()[3]<<" "<<m_activeActor->GetBounds()[4]<<" "<<m_activeActor->GetBounds()[5]<<"\n";
-
-//	scalars->Delete();
-//	vol->Delete();
-//	tensor->Delete();
-//	glyph->Delete();
-
-	t_final = clock();
-	double diff = (double) (t_final - t_inicial) / (double) CLOCKS_PER_SEC;
-cout<<"tiempo "<<t_inicial<<" "<<t_final<<" "<<t_final-t_inicial<<" "<<CLOCKS_PER_SEC<<" "<<diff<<"\n";
-
-
 }
 
-void TensorConsole::probarEsfuerzo() {
-
-	borrarGlifos(0);
-	borrarGlifos(1);
-	borrarGlifos(2);
-
-	double tiempo = this->tiempo;
-	double radioext = 21 - 7 * cos (3.1415 * tiempo / 8);
-	double radioint = 8 - 4 * cos (3.1415 * tiempo / 8); 
-	double distancia = radioext - radioint;
-	double altura = 9 + 4 * cos (3.1415 * tiempo / 8);
-	double volumen = 3.1415 * (radioext*radioext - radioint*radioint) * altura;
-
-	double cantidad1 = 3.1415 * sin (3.1415 / 8 * tiempo);
-
-	double distanciaext = - 7 * cos (3.1415 * tiempo / 8) + 7 * cos (3.1415 * (tiempo-1) / 8);
-	double distanciaint = - 4 * cos (3.1415 * tiempo / 8) + 4 * cos (3.1415 * (tiempo-1) / 8);
-
-	double velext = 7 * sin (3.1415 * tiempo / 8);
-	double velint = 4 * sin (3.1415 * tiempo / 8);
-
-	double espaciado = 1.5;
-	double angulo,radio, velocidad;
-	double origen;
-	double r, ang, x, y;
-	double derivxx, derivxy, derivyx, derivyy;
-
-	double defmax = 0;
-
-	double area = 3.1415 * (radioext*radioext - radioint*radioint);
-	espaciado = sqrt (area/600);
-
-//	if (fabs(velext/2)>espaciado) espaciado = fabs(velext/2);
-//	else if (fabs(distanciaext)<1.0) espaciado = 1.0;
-
-
-
-
-
-
-
-
-
-
-	STImageType::Pointer esfuerzo = STImageType::New();
-	STImageType::IndexType start;
-	STImageType::SizeType size;
-	unsigned int a;
-cout<<"a2\n";
-cout<<"a3\n";
-	start.Fill(0);
-//	size.Fill(10);
-	size[0] = 40;
-	size[1] = 40;
-	size[2] = 1;
-	size[3] = 16;
-cout<<"a4\n";
-	STImageType::RegionType region;
-cout<<"a5\n";
-	region.SetSize( size );
-	region.SetIndex( start );
-cout<<"a6\n";
-	esfuerzo->SetRegions( region );
-cout<<"a7\n";
-	esfuerzo->Allocate();
-cout<<"a8\n";
-	STPixelType f;
-
-	STImageType::IndexType indice;
-	indice[2] = 1;
-	indice[3] = this->tiempo;
-
-
-
-
-
-
-
-
-	origen = -19.5 * espaciado;
-
-	vtkStructuredPoints *vol = vtkStructuredPoints::New();
-	vol->SetDimensions (40,1,40);
-	vol->SetOrigin(origen,0,origen);
-	vol->SetSpacing(espaciado,espaciado,espaciado);
-
-	vtkFloatArray *deform = vtkFloatArray::New();
-	deform->SetNumberOfComponents(1);
-	deform->SetNumberOfTuples(1600);
-
-	vtkFloatArray *tensor = vtkFloatArray::New();
-	tensor->SetNumberOfComponents(9);
-	tensor->SetNumberOfTuples(1600);
-
-	int offset = 0;
-	int num=0;
-/*
-	double def,longitud;
-
-	vtkUnstructuredGrid *grid = vtkUnstructuredGrid::New();
-	vtkPoints *puntos = vtkPoints::New();
-	
-	for (r = radioint; r < radioext; r += fabs(def)) {
-
-		def = distanciaint + (r/distancia) * (distanciaext-distanciaint);
-		longitud = 2 * 3.1415 * r;
-
-		if (longitud<32) num = 32;
-		else if (longitud<64) num=64;
-		else num=128;
-
-		for (ang=0;ang<2*3.1415;ang+=2*3.1415/(int)num) {
-
-			puntos->InsertPoint (offset, r * cos(ang), 0, r * sin(ang));
-			deform->InsertTuple9(offset,def,0,0,0,1,0,0,0,1);
-			offset++;
-
-		}
-
-	}
-*/
-
-
-
-
-	for (int i=0; i<40; i++) {
-		for (int j=0; j<40; j++) {
-
-			x = -origen - espaciado*i;
-			y = -origen - espaciado*j;
-
-//			x = 10; y = 0.17;
-
-			angulo = atan2(y,x);
-			radio = sqrt(x*x + y*y);
-
-//cos 0.5403	sen 0.8414
-//			if ( (i==14 && j==12) || (i==15 && j==12) || (i==24 && j==12) ) {
-//			if (x*y > 0) {
-						if ( (radio > radioint+espaciado/2) && (radio < radioext-espaciado/2) ) {
-
-				velocidad = velint + (radio-radioint) * (velext-velint) / (radioext-radioint);
-
-//				deform->InsertTuple1(offset,distanciaint + ((radio-radioint)/distancia) * (distanciaext-distanciaint));
-				deform->InsertTuple1(offset,velocidad);
-
-/*				derivxx = (velext-velint) * x * cos (angulo) / ( (radioext-radioint) * sqrt(x*x + y*y) );
-				derivxy = (velext-velint) * y * cos (angulo) / ( (radioext-radioint) * sqrt(x*x + y*y) );
-				derivyx = (velext-velint) * x * sin (angulo) / ( (radioext-radioint) * sqrt(x*x + y*y) );
-				derivyy = (velext-velint) * y * sin (angulo) / ( (radioext-radioint) * sqrt(x*x + y*y) );
-*/
-				derivxx = (velext-velint) * x / ( radio * (radioext-radioint) ) * cos(angulo) + velocidad * sin(angulo) * y /(radio*radio);
-				derivxy = (velext-velint) * y / ( radio * (radioext-radioint) ) * cos(angulo) - velocidad * sin(angulo) * x /(radio*radio);
-				derivyx = (velext-velint) * x / ( radio * (radioext-radioint) ) * sin(angulo) - velocidad * cos(angulo) * y /(radio*radio);
-				derivyy = (velext-velint) * y / ( radio * (radioext-radioint) ) * sin(angulo) + velocidad * cos(angulo) * x /(radio*radio);
-
-//cout<<derivxx<<" "<<derivxy<<" "<<derivyx<<" "<<derivyy<<"\n";	
-
-//				tensor->InsertTuple9(offset,-2,1,1,3,0,0,0,0,0);
-				indice[0] = i;
-				indice[1] = j;
-				f[0] = derivxx;
-				f[1] = 0.5*(derivxy+derivyx);
-				f[2] = derivyy;
-				esfuerzo->SetPixel(indice,f);
-
-				tensor->InsertTuple9(offset, derivxx, 0.5*(derivxy+derivyx), 0.5*(derivxy+derivyx), derivyy, 0, 0, 0, 0, 0);
-				num++;
-//cout<<x<<" "<<y<<" Radio: "<<radio<<" Angulo: "<<angulo<<"\n";
-			}
-			
-			else {
-				deform->InsertTuple1(offset,0);
-				tensor->InsertTuple9(offset, 0,0,0,0,0,0,0,0,0);
-			}
-
-			offset++;
-		}
-	}
-
-//	cout<<"Radio exterior: "<<radioext<<"\tRadio interior: "<<radioint<<"\tEspaciado: "<<espaciado<<"\tVolumen: "<<volumen<<"\n";
-//	cout<<"Cantidad 1: "<<cantidad1<<"\n";
-//	cout<<"numero de glifos: "<<num<<"\n";
-
-	vol->GetPointData()->SetTensors(tensor);
-	vol->GetPointData()->SetScalars(deform);
-	vol->Update();
-
-//	grid->SetPoints(puntos);
-//	grid->GetPointData()->SetTensors(tensor);
-
-  double array[9];
-//vol->GetPointData()->GetTensors()->GetTuple(0,array);
-
-	deform->Delete();
-
-	vtkStrainTensorGlyph *glyph = new vtkStrainTensorGlyph();
-//	glyph->SetInput(grid);
-	glyph->SetInput(vol);
-//	glyph->ClampScalingOn();
-//	glyph->SetScaleFactor(1.5);
-
-//	vtkConeSource *sphere = vtkConeSource::New();
-	vtkSphereSource *sphere = vtkSphereSource::New();
-//	sphere->SetResolution(8);
-//	sphere->SetRadius(.25);
-//	sphere->SetPhiResolution(4);
-//	sphere->SetThetaResolution(4);
-	sphere->Update();
-	glyph->SetSource(sphere->GetOutput());
-
-/*
-	vtkPolyDataMapper *mglifos = vtkPolyDataMapper::New();
-
-	vtkActor *vtkActorGlifos = vtkActor::New();
-	mglifos->SetInput(glyph->GetOutput());
-*/
-
-//	vtkActorGlifos->SetMapper(mglifos);
-//	vtkActorGlifos->VisibilityOn();
-//	vtkActorGlifos->GetProperty()->SetOpacity(.5);
-
-	vtkCylinderSource *cilindroext = vtkCylinderSource::New();
-	cilindroext->SetRadius(radioext);
-	cilindroext->SetHeight(altura);
-	cilindroext->SetResolution(16);
-	cilindroext->CappingOff();
-	
-	vtkCylinderSource *cilindroint = vtkCylinderSource::New();
-	cilindroint->SetRadius(radioint);
-	cilindroint->SetHeight(altura);
-	cilindroint->SetResolution(16);
-	cilindroint->CappingOff();
-//	cilindroint->SetCenter(10,10,10);
-
-	m_activeGlyphX = glyph->GetOutput();
-	m_activeActorX = vtkActor::New();
-	ImageViewer3D->ConnectMapper(m_activeGlyphX, m_activeActorX);
-	ImageViewer3D->SetScalarRange(m_activeActorX, -0.2, 0.2);
-
-	m_activeGlyphY = cilindroext->GetOutput();
-	m_activeActorY = vtkActor::New();
-	ImageViewer3D->ConnectMapper(m_activeGlyphY, m_activeActorY);
-	ImageViewer3D->SetScalarRange(m_activeActorY, 0, 1);
-	m_activeActorY->GetProperty()->SetOpacity(.5);
-
-	m_activeGlyphZ = cilindroint->GetOutput();
-	m_activeActorZ = vtkActor::New();
-	ImageViewer3D->ConnectMapper(m_activeGlyphZ, m_activeActorZ);
-	ImageViewer3D->SetScalarRange(m_activeActorZ, 0, 1);
-	m_activeActorZ->GetProperty()->SetOpacity(.5);
-
-	vol->Delete();
-
-	vtkColorTransferFunction *negColor = vtkColorTransferFunction::New();
-	negColor->AddRGBPoint(-.5,0.0,0.0,1.0);
-	negColor->AddRGBPoint(0,0.0,1.0,0.0);
-	//negColor->AddRGBPoint(2,1.0,1.0,0.0);
-	negColor->AddRGBPoint(.5,1.0,0.0,0.0);
-
-	m_activeActorX->GetMapper()->SetLookupTable(negColor);
-//	m_activeActorX->GetMapper()->UseLookupTableScalarRangeOn();
-
-	if (m_scalarBar) {
-		ImageViewer3D->GetDefaultRenderer()->RemoveActor(m_scalarBar);
-		m_scalarBar->Delete();
-	}
-
-	m_scalarBar = vtkScalarBarActor::New();
-	m_scalarBar->SetLookupTable (negColor);
-	m_scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-	m_scalarBar->GetPositionCoordinate()->SetValue (0.8, 0.1);
-	
-	ImageViewer3D->GetDefaultRenderer()->AddViewProp(m_scalarBar);
-
-
-	DataSTElementType tensor_data;
-	char bname[200];
-	tensor_data.Id     = m_VectorSTData->size();
-	tensor_data.nombre = "Nombre";
-	tensor_data.image  = esfuerzo;
-
-	m_VectorSTData->push_back(tensor_data);
-
-
-	Fl::check();
-	ImageViewer3D->redraw();
-	Fl::check();
-
-
-/*
-	vtkRenderer *irenderer = vtkRenderer::New();
-	vtkRenderWindow *iwindow = vtkRenderWindow::New();
-	iwindow->AddRenderer(irenderer);
-	iwindow->SetSize(600,600);
-	vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
-	iren->SetRenderWindow(iwindow);
-
-	vtkPolyDataMapper *mcono = vtkPolyDataMapper::New();
-
-	vtkActor *vtkActorCono = vtkActor::New();
-	mcono->SetInput(cono->GetOutput());
-	vtkActorCono->SetMapper(mcono);
-	vtkActorCono->VisibilityOn();
-//	vtkActorCono->GetProperty()->SetOpacity(.5);
-
-	irenderer->AddViewProp(vtkActorCono);
-
-
-	vtkPolyDataMapper *mext = vtkPolyDataMapper::New();
-
-	vtkActor *vtkActorExt = vtkActor::New();
-	mext->SetInput(cilindroext->GetOutput());
-	vtkActorExt->SetMapper(mext);
-	vtkActorExt->VisibilityOn();
-	vtkActorExt->GetProperty()->SetOpacity(.5);
-
-	irenderer->AddViewProp(vtkActorExt);
-
-	vtkPolyDataMapper *mint = vtkPolyDataMapper::New();
-
-	vtkActor *vtkActorInt = vtkActor::New();
-	mint->SetInput(cilindroint->GetOutput());
-	vtkActorInt->SetMapper(mint);
-	vtkActorInt->VisibilityOn();
-	vtkActorInt->GetProperty()->SetOpacity(1);
-	vtkActorInt->GetProperty()->SetOpacity(.5);
-
-	irenderer->AddViewProp(vtkActorInt);
-
-	irenderer->AddViewProp(vtkActorGlifos);
-
-	iwindow->Render(); 
-
-	mglifos->Delete();
-	mint->Delete();
-	mext->Delete();
-	irenderer->Delete();
-	iwindow->Delete();
-*/	
-
-
-}
-
-void TensorConsole::generarTensoresCilindro() {
-
-cout<<"Entra??\n";
-
-double tiempo=0;
-	double radioext = 21 + 10 * sin (3.1415 * tiempo / 8);
-	double radioint = 8 + 1 * sin (3.1415 * tiempo / 8); 
-	double distancia = radioext - radioint;
-//	double altura = 9 + 4 * cos (3.1415 * tiempo / 8);
-//	double volumen = 3.1415 * (radioext*radioext - radioint*radioint) * altura;
-
-	double velext = 7 * sin (3.1415 * tiempo / 8);
-	double velint = 4 * sin (3.1415 * tiempo / 8);
-
-	double espaciado = 1.5;
-	double angulo,radio, velocidad;
-	double origen;
-	double r, ang, x, y;
-	double derivxx, derivxy, derivyx, derivyy;
-	double distanciaext, distanciaint;
-	double deformacion;
-
-	double defmax = 0;
-
-	double area = 3.1415 * (radioext*radioext - radioint*radioint);
-
-	int offset = 0;
-
-	STImageType::Pointer esfuerzo = STImageType::New();
-	STImageType::IndexType start;
-	STImageType::SizeType size;
-	unsigned int a;
-
-	start.Fill(0);
-//	size.Fill(10);
-	size[0] = 56;
-	size[1] = 56;
-	size[2] = 2;
-	size[3] = 16;
-
-	STImageType::RegionType region;
-
-	region.SetSize( size );
-	region.SetIndex( start );
-
-	esfuerzo->SetRegions( region );
-
-	esfuerzo->Allocate();
-
-	DeformImageType::Pointer deform = DeformImageType::New();
-	deform->SetRegions( region );
-
-	deform->Allocate();
-
-
-	STPixelType pixelST;
-	DeformPixelType pixelDeform;
-
-	STImageType::IndexType indice;
-	indice[2] = 0;
-
-cout<<"region "<<esfuerzo->GetRequestedRegion()<<"\n";
-
-	double deformx, deformy;
-	m_deformValues = vtkFloatArray::New();
-	m_deformValues->SetNumberOfComponents(2);
-	m_deformValues->SetNumberOfTuples(56*56*2*16);
-
-for (tiempo = 0; tiempo<16; tiempo++) {
-
-	indice[3] = tiempo;
-
-//	double tiempo = this->tiempo;
-	radioext = 21 - 7 * cos (3.1415 * tiempo / 8);
-	radioint = 8 - 4 * cos (3.1415 * tiempo / 8); 
-	distancia = radioext - radioint;
-
-	distanciaext = 21 - 7 * cos (3.1415 * (tiempo+1) / 8) - (21 - 7 * cos (3.1415 * tiempo / 8));
-	distanciaint = 8 - 4 * cos (3.1415 * (tiempo+1) / 8) - (8 - 4 * cos (3.1415 * tiempo / 8));
-//	altura = 9 + 4 * cos (3.1415 * tiempo / 8);
-//	volumen = 3.1415 * (radioext*radioext - radioint*radioint) * altura;
-
-	velext = 7 * sin (3.1415 * tiempo / 8);
-	velint = 4 * sin (3.1415 * tiempo / 8);
-
-	espaciado = 1;
-
-//	area = 3.1415 * (radioext*radioext - radioint*radioint);
-//	espaciado = sqrt (area/600);
-
-	origen = -27.5 * espaciado;
-
-//	if (fabs(velext/2)>espaciado) espaciado = fabs(velext/2);
-//	else if (fabs(distanciaext)<1.0) espaciado = 1.0;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	for (int i=0; i<56; i++) {
-
-		indice[0] = i;
-
-		for (int j=0; j<56; j++) {
-
-			indice[1] = j;
-
-			x = -origen - espaciado*i;
-			y = -origen - espaciado*j;
-
-			angulo = atan2(y,x);
-			radio = sqrt(x*x + y*y);
-
-/*if (i==j) {
-cout<<"i j "<<i<<" "<<j<<"\t";
-cout<<"angulo "<<angulo<<"\tradio "<<radio<<"\tradioint "<<radioint<<"\tradioext "<<radioext<<"\tespaciado "<<espaciado<<"\n";
-}*/
-			if ( (radio > radioint+espaciado/2) && (radio < radioext-espaciado/2) ) {
-
-				deformacion = distanciaint + (radio-radioint)*(distanciaext-distanciaint) / (radioext-radioint);
-				velocidad = velint + (radio-radioint) * (velext-velint) / (radioext-radioint);
-
-//				derivxx = (velext-velint) * x / ( radio * (radioext-radioint) ) * cos(angulo) + velocidad * sin(angulo) * y /(radio*radio);
-//				derivxy = (velext-velint) * y / ( radio * (radioext-radioint) ) * cos(angulo) - velocidad * sin(angulo) * x /(radio*radio);
-//				derivyx = (velext-velint) * x / ( radio * (radioext-radioint) ) * sin(angulo) - velocidad * cos(angulo) * y /(radio*radio);
-//				derivyy = (velext-velint) * y / ( radio * (radioext-radioint) ) * sin(angulo) + velocidad * cos(angulo) * x /(radio*radio);
-		
-				derivxx = x*(distanciaext-distanciaint)*cos(angulo)/radio + y*deformacion*sin(angulo)/radio;
-				derivxy = y*(distanciaext-distanciaint)*cos(angulo)/radio - x*deformacion*sin(angulo)/radio;
-				derivyx = x*(distanciaext-distanciaint)*sin(angulo)/radio - y*deformacion*cos(angulo)/radio;
-				derivyy = y*(distanciaext-distanciaint)*sin(angulo)/radio + x*deformacion*cos(angulo)/radio;
-
-
-				pixelST[0] = derivxx;
-				pixelST[1] = 0.5*(derivxy+derivyx);
-				pixelST[2] = derivyy;
-
-//				pixelDeform[0] = (velext-velint) * (radio-radioint) / (radioext-radioint) * cos(angulo);
-//				pixelDeform[1] = (velext-velint) * (radio-radioint) / (radioext-radioint) * sin(angulo);				
-				pixelDeform[0] = deformacion * cos(angulo);
-				pixelDeform[1] = deformacion * sin(angulo);
-
-				indice[2] = 0;
-				esfuerzo->SetPixel(indice,pixelST);
-				deform->SetPixel(indice,pixelDeform);
-				indice[2] = 1;
-				esfuerzo->SetPixel(indice,pixelST);
-				deform->SetPixel(indice,pixelDeform);
-//if (indice[0]==28) cout<<indice<<" radio "<<radio<<" angulo "<<angulo<<" velocidad "<<velocidad<<" deriv "<<derivxx<<" "<<derivxy<<" "<<derivyx<<" "<<derivyy<<"\n";
-
-				deformx = (velext-velint) * (radio-radioint) * cos(angulo) / (radioext-radioint) ;
-				deformy = (velext-velint) * (radio-radioint) * sin(angulo) / (radioext-radioint) ;
-				m_deformValues->InsertTuple2(offset, deformx, deformy);
-			}
-			
-			else {
-				pixelST.Fill(0);
-				pixelDeform.Fill(0);
-				indice[2] = 0;
-				esfuerzo->SetPixel(indice,pixelST);
-				deform->SetPixel(indice,pixelDeform);
-				indice[2] = 1;
-				esfuerzo->SetPixel(indice,pixelST);
-				deform->SetPixel(indice,pixelDeform);
-
-				deformx = 0;
-				deformy = 0;
-				m_deformValues->InsertTuple2(offset, deformx, deformy);
-			}
-//if (tiempo==1 && i==10) cout<<"i j "<<i<<" "<<j<<"\tindice "<<indice<<"\tpixel "<<f<<"\n";
-			offset++;
-		}
-	}
-}
-indice[0] = 33;
-indice[1] = 17;
-indice[2] = 1;
-indice[3] = 15;
-
-pixelST = esfuerzo->GetPixel(indice);
-//cout<<"pixel "<<pixelST<<"\n";
-
-	DataSTElementType tensor_data;
-	char bname[200];
-	tensor_data.Id     = m_VectorSTData->size();
-	tensor_data.nombre = "Cilindro";
-	tensor_data.image  = esfuerzo;
-	tensor_data.deform_image = deform;
-
-	m_VectorSTData->push_back(tensor_data);
-//m_deformValues = deform;
-
-//for (int indice = 0; indice<56*56; indice++)
-// if (m_deformValues->GetTuple(indice)[0] != 0) cout<<indice<<" deform "<<m_deformValues->GetTuple(indice)[0]<<" deform_max "<<m_deformValues->GetTuple(indice)[1]<<"\n";
-
-
-	Fl::check();
-	ImageViewer3D->redraw();
-	Fl::check();
-
-}
-
-
-void TensorConsole::probarEsfuerzoDeform() {
-
-	borrarGlifos(0);
-	borrarGlifos(1);
-	borrarGlifos(2);
-
-	double tiempo = numero4->value();
-	double radioext = 21 - 7 * cos (3.1415 * tiempo / 8);
-	double radioint = 8 - 4 * cos (3.1415 * tiempo / 8); 
-	double distancia = radioext - radioint;
-	double altura = 9 + 4 * cos (3.1415 * tiempo / 8);
-//	double volumen = 3.1415 * (radioext*radioext - radioint*radioint) * altura;
-
-	double cantidad1 = 3.1415 * sin (3.1415 / 8 * tiempo);
-
-	double distanciaext = - 7 * cos (3.1415 * tiempo / 8) + 7 * cos (3.1415 * (tiempo-1) / 8);
-	double distanciaint = - 4 * cos (3.1415 * tiempo / 8) + 4 * cos (3.1415 * (tiempo-1) / 8);
-
-	double velext = 7 * sin (3.1415 * tiempo / 8);
-	double velint = 4 * sin (3.1415 * tiempo / 8);
-
-	double espaciado = 1.5;
-	double angulo,radio, velocidad;
-	double origen;
-	double r, ang, x, y;
-	double derivxx, derivxy, derivyx, derivyy;
-
-	double deformacion;
-
-	double area = 3.1415 * (radioext*radioext - radioint*radioint);
-	espaciado = sqrt (area/600);
-
-	if (fabs(velext/2)>espaciado) espaciado = fabs(velext/2);
-//	else if (fabs(distanciaext)<1.0) espaciado = 1.0;
-
-	origen = -19.5 * espaciado;
-
-	vtkStructuredPoints *vol = vtkStructuredPoints::New();
-	vol->SetDimensions (40,1,40);
-	vol->SetOrigin(origen,0,origen);
-	vol->SetSpacing(espaciado,espaciado,espaciado);
-
-	vtkFloatArray *deform = vtkFloatArray::New();
-	deform->SetNumberOfComponents(1);
-	deform->SetNumberOfTuples(1600);
-
-	vtkFloatArray *tensor = vtkFloatArray::New();
-	tensor->SetNumberOfComponents(9);
-	tensor->SetNumberOfTuples(1600);
-
-	int offset = 0;
-	int num=0;
-/*
-	double def,longitud;
-
-	vtkUnstructuredGrid *grid = vtkUnstructuredGrid::New();
-	vtkPoints *puntos = vtkPoints::New();
-	
-	for (r = radioint; r < radioext; r += fabs(def)) {
-
-		def = distanciaint + (r/distancia) * (distanciaext-distanciaint);
-		longitud = 2 * 3.1415 * r;
-
-		if (longitud<32) num = 32;
-		else if (longitud<64) num=64;
-		else num=128;
-
-		for (ang=0;ang<2*3.1415;ang+=2*3.1415/(int)num) {
-
-			puntos->InsertPoint (offset, r * cos(ang), 0, r * sin(ang));
-			deform->InsertTuple9(offset,def,0,0,0,1,0,0,0,1);
-			offset++;
-
-		}
-
-	}
-*/
-
-
-
-
-	for (int i=0; i<40; i++) {
-		for (int j=0; j<40; j++) {
-
-			x = -origen - espaciado*i;
-			y = -origen - espaciado*j;
-
-//			x = 10; y = 0.17;
-
-			angulo = atan2(y,x);
-			radio = sqrt(x*x + y*y);
-
-//			if ( (i==14 && j==12) || (i==15 && j==12) || (i==24 && j==12) ) {
-//			if (x*y > 0) {
-			if ( (radio > radioint+espaciado/2) && (radio < radioext-espaciado/2) ) {
-
-//				velocidad = velint + (radio-radioint) * (velext-velint) / (radioext-radioint);
-				deformacion = distanciaint + (radio-radioint) * (distanciaext-distanciaint) / (radioext-radioint);
-//				deform->InsertTuple1(offset,distanciaint + ((radio-radioint)/distancia) * (distanciaext-distanciaint));
-				deform->InsertTuple1(offset,deformacion);
-
-/*				derivxx = (velext-velint) * x * cos (angulo) / ( (radioext-radioint) * sqrt(x*x + y*y) );
-				derivxy = (velext-velint) * y * cos (angulo) / ( (radioext-radioint) * sqrt(x*x + y*y) );
-				derivyx = (velext-velint) * x * sin (angulo) / ( (radioext-radioint) * sqrt(x*x + y*y) );
-				derivyy = (velext-velint) * y * sin (angulo) / ( (radioext-radioint) * sqrt(x*x + y*y) );
-*/
-/*
-				derivxx = (velext-velint) * x / ( radio * (radioext-radioint) ) * cos(angulo) + velocidad * sin(angulo) * y /(radio*radio);
-				derivxy = (velext-velint) * y / ( radio * (radioext-radioint) ) * cos(angulo) - velocidad * sin(angulo) * x /(radio*radio);
-				derivyx = (velext-velint) * x / ( radio * (radioext-radioint) ) * sin(angulo) - velocidad * cos(angulo) * y /(radio*radio);
-				derivyy = (velext-velint) * y / ( radio * (radioext-radioint) ) * sin(angulo) + velocidad * cos(angulo) * x /(radio*radio);
-*/
-//cout<<derivxx<<" "<<derivxy<<" "<<derivyx<<" "<<derivyy<<"\n";	
-
-//				tensor->InsertTuple9(offset,-2,1,1,3,0,0,0,0,0);
-//				tensor->InsertTuple9(offset, derivxx, 0.5*(derivxy+derivyx), 0.5*(derivxy+derivyx), derivyy, 0, 0, 0, 0, 0);
-				num++;
-//cout<<x<<" "<<y<<" Radio: "<<radio<<" Angulo: "<<angulo<<"\n";
-			}
-			
-			else {
-				deform->InsertTuple1(offset,0);
-//				tensor->InsertTuple9(offset, 0,0,0,0,0,0,0,0,0);
-			}
-
-			offset++;
-		}
-	}
-/*
-	cout<<"Radio exterior: "<<radioext<<"\tRadio interior: "<<radioint<<"\tEspaciado: "<<espaciado<<"\tVolumen: "<<volumen<<"\n";
-	cout<<"Cantidad 1: "<<cantidad1<<"\n";
-	cout<<"numero de glifos: "<<num<<"\n";
-*/
-//	vol->GetPointData()->SetTensors(tensor);
-	vol->GetPointData()->SetScalars(deform);
-	vol->Update();
-
-//	grid->SetPoints(puntos);
-//	grid->GetPointData()->SetTensors(tensor);
-
-  double array[9];
-//vol->GetPointData()->GetTensors()->GetTuple(0,array);
-
-	deform->Delete();
-
-	vtkStrainTensorGlyph *glyph = new vtkStrainTensorGlyph();
-//	glyph->SetInput(grid);
-	glyph->SetInput(vol);
-//	glyph->ClampScalingOn();
-//	glyph->SetScaleFactor(1.5);
-
-	vtkConeSource *sphere = vtkConeSource::New();
-//	vtkSphereSource *sphere = vtkSphereSource::New();
-	sphere->SetResolution(8);
-	sphere->SetRadius(.25);
-//	sphere->SetPhiResolution(4);
-//	sphere->SetThetaResolution(4);
-	sphere->Update();
-	glyph->SetSource(sphere->GetOutput());
-
-/*
-	vtkPolyDataMapper *mglifos = vtkPolyDataMapper::New();
-
-	vtkActor *vtkActorGlifos = vtkActor::New();
-	mglifos->SetInput(glyph->GetOutput());
-*/
-
-//	vtkActorGlifos->SetMapper(mglifos);
-//	vtkActorGlifos->VisibilityOn();
-//	vtkActorGlifos->GetProperty()->SetOpacity(.5);
-
-	vtkCylinderSource *cilindroext = vtkCylinderSource::New();
-	cilindroext->SetRadius(radioext);
-	cilindroext->SetHeight(altura);
-	cilindroext->SetResolution(16);
-	cilindroext->CappingOff();
-	
-	vtkCylinderSource *cilindroint = vtkCylinderSource::New();
-	cilindroint->SetRadius(radioint);
-	cilindroint->SetHeight(altura);
-	cilindroint->SetResolution(16);
-	cilindroint->CappingOff();
-//	cilindroint->SetCenter(10,10,10);
-
-	m_activeGlyphX = glyph->GetDeformOutput();
-	m_activeActorX = vtkActor::New();
-	ImageViewer3D->ConnectMapper(m_activeGlyphX, m_activeActorX);
-	ImageViewer3D->SetScalarRange(m_activeActorX, -4, 4);
-
-	m_activeGlyphY = cilindroext->GetOutput();
-	m_activeActorY = vtkActor::New();
-	ImageViewer3D->ConnectMapper(m_activeGlyphY, m_activeActorY);
-	ImageViewer3D->SetScalarRange(m_activeActorY, 0, 1);
-	m_activeActorY->GetProperty()->SetOpacity(.5);
-
-	m_activeGlyphZ = cilindroint->GetOutput();
-	m_activeActorZ = vtkActor::New();
-	ImageViewer3D->ConnectMapper(m_activeGlyphZ, m_activeActorZ);
-	ImageViewer3D->SetScalarRange(m_activeActorZ, 0, 1);
-	m_activeActorZ->GetProperty()->SetOpacity(.5);
-
-	vol->Delete();
-
-	vtkColorTransferFunction *negColor = vtkColorTransferFunction::New();
-	negColor->AddRGBPoint(-3,0.0,0.0,1.0);
-	negColor->AddRGBPoint(0,0.0,1.0,0.0);
-	//negColor->AddRGBPoint(2,1.0,1.0,0.0);
-	negColor->AddRGBPoint(3,1.0,0.0,0.0);
-
-	m_activeActorX->GetMapper()->SetLookupTable(negColor);
-//	m_activeActorX->GetMapper()->UseLookupTableScalarRangeOn();
-
-	if (m_scalarBar) {
-		ImageViewer3D->GetDefaultRenderer()->RemoveActor(m_scalarBar);
-		m_scalarBar->Delete();
-	}
-
-	m_scalarBar = vtkScalarBarActor::New();
-	m_scalarBar->SetLookupTable (negColor);
-	m_scalarBar->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
-	m_scalarBar->GetPositionCoordinate()->SetValue (0.8, 0.1);
-	
-	ImageViewer3D->GetDefaultRenderer()->AddViewProp(m_scalarBar);
-
-
-	Fl::check();
-	ImageViewer3D->redraw();
-	Fl::check();
-
-}
 
